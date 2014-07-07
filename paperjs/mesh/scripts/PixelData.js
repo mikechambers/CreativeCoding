@@ -32,7 +32,7 @@ PixelData.prototype.imageData = null;
 
 PixelData.prototype.getHex = function (point) {
     var o = this.getRBGA(point);
-    
+
     return PixelData.rgbToHex(o.r, o.g, o.b);
 };
 
@@ -42,8 +42,14 @@ PixelData.prototype.getRBGA = function (point) {
     var xPos = Math.floor(point.x);
     var yPos = Math.floor(point.y);
     
+    if(!point) {
+        console.log("point is not defined");
+        return;
+    }
+    
     if(point.x < 0 || point.x > this.imageData.width || point.y < 0 || point.y > this.imageData.height) {
-        console.log("point out of ranges", point);
+        console.log("point out of range", point);
+        return; 
     }
     
 	//copy imageData to a local variable to speed up access
@@ -71,13 +77,14 @@ PixelData.prototype.getRBGA = function (point) {
 	return out;
 }
 
-//http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-PixelData.rgbToHex = function(r,g,b) {
-    //todo: optimize
-    var helper = function(c) {        
+PixelData._helper = function(c) {        
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
-    }
+};
+
+//http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+PixelData.rgbToHex = function(r,g,b) {
+    var helper = PixelData._helper;
     
     return "#" + helper(r) + helper(g) + helper(b);
 }

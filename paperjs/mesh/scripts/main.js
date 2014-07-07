@@ -1,5 +1,5 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
-/*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer, Uint8Array, Blob, Size, PixelData, Tool */
+/*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer, Uint8Array, Blob, Size, PixelData, Tool, project, Layer */
 
 (function () {
     "use strict";
@@ -31,7 +31,6 @@
         colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
     };
     
-    
     /*********** Override Config defaults here ******************/
     
     var circleGroups = {};
@@ -39,6 +38,10 @@
     var t; //paperjs tool reference
     var circlesStore;
     var pixelData;
+    
+    var backgroundLayer;
+    var circleLayer;
+    var linesLayer;
     
     var randomVectorValue = function () {
 
@@ -113,7 +116,7 @@
                     this.position.y = 0;
                 } else if (this.position.y + this.bounds.height > view.bounds.height) {
                     this.vector.y *= -1;
-                    this.position.y = view.bounds.height - this.bounds.height;
+                    this.position.y = view.bounds.height - this.bounds.height - 1;
                 }
                 
                 if (this.position.x < 0) {
@@ -121,11 +124,14 @@
                     this.position.x = 0;
                 } else if (this.position.x + this.bounds.width > view.bounds.width) {
                     this.vector.x *= -1;
-                    this.position.x = view.bounds.width - this.bounds.width;
+                    this.position.x = view.bounds.width - this.bounds.width - 1;
                 }
             };
+        } else {
+            circle.onFrame = undefined;
         }
 
+        
         return circle;
     };
 
@@ -264,6 +270,9 @@
     };
     
     var connectAllCircles = function () {
+        
+        project.activeLayer = linesLayer;
+        
         paths = [];
         
         var key;
@@ -358,6 +367,9 @@
         // Setup directly from canvas id:
         paper.setup('myCanvas');
         
+        
+        var backgroundLayer = project.activeLayer;
+        
         var drawCanvas = document.getElementById("myCanvas");
 
         //programtically set the background colors so we can set it once in a var.
@@ -403,6 +415,8 @@
             
             circlesStore = [];
             
+            
+            var circleLayer = new Layer();
             var i;
             for (i = 0; i < config.CIRCLE_COUNT; i++) {
                 circlesStore.push(createCircle());
@@ -410,10 +424,12 @@
 
             groupCircles(circlesStore);
 
+            linesLayer = new Layer();
             connectAllCircles();
 
             view.onFrame = function () {
                 if (config.ANIMATE) {
+                    linesLayer.removeChildren();
                     groupCircles(circlesStore);
                     connectAllCircles();
                 }
@@ -421,6 +437,10 @@
                 //this fixes an issue where sometimes the view won't render until a browser
                 //event (mouse over, etc...)
                 paper.view.update();
+                
+                if (!config.ANIMATE) {
+                    view.onFrame = undefined;
+                }
             };
 
             t = new Tool();
