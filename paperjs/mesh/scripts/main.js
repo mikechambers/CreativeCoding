@@ -6,35 +6,33 @@
     
     paper.install(window);
     
-    var BACKGROUND_COLOR = "#111111";
+    
+    var config = {
+        BACKGROUND_COLOR: "#111111",
+        ANIMATE: false,
+        DRAW_RADIUS_POINTS: false,
 
-    var ANIMATE = false;
-    var DRAW_RADIUS_POINTS = false;
+        RADIUS: 0,
+        
+        BOUNDS_PADDING: 100, //radius * 2
+        CIRCLE_COUNT: 3000,
+        MAX_NEIGHBOR_COUNT: 20,
+        FIND_NEAREST_NEIGHBOR: true,
+
+        OPACITY: 0.5,
+        STROKE_COLOR: "white",
+
+        //soft-light, hard-light, difference, color-dodge
+        BLEND_MODE: "soft-light",
+        CIRCLE_BLENDMODE: "normal",
+        STROKE_WIDTH: 0.2,
+        TEMPLATE: "templates/blank_template.gif",
+        ALLOW_TEMPLATE_SKEW: true,
+        colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
+    };
     
-    var RADIUS = 0;//0
     
-    //radius * 2
-    var BOUNDS_PADDING = 100;
-    var CIRCLE_COUNT = 3000;//3000
-    var MAX_NEIGHBOR_COUNT = 20;//20
-    var FIND_NEAREST_NEIGHBOR = true;
-    
-    var OPACITY = 0.5;
-    var STROKE_COLOR = "white";
-    
-    //soft-light, hard-light, difference, color-dodge
-    var BLEND_MODE = "soft-light";
-    var CIRCLE_BLENDMODE = "normal";
-    var STROKE_WIDTH = 0.2;
-    
-    var TEMPLATE = "templates/blank_template.gif";
-    
-    var colorTheme = new ColorTheme(ColorTheme.themes.BLUE_AND_PINK);
-    
-    //whether or not the template can be skewed to fill the entire canvas.
-    //if false, the template will be placed in the center of the canvas
-    var ALLOW_TEMPLATE_SKEW = true;
-    
+    /*********** Override Config defaults here ******************/
     
     var circleGroups = {};
     var paths;
@@ -85,26 +83,26 @@
     var createCircle = function (point, radius) {
         
         if (!radius) {
-            radius = RADIUS;
+            radius = config.RADIUS;
         }
         
         if (!point) {
-            point = getRandomPointInView(BOUNDS_PADDING, BOUNDS_PADDING);
+            point = getRandomPointInView(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
         }
 
         //note: you can use the syntax above, but I am trying to keep object creation
         //down
         var circle = new Shape.Circle(point, radius);
-        circle.blendMode = CIRCLE_BLENDMODE;
-        circle.strokeColor = STROKE_COLOR;
-        circle.fillColor = colorTheme.getRandomColor();
+        circle.blendMode = config.CIRCLE_BLENDMODE;
+        circle.strokeColor = config.STROKE_COLOR;
+        circle.fillColor = config.colorTheme.getRandomColor();
         
         
         circle.vector = new Point(randomVectorValue(), randomVectorValue());
 
-        circle.opacity = OPACITY;
+        circle.opacity = config.OPACITY;
         
-        if (ANIMATE) {
+        if (config.ANIMATE) {
             circle.onFrame = function () {
                 
                 var SPEED = 4;
@@ -145,7 +143,7 @@
     
     var _sorted = [];
     var findClosestNeighbors = function (circle, circles) {
-        var count = MAX_NEIGHBOR_COUNT;
+        var count = config.MAX_NEIGHBOR_COUNT;
 
         var circlesLen = circles.length;
         if (count >= circlesLen) {
@@ -182,7 +180,7 @@
         
         _sorted.sort(_distanceSort);
         
-        if (!FIND_NEAREST_NEIGHBOR) {
+        if (!config.FIND_NEAREST_NEIGHBOR) {
             _sorted.reverse();
         }
         
@@ -248,11 +246,11 @@
             len = neighbors.length;
             
             var path = new Path();
-            path.strokeColor = STROKE_COLOR;
-            path.strokeWidth = STROKE_WIDTH;
-            path.blendMode = BLEND_MODE;
+            path.strokeColor = config.STROKE_COLOR;
+            path.strokeWidth = config.STROKE_WIDTH;
+            path.blendMode = config.BLEND_MODE;
             
-            path.fillColor = colorTheme.getRandomColor();
+            path.fillColor = config.colorTheme.getRandomColor();
             path.moveTo(c1.position);
             
             var i;
@@ -363,15 +361,15 @@
         var drawCanvas = document.getElementById("myCanvas");
 
         //programtically set the background colors so we can set it once in a var.
-        document.body.style.background = BACKGROUND_COLOR;
-        drawCanvas.style.background = BACKGROUND_COLOR;
+        document.body.style.background = config.BACKGROUND_COLOR;
+        drawCanvas.style.background = config.BACKGROUND_COLOR;
         
         
         //todo: note, right now, this doesnt handle if the browser window is resized.
         var rect = new Path.Rectangle(new Point(0, 0),
                             new Size(view.bounds.width, view.bounds.height)
                                      );
-        rect.fillColor = BACKGROUND_COLOR;
+        rect.fillColor = config.BACKGROUND_COLOR;
         
         var w = drawCanvas.width;
         var h = drawCanvas.height;
@@ -389,7 +387,7 @@
             context.fillStyle = "#000000";
             context.fillRect(0, 0, h, w);
 
-            if (ALLOW_TEMPLATE_SKEW) {
+            if (config.ALLOW_TEMPLATE_SKEW) {
                 //stretch image to fill entire canvas. This may skew image
                 context.drawImage(templateImage, 0, 0, w, h);
             } else {
@@ -406,7 +404,7 @@
             circlesStore = [];
             
             var i;
-            for (i = 0; i < CIRCLE_COUNT; i++) {
+            for (i = 0; i < config.CIRCLE_COUNT; i++) {
                 circlesStore.push(createCircle());
             }
 
@@ -415,7 +413,7 @@
             connectAllCircles();
 
             view.onFrame = function () {
-                if (ANIMATE) {
+                if (config.ANIMATE) {
                     groupCircles(circlesStore);
                     connectAllCircles();
                 }
@@ -438,6 +436,6 @@
             };
         };
             
-        templateImage.src = TEMPLATE;
+        templateImage.src = config.TEMPLATE;
     };
 }());
