@@ -56,7 +56,5 @@
         ]
     };
     
-    
-    
     window.ColorTheme = ColorTheme;
 }());
