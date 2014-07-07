@@ -6,17 +6,17 @@
     
     paper.install(window);
     
-    var BACKGROUND_COLOR = "#222222";
+    var BACKGROUND_COLOR = "#111111";
 
     var ANIMATE = false;
     var DRAW_RADIUS_POINTS = false;
     
-    var RADIUS = 10;
+    var RADIUS = 0;//0
     
     //radius * 2
     var BOUNDS_PADDING = 100;
-    var CIRCLE_COUNT = 20;//3000
-    var MAX_NEIGHBOR_COUNT = 5;//30
+    var CIRCLE_COUNT = 3000;//3000
+    var MAX_NEIGHBOR_COUNT = 20;//20
     var FIND_NEAREST_NEIGHBOR = true;
     
     var OPACITY = 0.5;
