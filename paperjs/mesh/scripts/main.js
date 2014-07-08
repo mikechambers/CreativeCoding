@@ -33,6 +33,13 @@
     
     /*********** Override Config defaults here ******************/
     
+    config.CIRCLE_COUNT = 3800;
+    config.MAX_NEIGHBOR_COUNT = 20;
+    config.TEMPLATE = "templates/cc_template.gif";
+    config.BOUNDS_PADDING = 50;
+    
+    /*************** End Config Override **********************/
+    
     var circleGroups = {};
     var paths;
     var t; //paperjs tool reference
@@ -416,7 +423,7 @@
             circlesStore = [];
             
             
-            var circleLayer = new Layer();
+            linesLayer = new Layer();
             var i;
             for (i = 0; i < config.CIRCLE_COUNT; i++) {
                 circlesStore.push(createCircle());
@@ -424,7 +431,7 @@
 
             groupCircles(circlesStore);
 
-            linesLayer = new Layer();
+            circleLayer = new Layer();
             connectAllCircles();
 
             view.onFrame = function () {
