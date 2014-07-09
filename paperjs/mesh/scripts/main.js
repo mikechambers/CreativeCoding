@@ -40,7 +40,7 @@
     
     //todo: probably need to make the canvas smaller, then scale up
     
-    config.CIRCLE_COUNT = 100;
+    config.CIRCLE_COUNT = 1000;
     config.MAX_NEIGHBOR_COUNT = 20;
     config.BOUNDS_PADDING = 0;
     config.CANVAS_HEIGHT = 432;
@@ -368,7 +368,7 @@
     var downloadAsSVG = function () {
 
         var fileName = createName("svg");
-
+        
         var url = "data:image/svg+xml;utf8," + btoa(paper.project.exportSVG({asString: true}));
         downloadFile(url, fileName);
     };

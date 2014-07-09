@@ -24,6 +24,12 @@
         //NOTE: The object properties are not cleared
         //for performance reasons
         
+        //NOTE : We are not checking for duplicates, as it significantly slows
+        //down the function with large pools
+        
+        this.pool.push(obj);
+        
+        /*
         var hasObject = false;
         
         //http://jsperf.com/caching-array-length/4
@@ -40,6 +46,7 @@
         if (!hasObject) {
             this.pool.push(obj);
         }
+        */
     };
     
     window.ObjectPool = ObjectPool;
