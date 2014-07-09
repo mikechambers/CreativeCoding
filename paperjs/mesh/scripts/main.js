@@ -57,6 +57,8 @@
     var circleLayer;
     var linesLayer;
     
+    var fileNameSuffix = new Date().getTime();
+    
     var randomVectorValue = function () {
 
         var v = Math.random();
@@ -176,7 +178,6 @@
 
         var c;
         var dist;
-        //var hash = {};
         var hash = {};
         
         var h;
@@ -184,7 +185,6 @@
         for (i = 0; i < circlesLen; i++) {
             c = circles[i];
             
-            //todo: strict equality
             if (c === circle) {
                 continue;
             }
@@ -194,8 +194,6 @@
             //This hashes on the PaperJS naming for each Circle instance
             //we can't hash on the distance (which would be faster), because it is possible 
             //there will be a duplicate
-            //todo: this is potentially creating 10s of thousands of temp objects, so we would consinder
-            //creating a rool for it.
             h = pool.getObject();
             h.distance = dist;
             h.circle = c;
@@ -249,6 +247,7 @@
         var radius = c1.radius;
 
         var angle = getLineAngle(p1, p2);
+        
         //figure out the point on the circle, based on the angle.
         //this returns the point, relative to (0,0)
         var p3 = new Point();
@@ -286,7 +285,6 @@
             
             path.fillColor = config.colorTheme.getRandomColor();
             
-            
             path.moveTo(c1.position);
             
             var i;
@@ -296,8 +294,6 @@
             }
             
             path.lineTo(c1.position);
-            
-
         }
     };
     
@@ -337,6 +333,10 @@
         return bb;
     };
     
+    var createName = function (extension) {
+        return "paperjs_example_" + fileNameSuffix + "." + extension;
+    };
+    
     var downloadFile = function (url, fileName) {
 
         var bb = dataURItoBlob(url);
@@ -350,23 +350,25 @@
         a.href = window.URL.createObjectURL(bb);
         a.click();
     };
-    
-    var downloadAsPng = function (fileName) {
-        if (!fileName) {
-            fileName = "paperjs_example.png";
-        }
+        
+    var downloadAsPng = function () {
+        var fileName = createName("png");
         
         var canvas = document.getElementById("myCanvas");
         var url = canvas.toDataURL("image/png");
         downloadFile(url, fileName);
     };
+   
+    var downloadConfig = function () {
+        var fileName = createName("json");
+        var url = "data:application/json;utf8," + btoa(JSON.stringify(config, null, "\t"));
+        downloadFile(url, fileName);
+    };
     
-    var downloadAsSVG = function (fileName) {
-        
-        if (!fileName) {
-            fileName = "paperjs_example.svg";
-        }
-        
+    var downloadAsSVG = function () {
+
+        var fileName = createName("svg");
+
         var url = "data:image/svg+xml;utf8," + btoa(paper.project.exportSVG({asString: true}));
         downloadFile(url, fileName);
     };
@@ -510,10 +512,12 @@
             //Listen for SHIFT-p to save content as SVG file.
             //Listen for SHIFT-o to save as PNG
             t.onKeyUp = function (event) {
-                if (event.character === "P") {
+                if (event.character === "S") {
                     downloadAsSVG();
-                } else if (event.character === "O") {
+                } else if (event.character === "P") {
                     downloadAsPng();
+                } else if (event.character === "J") {
+                    downloadConfig();
                 }
             };
         };
