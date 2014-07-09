@@ -57,7 +57,23 @@
             "#F18C79",
             "#DB4948"
         ],
+        
+        CROSSWALK: [
+            "#EFC63A",
+            "#EFAE33",
+            "#BF4707",
+            "#7C0706",
+            "#EF281E"
+        ],
     
+        PHAEDRA: [
+            "#FF6138",
+            "#FFFF9D",
+            "#BEEB9F",
+            "#79BD8F",
+            "#00A388"
+        ],
+        
         FOREVER_LOSTS: [
             '#5D4157', '#838689', '#A8CABA', '#CAD7B2', '#EBE3AA'
         ],

@@ -1,6 +1,6 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
-    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool */
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes */
 
 (function () {
     "use strict";
@@ -15,18 +15,20 @@
 
         RADIUS: 3,
         DRAW_CIRCLES: false,
+        CIRCLE_OPACITY: 1.0,
+        FILL_OPACITY: 1.0,
         
         BOUNDS_PADDING: 0, //radius * 2
         CIRCLE_COUNT: 3800,
         MAX_NEIGHBOR_COUNT: 20,
         FIND_NEAREST_NEIGHBOR: true,
 
-        OPACITY: 0.5,
+        
         STROKE_COLOR: "white",
 
         //soft-light, hard-light, difference, color-dodge
-        BLEND_MODE: "soft-light",
-        CIRCLE_BLENDMODE: "normal",
+        BLEND_MODE: BlendModes.SOFT_LIGHT,
+        CIRCLE_BLENDMODE: BlendModes.NORMAL,
         STROKE_WIDTH: 0.2,
         TEMPLATE: "templates/blank_template.gif",
         ALLOW_TEMPLATE_SKEW: false, //todo: this doesnt work correct when true
@@ -34,19 +36,30 @@
         CANVAS_HEIGHT: 432, //16:9 aspect ratio
         SCALE_CANVAS: false,
         USE_RANDOM_COLORS: true,
-        colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
+        colorTheme: ColorTheme.themes.BLUE_AND_PINK
     };
     
     /*********** Override Config defaults here ******************/
     
     //todo: probably need to make the canvas smaller, then scale up
     
-    //config.CIRCLE_COUNT = 100;
-    //config.MAX_NEIGHBOR_COUNT = 20;
-    config.TEMPLATE = "templates/cc_template_768.png";
+    config.CIRCLE_COUNT = 10;
+    config.MAX_NEIGHBOR_COUNT = 3;
+    
+    config.BOUNDS_PADDING = 0;
+    config.TEMPLATE = "templates/blank_template.gif";
+    config.BLEND_MODE = BlendModes.NORMAL;
+    config.BACKGROUND_COLOR = "#FFFFFF";
+    config.USE_RANDOM_COLORS = false;
+    
+
+    
+    config.colorTheme = ColorTheme.themes.PHAEDRA;
+    
     
     /*************** End Config Override **********************/
     
+    var colorTheme = new ColorTheme(config.colorTheme);
     var circleGroups = {};
     var t; //paperjs tool reference
     var circlesStore;
@@ -62,9 +75,9 @@
         
         var color;
         if (config.USE_RANDOM_COLORS) {
-            color = config.colorTheme.getRandomColor();
+            color = colorTheme.getRandomColor();
         } else {
-            color = config.colorTheme.getNextColor();
+            color = colorTheme.getNextColor();
         }
         
         return color;
@@ -133,7 +146,7 @@
 
             circle.vector = new Point(randomVectorValue(), randomVectorValue());
 
-            circle.opacity = config.OPACITY;
+            circle.opacity = config.CIRCLE_OPACITY;
         }
         
         //todo: this may not work if we are not drawing circles
@@ -290,6 +303,7 @@
             path.strokeColor = config.STROKE_COLOR;
             path.strokeWidth = config.STROKE_WIDTH;
             path.blendMode = config.BLEND_MODE;
+            path.opacity = config.FILL_OPACITY;
             
             path.fillColor = getColor();
             
