@@ -13,7 +13,8 @@
         ANIMATE: false,
         DRAW_RADIUS_POINTS: false,
 
-        RADIUS: 0,
+        RADIUS: 3,
+        DRAW_CIRCLES: false,
         
         BOUNDS_PADDING: 100, //radius * 2
         CIRCLE_COUNT: 3000,
@@ -39,17 +40,15 @@
     
     //todo: probably need to make the canvas smaller, then scale up
     
-    //config.CIRCLE_COUNT = 12000;
+    config.CIRCLE_COUNT = 100;
     config.MAX_NEIGHBOR_COUNT = 20;
-    config.TEMPLATE = "templates/cc_template.png";
     config.BOUNDS_PADDING = 0;
-    //config.CANVAS_HEIGHT = 432;
-    //config.CANVAS_WIDTH = 768;
+    config.CANVAS_HEIGHT = 432;
+    config.CANVAS_WIDTH = 768;
     
     /*************** End Config Override **********************/
     
     var circleGroups = {};
-    var paths;
     var t; //paperjs tool reference
     var circlesStore;
     var pixelData;
@@ -107,19 +106,24 @@
         if (!point) {
             point = getRandomPointInView(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
         }
+        
+        var circle = new Shape.Circle({
+            center: point,
+            radius: radius,
+            insert: config.DRAW_CIRCLES
+        });
+        
+        if (config.DRAW_CIRCLES) {
+            circle.blendMode = config.CIRCLE_BLENDMODE;
+            circle.strokeColor = config.STROKE_COLOR;
+            circle.fillColor = config.colorTheme.getRandomColor();
 
-        //note: you can use the syntax above, but I am trying to keep object creation
-        //down
-        var circle = new Shape.Circle(point, radius);
-        circle.blendMode = config.CIRCLE_BLENDMODE;
-        circle.strokeColor = config.STROKE_COLOR;
-        circle.fillColor = config.colorTheme.getRandomColor();
-        
-        
-        circle.vector = new Point(randomVectorValue(), randomVectorValue());
+            circle.vector = new Point(randomVectorValue(), randomVectorValue());
 
-        circle.opacity = config.OPACITY;
+            circle.opacity = config.OPACITY;
+        }
         
+        //todo: this may not work if we are not drawing circles
         if (config.ANIMATE) {
             circle.onFrame = function () {
                 
@@ -146,7 +150,6 @@
             circle.onFrame = undefined;
         }
 
-        
         return circle;
     };
 
@@ -275,13 +278,15 @@
             neighbors = findClosestNeighbors(c1, circles);
  
             len = neighbors.length;
-            
+
             var path = new Path();
             path.strokeColor = config.STROKE_COLOR;
             path.strokeWidth = config.STROKE_WIDTH;
             path.blendMode = config.BLEND_MODE;
             
             path.fillColor = config.colorTheme.getRandomColor();
+            
+            
             path.moveTo(c1.position);
             
             var i;
@@ -291,14 +296,14 @@
             }
             
             path.lineTo(c1.position);
+            
+
         }
     };
     
     var connectAllCircles = function () {
         
         project.activeLayer = linesLayer;
-        
-        paths = [];
         
         var key;
         for (key in circleGroups) {
