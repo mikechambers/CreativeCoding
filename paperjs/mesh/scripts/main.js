@@ -1,5 +1,6 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
-/*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer, Uint8Array, Blob, Size, PixelData, Tool, project, Layer */
+/*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool */
 
 (function () {
     "use strict";
@@ -223,7 +224,7 @@
         
         for (key in hash) {
             pool.returnObject(hash[key]);
-        }        
+        }
         
         return out;
     };
@@ -392,23 +393,23 @@
         var canvasW = config.CANVAS_WIDTH;
         var canvasH = config.CANVAS_HEIGHT;
         
-        if(config.SCALE_CANVAS) {
+        if (config.SCALE_CANVAS) {
             var maxW = window.innerWidth;
             var maxH = window.innerHeight;
 
             //http://www.ajaxblender.com/howto-resize-image-proportionally-using-javascript.html
-            if(canvasH > maxH || 
-               canvasW > maxW) {
+            if (canvasH > maxH ||
+                    canvasW > maxW) {
 
                 var ratio = canvasH / canvasW;
 
-                if(canvasW >= maxW && ratio <= 1) {
+                if (canvasW >= maxW && ratio <= 1) {
                     canvasW = maxW;
                     canvasH = canvasW * ratio;
-                } else if(canvasH >= maxH) {
+                } else if (canvasH >= maxH) {
                     canvasH = maxH;
                     canvasW = canvasH / ratio;
-                }            
+                }
             }
         }
         
@@ -416,7 +417,7 @@
         drawCanvas.width = canvasW;
         
         return drawCanvas;
-    }
+    };
     
     window.onload = function () {
 
@@ -432,7 +433,7 @@
         
         var rect = new Path.Rectangle(new Point(0, 0),
                             new Size(view.bounds.width, view.bounds.height)
-        );
+                );
         
         rect.fillColor = config.BACKGROUND_COLOR;
       
