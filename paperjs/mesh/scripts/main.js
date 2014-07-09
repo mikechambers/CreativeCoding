@@ -27,7 +27,7 @@
         CIRCLE_BLENDMODE: "normal",
         STROKE_WIDTH: 0.2,
         TEMPLATE: "templates/blank_template.gif",
-        ALLOW_TEMPLATE_SKEW: true,
+        ALLOW_TEMPLATE_SKEW: false, //todo: this doesnt work correct when true
         CANVAS_WIDTH: 1920,
         CANVAS_HEIGHT: 1080,
         SCALE_CANVAS: false,
@@ -36,11 +36,14 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.CIRCLE_COUNT = 30;
-    config.MAX_NEIGHBOR_COUNT = 10;
-    config.TEMPLATE = "templates/cc_template.gif";
-    config.BOUNDS_PADDING = 20;
-    config.SCALE_CANVAS = true;
+    //todo: probably need to make the canvas smaller, then scale up
+    
+    //config.CIRCLE_COUNT = 12000;
+    config.MAX_NEIGHBOR_COUNT = 20;
+    config.TEMPLATE = "templates/cc_template.png";
+    config.BOUNDS_PADDING = 0;
+    //config.CANVAS_HEIGHT = 432;
+    //config.CANVAS_WIDTH = 768;
     
     /*************** End Config Override **********************/
     
@@ -157,6 +160,7 @@
         return a.distance - b.distance;
     };
     
+    var pool = new ObjectPool();
     var _sorted = [];
     var findClosestNeighbors = function (circle, circles) {
         var count = config.MAX_NEIGHBOR_COUNT;
@@ -165,11 +169,13 @@
         if (count >= circlesLen) {
             count = circlesLen - 1;
         }
-        
+
         var c;
         var dist;
+        //var hash = {};
         var hash = {};
         
+        var h;
         var i;
         for (i = 0; i < circlesLen; i++) {
             c = circles[i];
@@ -186,7 +192,11 @@
             //there will be a duplicate
             //todo: this is potentially creating 10s of thousands of temp objects, so we would consinder
             //creating a rool for it.
-            hash[c.toString()] = {distance: dist, circle: c};
+            h = pool.getObject();
+            h.distance = dist;
+            h.circle = c;
+            
+            hash[c.toString()] = h;
         }
         
         var key;
@@ -210,6 +220,10 @@
         while (_sorted.length > 0) {
             _sorted.pop();
         }
+        
+        for (key in hash) {
+            pool.returnObject(hash[key]);
+        }        
         
         return out;
     };
@@ -370,7 +384,6 @@
         
             circleGroups[group].push(circle);
         }
-
     };
     
     var initCanvas = function () {
@@ -437,15 +450,18 @@
             
             var context = canvas.getContext("2d");
             context.fillStyle = "#000000";
-            context.fillRect(0, 0, h, w);
+            context.fillRect(0, 0, w, h);
 
             if (config.ALLOW_TEMPLATE_SKEW) {
+                //WARNING: The causes some dithering and adds color to the template
+                //pretty much broken right now
                 //stretch image to fill entire canvas. This may skew image
                 context.drawImage(templateImage, 0, 0, w, h);
             } else {
                 //center the image
-                var xPos = (w - templateImage.width) / 2;
-                var yPos = (h - templateImage.height) / 2;
+
+                var xPos = Math.floor((w - templateImage.width) / 2);
+                var yPos = Math.floor((h - templateImage.height) / 2);
                 context.drawImage(templateImage, xPos, yPos);
             }
             
