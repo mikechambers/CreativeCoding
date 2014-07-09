@@ -16,8 +16,8 @@
         RADIUS: 3,
         DRAW_CIRCLES: false,
         
-        BOUNDS_PADDING: 100, //radius * 2
-        CIRCLE_COUNT: 3000,
+        BOUNDS_PADDING: 0, //radius * 2
+        CIRCLE_COUNT: 3800,
         MAX_NEIGHBOR_COUNT: 20,
         FIND_NEAREST_NEIGHBOR: true,
 
@@ -30,10 +30,10 @@
         STROKE_WIDTH: 0.2,
         TEMPLATE: "templates/blank_template.gif",
         ALLOW_TEMPLATE_SKEW: false, //todo: this doesnt work correct when true
-        CANVAS_WIDTH: 1920,
-        CANVAS_HEIGHT: 1080,
+        CANVAS_WIDTH: 768,
+        CANVAS_HEIGHT: 432, //16:9 aspect ratio
         SCALE_CANVAS: false,
-        USE_RANDOM_COLOR: true,
+        USE_RANDOM_COLORS: true,
         colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
     };
     
@@ -41,11 +41,9 @@
     
     //todo: probably need to make the canvas smaller, then scale up
     
-    config.CIRCLE_COUNT = 100;
-    config.MAX_NEIGHBOR_COUNT = 20;
-    config.BOUNDS_PADDING = 0;
-    config.CANVAS_HEIGHT = 432;
-    config.CANVAS_WIDTH = 768;
+    //config.CIRCLE_COUNT = 100;
+    //config.MAX_NEIGHBOR_COUNT = 20;
+    config.TEMPLATE = "templates/cc_template_768.png";
     
     /*************** End Config Override **********************/
     
@@ -63,7 +61,7 @@
     var getColor = function () {
         
         var color;
-        if (config.USE_RANDOM_COLOR) {
+        if (config.USE_RANDOM_COLORS) {
             color = config.colorTheme.getRandomColor();
         } else {
             color = config.colorTheme.getNextColor();
@@ -500,21 +498,19 @@
             circleLayer = new Layer();
             connectAllCircles();
 
-            view.onFrame = function () {
-                if (config.ANIMATE) {
+            view.update();
+            
+            if (config.ANIMATE) {
+                view.onFrame = function () {
                     linesLayer.removeChildren();
                     groupCircles(circlesStore);
                     connectAllCircles();
-                }
 
-                //this fixes an issue where sometimes the view won't render until a browser
-                //event (mouse over, etc...)
-                paper.view.update();
-                
-                if (!config.ANIMATE) {
-                    view.onFrame = undefined;
-                }
-            };
+                    //this fixes an issue where sometimes the view won't render until a browser
+                    //event (mouse over, etc...)
+                    paper.view.update();
+                };
+            }
 
             t = new Tool();
 
