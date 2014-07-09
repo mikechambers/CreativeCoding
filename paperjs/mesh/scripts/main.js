@@ -28,15 +28,17 @@
         STROKE_WIDTH: 0.2,
         TEMPLATE: "templates/blank_template.gif",
         ALLOW_TEMPLATE_SKEW: true,
+        CANVAS_WIDTH: 1920,
+        CANVAS_HEIGHT: 1080,
         colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
     };
     
     /*********** Override Config defaults here ******************/
     
-    config.CIRCLE_COUNT = 3800;
-    config.MAX_NEIGHBOR_COUNT = 20;
+    config.CIRCLE_COUNT = 30;
+    config.MAX_NEIGHBOR_COUNT = 10;
     config.TEMPLATE = "templates/cc_template.gif";
-    config.BOUNDS_PADDING = 50;
+    config.BOUNDS_PADDING = 20;
     
     /*************** End Config Override **********************/
     
@@ -143,7 +145,6 @@
     };
 
     var getDistanceBetweenPoints = function (p1, p2) {
-
         var _x = p2.x - p1.x;
         var _y = p2.y - p1.y;
         
@@ -175,7 +176,7 @@
             if (c === circle) {
                 continue;
             }
-            
+
             dist = getDistanceBetweenPoints(c.position, circle.position);
             
             //This hashes on the PaperJS naming for each Circle instance
@@ -370,14 +371,17 @@
 
     };
     
+    
     window.onload = function () {
-        // Setup directly from canvas id:
-        paper.setup('myCanvas');
+
+        var drawCanvas = document.getElementById("myCanvas");
         
+        drawCanvas.height = config.CANVAS_HEIGHT;
+        drawCanvas.width = config.CANVAS_WIDTH;
+
+        paper.setup(drawCanvas);
         
         var backgroundLayer = project.activeLayer;
-        
-        var drawCanvas = document.getElementById("myCanvas");
 
         //programtically set the background colors so we can set it once in a var.
         document.body.style.background = config.BACKGROUND_COLOR;
