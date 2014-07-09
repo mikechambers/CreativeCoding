@@ -167,7 +167,9 @@
     };
     
     var pool = new ObjectPool();
-    var _sorted = [];
+    
+    //todo: this could use a TON of optimization. Probably needs a different
+    //algorithm to sort the points.
     var findClosestNeighbors = function (circle, circles) {
         var count = config.MAX_NEIGHBOR_COUNT;
 
@@ -201,6 +203,7 @@
             hash[c.toString()] = h;
         }
         
+        var _sorted = [];
         var key;
         for (key in hash) {
             _sorted.push(hash[key]);
@@ -215,12 +218,6 @@
         var out = [];
         for (i = 0; i < count; i++) {
             out[i] = _sorted[i].circle;
-        }
-
-        //reset and reuse array to save on garbage collection
-        //http://stackoverflow.com/a/1232046
-        while (_sorted.length > 0) {
-            _sorted.pop();
         }
         
         for (key in hash) {
