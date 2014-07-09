@@ -30,6 +30,7 @@
         ALLOW_TEMPLATE_SKEW: true,
         CANVAS_WIDTH: 1920,
         CANVAS_HEIGHT: 1080,
+        SCALE_CANVAS: false,
         colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
     };
     
@@ -39,6 +40,7 @@
     config.MAX_NEIGHBOR_COUNT = 10;
     config.TEMPLATE = "templates/cc_template.gif";
     config.BOUNDS_PADDING = 20;
+    config.SCALE_CANVAS = true;
     
     /*************** End Config Override **********************/
     
@@ -371,14 +373,42 @@
 
     };
     
+    var initCanvas = function () {
+        var drawCanvas = document.getElementById("myCanvas");
+        
+        var canvasW = config.CANVAS_WIDTH;
+        var canvasH = config.CANVAS_HEIGHT;
+        
+        if(config.SCALE_CANVAS) {
+            var maxW = window.innerWidth;
+            var maxH = window.innerHeight;
+
+            //http://www.ajaxblender.com/howto-resize-image-proportionally-using-javascript.html
+            if(canvasH > maxH || 
+               canvasW > maxW) {
+
+                var ratio = canvasH / canvasW;
+
+                if(canvasW >= maxW && ratio <= 1) {
+                    canvasW = maxW;
+                    canvasH = canvasW * ratio;
+                } else if(canvasH >= maxH) {
+                    canvasH = maxH;
+                    canvasW = canvasH / ratio;
+                }            
+            }
+        }
+        
+        drawCanvas.height = canvasH;
+        drawCanvas.width = canvasW;
+        
+        return drawCanvas;
+    }
     
     window.onload = function () {
 
-        var drawCanvas = document.getElementById("myCanvas");
+        var drawCanvas = initCanvas();
         
-        drawCanvas.height = config.CANVAS_HEIGHT;
-        drawCanvas.width = config.CANVAS_WIDTH;
-
         paper.setup(drawCanvas);
         
         var backgroundLayer = project.activeLayer;
@@ -387,13 +417,12 @@
         document.body.style.background = config.BACKGROUND_COLOR;
         drawCanvas.style.background = config.BACKGROUND_COLOR;
         
-        
-        //todo: note, right now, this doesnt handle if the browser window is resized.
         var rect = new Path.Rectangle(new Point(0, 0),
                             new Size(view.bounds.width, view.bounds.height)
-                                     );
-        rect.fillColor = config.BACKGROUND_COLOR;
+        );
         
+        rect.fillColor = config.BACKGROUND_COLOR;
+      
         var w = drawCanvas.width;
         var h = drawCanvas.height;
         var templateImage = new Image();
