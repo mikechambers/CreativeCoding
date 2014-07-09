@@ -1,8 +1,11 @@
+/*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
+
 (function () {
     "use strict";
 
     function ColorTheme(theme) {
         this.theme = theme;
+        this.colorIndex = 0;
     }
 
     ColorTheme.prototype.getRandomColor = function () {
@@ -10,6 +13,14 @@
     };
 
     ColorTheme.prototype.getNextColor = function () {
+        
+        this.colorIndex++;
+        
+        if (this.colorIndex === this.theme.length) {
+            this.colorIndex = 0;
+        }
+        
+        return this.theme[this.colorIndex];
     };
 
     

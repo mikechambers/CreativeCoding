@@ -33,6 +33,7 @@
         CANVAS_WIDTH: 1920,
         CANVAS_HEIGHT: 1080,
         SCALE_CANVAS: false,
+        USE_RANDOM_COLOR: true,
         colorTheme: new ColorTheme(ColorTheme.themes.BLUE_AND_PINK)
     };
     
@@ -40,7 +41,7 @@
     
     //todo: probably need to make the canvas smaller, then scale up
     
-    config.CIRCLE_COUNT = 1000;
+    config.CIRCLE_COUNT = 100;
     config.MAX_NEIGHBOR_COUNT = 20;
     config.BOUNDS_PADDING = 0;
     config.CANVAS_HEIGHT = 432;
@@ -58,6 +59,18 @@
     var linesLayer;
     
     var fileNameSuffix = new Date().getTime();
+    
+    var getColor = function () {
+        
+        var color;
+        if (config.USE_RANDOM_COLOR) {
+            color = config.colorTheme.getRandomColor();
+        } else {
+            color = config.colorTheme.getNextColor();
+        }
+        
+        return color;
+    };
     
     var randomVectorValue = function () {
 
@@ -118,7 +131,7 @@
         if (config.DRAW_CIRCLES) {
             circle.blendMode = config.CIRCLE_BLENDMODE;
             circle.strokeColor = config.STROKE_COLOR;
-            circle.fillColor = config.colorTheme.getRandomColor();
+            circle.fillColor = getColor();
 
             circle.vector = new Point(randomVectorValue(), randomVectorValue());
 
@@ -280,7 +293,7 @@
             path.strokeWidth = config.STROKE_WIDTH;
             path.blendMode = config.BLEND_MODE;
             
-            path.fillColor = config.colorTheme.getRandomColor();
+            path.fillColor = getColor();
             
             path.moveTo(c1.position);
             
@@ -393,7 +406,6 @@
     
     var initCanvas = function () {
         var drawCanvas = document.getElementById("myCanvas");
-        
         var canvasW = config.CANVAS_WIDTH;
         var canvasH = config.CANVAS_HEIGHT;
         
