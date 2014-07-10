@@ -31,11 +31,13 @@
     /*********** Override Config defaults here ******************/
 
     config.STROKE_WIDTH = 0.2;
-    config.BASE_SIZE = 100;
-    config.TILE_COUNT = 50;
-    config.BACKGROUND_COLOR = "#111"
+    config.BASE_SIZE = 50;
+    config.TILE_COUNT = 500;
+    config.BACKGROUND_COLOR = "#eee"
     config.BLEND_MODE = BlendModes.SOFT_LIGHT;
-    config.colorTheme = ColorTheme.themes.ONLY_HUMAN;
+    
+
+    config.colorTheme = BRIGHTON_SHOES;
     
     /*************** End Config Override **********************/
     
