@@ -36,9 +36,6 @@
     config.BACKGROUND_COLOR = "#eee"
     config.BLEND_MODE = BlendModes.SOFT_LIGHT;
     
-
-    config.colorTheme = BRIGHTON_SHOES;
-    
     /*************** End Config Override **********************/
     
     var colorTheme = new ColorTheme(config.colorTheme);
