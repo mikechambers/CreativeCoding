@@ -1,6 +1,6 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
-    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes */
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes, FileDownloader */
 
 (function () {
     "use strict";
@@ -9,6 +9,7 @@
     
     
     var config = {
+        APP_NAME: "mesh",
         BACKGROUND_COLOR: "#111111",
         ANIMATE: false,
         DRAW_RADIUS_POINTS: false,
@@ -41,8 +42,6 @@
     
     /*********** Override Config defaults here ******************/
     
-    //todo: probably need to make the canvas smaller, then scale up
-    
     config.CIRCLE_COUNT = 10;
     config.MAX_NEIGHBOR_COUNT = 3;
     
@@ -52,10 +51,7 @@
     config.BACKGROUND_COLOR = "#FFFFFF";
     config.USE_RANDOM_COLORS = false;
     
-
-    
     config.colorTheme = ColorTheme.themes.PHAEDRA;
-    
     
     /*************** End Config Override **********************/
     
@@ -328,72 +324,6 @@
             connectCircles(circleGroups[key]);
         }
     };
-
-    //we could see if the sting is base 64 encoded, if not, assume its is a string
-    //http://stackoverflow.com/a/5100158
-    var dataURItoBlob = function (dataURI) {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs
-        var byteString = atob(dataURI.split(',')[1]);
-
-        // separate out the mime component
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-        // write the bytes of the string to an ArrayBuffer
-        var ab = new ArrayBuffer(byteString.length);
-        var ia = new Uint8Array(ab);
-        
-        var len = byteString.length;
-        
-        var i;
-        for (i = 0; i < len; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        // write the ArrayBuffer to a blob, and you're done
-        var bb = new Blob([ab], {type: mimeString});
-        return bb;
-    };
-    
-    var createName = function (extension) {
-        return "paperjs_example_" + fileNameSuffix + "." + extension;
-    };
-    
-    var downloadFile = function (url, fileName) {
-
-        var bb = dataURItoBlob(url);
-        
-        window.URL = window.URL || window.webkitURL;
-        
-        //http://html5-demos.appspot.com/static/a.download.html
-        //https://developer.mozilla.org/en-US/docs/Web/API/Blob
-        var a = document.createElement('a');
-        a.download = fileName;
-        a.href = window.URL.createObjectURL(bb);
-        a.click();
-    };
-        
-    var downloadAsPng = function () {
-        var fileName = createName("png");
-        
-        var canvas = document.getElementById("myCanvas");
-        var url = canvas.toDataURL("image/png");
-        downloadFile(url, fileName);
-    };
-   
-    var downloadConfig = function () {
-        var fileName = createName("json");
-        var url = "data:application/json;utf8," + btoa(JSON.stringify(config, null, "\t"));
-        downloadFile(url, fileName);
-    };
-    
-    var downloadAsSVG = function () {
-
-        var fileName = createName("svg");
-        
-        var url = "data:image/svg+xml;utf8," + btoa(paper.project.exportSVG({asString: true}));
-        downloadFile(url, fileName);
-    };
     
     var groupCircles = function (circles) {
         
@@ -447,8 +377,10 @@
         return drawCanvas;
     };
     
+    var fileDownloader;
     window.onload = function () {
 
+        fileDownloader = new FileDownloader(config.APP_NAME);
         var drawCanvas = initCanvas();
         
         paper.setup(drawCanvas);
@@ -532,11 +464,11 @@
             //Listen for SHIFT-o to save as PNG
             t.onKeyUp = function (event) {
                 if (event.character === "S") {
-                    downloadAsSVG();
+                    fileDownloader.downloadSVGFromProject(paper.project);
                 } else if (event.character === "P") {
-                    downloadAsPng();
+                    fileDownloader.downloadImageFromCanvas(drawCanvas);
                 } else if (event.character === "J") {
-                    downloadConfig();
+                    fileDownloader.downloadConfig(config);
                 }
             };
         };

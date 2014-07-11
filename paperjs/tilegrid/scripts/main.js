@@ -1,6 +1,6 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
-    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes */
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes, FileDownloader */
 
 (function () {
     "use strict";
@@ -9,6 +9,7 @@
     
     
     var config = {
+        APP_NAME: "tilegrid",
         BACKGROUND_COLOR: "#eee",
         
         BOUNDS_PADDING: 0,
@@ -72,8 +73,6 @@
     var backgroundLayer;
     var tileLayer;
     
-    var fileNameSuffix = new Date().getTime();
-    
     var getColor = function (point) {
                 
         if (config.TEMPLATE) {
@@ -135,72 +134,6 @@
         }
         
         return point;
-    };
- 
-    //we could see if the sting is base 64 encoded, if not, assume its is a string
-    //http://stackoverflow.com/a/5100158
-    var dataURItoBlob = function (dataURI) {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs
-        var byteString = atob(dataURI.split(',')[1]);
-
-        // separate out the mime component
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-        // write the bytes of the string to an ArrayBuffer
-        var ab = new ArrayBuffer(byteString.length);
-        var ia = new Uint8Array(ab);
-        
-        var len = byteString.length;
-        
-        var i;
-        for (i = 0; i < len; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        // write the ArrayBuffer to a blob, and you're done
-        var bb = new Blob([ab], {type: mimeString});
-        return bb;
-    };
-    
-    var createName = function (extension) {
-        return "tilegrid_example_" + fileNameSuffix + "." + extension;
-    };
-    
-    var downloadFile = function (url, fileName) {
-
-        var bb = dataURItoBlob(url);
-        
-        window.URL = window.URL || window.webkitURL;
-        
-        //http://html5-demos.appspot.com/static/a.download.html
-        //https://developer.mozilla.org/en-US/docs/Web/API/Blob
-        var a = document.createElement('a');
-        a.download = fileName;
-        a.href = window.URL.createObjectURL(bb);
-        a.click();
-    };
-        
-    var downloadAsPng = function () {
-        var fileName = createName("png");
-        
-        var canvas = document.getElementById("myCanvas");
-        var url = canvas.toDataURL("image/png");
-        downloadFile(url, fileName);
-    };
-   
-    var downloadConfig = function () {
-        var fileName = createName("json");
-        var url = "data:application/json;utf8," + btoa(JSON.stringify(config, null, "\t"));
-        downloadFile(url, fileName);
-    };
-    
-    var downloadAsSVG = function () {
-
-        var fileName = createName("svg");
-        
-        var url = "data:image/svg+xml;utf8," + btoa(paper.project.exportSVG({asString: true}));
-        downloadFile(url, fileName);
     };
     
     var initCanvas = function () {
@@ -415,8 +348,10 @@
         templateImage.src = config.TEMPLATE;
     };
     
+    var fileDownloader;
     window.onload = function () {
 
+        fileDownloader = new FileDownloader(config.APP_NAME);
         var drawCanvas = initCanvas();
 
         paper.setup(drawCanvas);
@@ -463,11 +398,11 @@
                 //Listen for SHIFT-o to save as PNG
                 t.onKeyUp = function (event) {
                     if (event.character === "S") {
-                        downloadAsSVG();
+                        fileDownloader.downloadSVGFromProject(paper.project);
                     } else if (event.character === "P") {
-                        downloadAsPng();
+                        fileDownloader.downloadImageFromCanvas(drawCanvas);
                     } else if (event.character === "J") {
-                        downloadConfig();
+                        fileDownloader.downloadConfig(config);
                     }
                 };
             }
