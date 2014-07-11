@@ -18,32 +18,49 @@
         BASE_SIZE: 12,//3, 6,12,24,48 work well with no padding
         CORNER_RADIUS: 0,
         
-        
         BLEND_MODE: BlendModes.NORMAL,
         STROKE_WIDTH: 0.5,
         STROKE_COLOR: "#333333",
         ROTATION_RANGE: 0,
         COLOR_RECTANGLE: true,
+        FILL_OPACITY: 1.0,
+        RANDOM_SIZE_MODIFIER: 1, //no change
         
         CANVAS_WIDTH: 768,
         CANVAS_HEIGHT: 432, //16:9 aspect ratio
         SCALE_CANVAS: false,
         USE_RANDOM_COLORS: true,
         colorTheme: ColorTheme.themes.TOKYO_TRACK,
+        RANDOM_SIZE: false,
+        RANDOM_POSITION: false,
+        USE_MOUSE: false,
         TEMPLATE: null
     };
     
     /*********** Override Config defaults here ******************/
     
-    //config.colorTheme = ColorTheme.themes.BLUE_AND_PINK;
-    config.BOUNDS_PADDING = 8;
-    config.BASE_SIZE = 12;
-    config.ROTATION_RANGE = 90;
-    config.CORNER_RADIUS = 3;
-    config.STROKE_COLOR = null;
-    config.COLOR_RECTANGLE = false;
+    //config.BACKGROUND_COLOR = "#eee";
     
-    config.TEMPLATE = "templates/cc_logo_color.png";
+    
+    config.BOUNDS_PADDING = 0;
+    config.BASE_SIZE = 24;
+    //config.ROTATION_RANGE = 90;
+    config.CORNER_RADIUS = 3;
+    //config.STROKE_COLOR = null;
+    config.FILL_OPACITY = "0.5";
+    config.TILE_COUNT = 5000;
+    //config.BLEND_MODE = BlendModes.HARD_LIGHT;
+    
+    //config.RANDOM_SIZE_MODIFIER = 10;
+    config.RANDOM_POSITION = true;
+    //config.RANDOM_SIZE = true;
+    
+    config.USE_MOUSE = true;
+    
+    config.CANVAS_WIDTH = 432;
+    config.CANVAS_HEIGHT = 768;
+    
+    config.TEMPLATE = "templates/isabel.png";
     
     /*************** End Config Override **********************/
     
@@ -56,8 +73,6 @@
     var tileLayer;
     
     var fileNameSuffix = new Date().getTime();
-    
-
     
     var getColor = function (point) {
                 
@@ -219,12 +234,7 @@
         return drawCanvas;
     };
     
-    var getRandomSize = function () {
-        var s = new Size(config.BASE_SIZE - 5, config.BASE_SIZE);
-        s = s.multiply(Size.random().add(0.75)).round();
 
-        return s;
-    };
     
     var getRandomRotation = function () {
         
@@ -234,6 +244,83 @@
         return r;
     };
     
+    var _s;
+    var getSize = function () {
+        
+        if (!config.RANDOM_SIZE && !_s) {
+            _s = new Size(config.BASE_SIZE, config.BASE_SIZE);
+        }
+        
+        var s;
+        if (!config.RANDOM_SIZE) {
+            s = _s;
+        } else {
+            s = new Size(config.BASE_SIZE - 5, config.BASE_SIZE);
+            var modifier = 1;
+            
+            if (config.RANDOM_SIZE_MODIFIER > 1) {
+                modifier = Math.random() * config.RANDOM_SIZE_MODIFIER;
+            }
+            
+            s = s.multiply(Size.random().add(0.75).multiply(modifier)).round();
+        }
+        return s;
+    };
+    
+    var createRectangle = function (point, size) {
+        var rect = new Path.Rectangle({
+            point: point,
+            size: size,
+            fillColor: getFillColor(point),
+            strokeColor: getStrokeColor(point),
+            strokeWidth: config.STROKE_WIDTH,
+            blendMode: config.BLEND_MODE,
+            radius: config.CORNER_RADIUS,
+            opacity: config.FILL_OPACITY
+        });
+
+        if (config.ROTATION_RANGE) {
+            rect.rotation = getRandomRotation();
+        }
+        
+        return rect;
+    };
+    
+    var getPointInBounds = function (size) {
+        var point = getRandomPointInView();
+        var isValid = false;
+        while (!isValid) {
+
+            if ((point.x + size.width + config.BOUNDS_PADDING < view.bounds.width) &&
+                    (point.y + size.height + config.BOUNDS_PADDING < view.bounds.height)) {
+                isValid = true;
+            } else {
+                point = getRandomPointInView();
+            }
+        }
+        
+        return point;
+    };
+    
+    var generateRandomTiles = function () {
+        
+        var out = [];
+        var i;
+        var rect;
+        var point;
+        var size;
+        for (i = 0; i < config.TILE_COUNT; i++) {
+            
+            size = getSize();
+            point = getPointInBounds(size);
+            
+            rect = createRectangle(point, size);
+            
+            out.push(out);
+        }
+        
+        return out;
+    };
     
     var generateTiles = function () {
         
@@ -248,7 +335,7 @@
         var _x;
         var _y;
         
-        size = new Size(config.BASE_SIZE, config.BASE_SIZE);
+        size = getSize();
         
         var shouldContinue = true;
         while (shouldContinue) {
@@ -274,19 +361,7 @@
                 _y
             );
             
-            rect = new Path.Rectangle({
-                point: point,
-                size: size,
-                fillColor: getFillColor(point),
-                strokeColor: getStrokeColor(point),
-                strokeWidth: config.STROKE_WIDTH,
-                blendMode: config.BLEND_MODE,
-                radius: config.CORNER_RADIUS
-            });
-            
-            if (config.ROTATION_RANGE) {
-                rect.rotation = getRandomRotation();
-            }
+            rect = createRectangle(point, size);
             
             out.push(out);
             
@@ -361,13 +436,29 @@
 
         initTemplate(drawCanvas.width, drawCanvas.height,
             function () {
-                tileLayer = new Layer();
-                tiles = generateTiles();
-
-                view.update();
-
+                
                 t = new Tool();
-
+                
+                tileLayer = new Layer();
+                
+                if (config.RANDOM_POSITION) {
+                    generateRandomTiles();
+                }
+                
+                if (!config.USE_MOUSE) {
+                    tiles = generateTiles();
+                } else {
+                    t.minDistance = 10;
+                
+                    t.onMouseDrag = function (event) {
+                        
+                        var rect = createRectangle(event.point, getSize());
+                        view.update();
+                    };
+                }
+                
+                view.update();
+                
                 //Listen for SHIFT-p to save content as SVG file.
                 //Listen for SHIFT-o to save as PNG
                 t.onKeyUp = function (event) {
