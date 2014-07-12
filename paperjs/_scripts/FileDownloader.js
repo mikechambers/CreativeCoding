@@ -5,6 +5,7 @@
     "use strict";
 
     var FileDownloader = function (prefix) {
+        this.suffix = Date.now();
         this.prefix = prefix;
     };
     
@@ -35,8 +36,7 @@
     };
     
     FileDownloader.prototype.createName = function (extension) {
-        var suffix = new Date().getTime();
-        return this.prefix + "_example_" + suffix + "." + extension;
+        return this.prefix + "_example_" + this.suffix + "." + extension;
     };
     
     FileDownloader.prototype.downloadFile = function (url, fileName) {
