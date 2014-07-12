@@ -47,9 +47,9 @@
     config.BASE_SIZE = 24;
     //config.ROTATION_RANGE = 90;
     config.CORNER_RADIUS = 3;
-    //config.STROKE_COLOR = null;
-    config.FILL_OPACITY = "0.5";
-    config.TILE_COUNT = 5000;
+    config.STROKE_COLOR = null;
+    config.FILL_OPACITY = "0.1";
+    config.TILE_COUNT = 15000;
     //config.BLEND_MODE = BlendModes.HARD_LIGHT;
     
     //config.RANDOM_SIZE_MODIFIER = 10;
@@ -58,10 +58,7 @@
     
     config.USE_MOUSE = true;
     
-    config.CANVAS_WIDTH = 432;
-    config.CANVAS_HEIGHT = 768;
-    
-    config.TEMPLATE = "templates/isabel.png";
+    config.TEMPLATE = "../_templates/saltponds.png";
     
     /*************** End Config Override **********************/
     

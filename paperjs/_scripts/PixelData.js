@@ -34,6 +34,47 @@
         this.imageData = imageData;
     }
 
+    PixelData.initFromImage = function (src, w, h, scale, callback) {
+        
+        if (!src) {
+            throw new Error("PixelData.initFrameImage src not specified.");
+        }
+        
+        var templateImage = new Image();
+        templateImage.onload = function () {
+
+            var canvas = document.createElement("canvas");
+            canvas.id = "templateCanvas";
+            canvas.width = w;
+            canvas.height = h;
+            
+            var context = canvas.getContext("2d");
+            context.fillStyle = "#000000";
+            context.fillRect(0, 0, w, h);
+
+            if (scale) {
+                //WARNING: The causes some dithering and adds color to the template
+                //pretty much broken right now
+                //stretch image to fill entire canvas. This may skew image
+                context.drawImage(templateImage, 0, 0, w, h);
+            } else {
+                //center the image
+
+                var xPos = Math.floor((w - templateImage.width) / 2);
+                var yPos = Math.floor((h - templateImage.height) / 2);
+                context.drawImage(templateImage, xPos, yPos);
+            }
+
+            var imageData = context.getImageData(0, 0, w, h);
+            var pixelData = new PixelData();
+            pixelData.imageData = imageData;
+
+            callback(pixelData);
+        };
+
+        templateImage.src = src;
+    };
+    
     PixelData.prototype.imageData = null;
 
     PixelData.prototype.getHex = function (point) {

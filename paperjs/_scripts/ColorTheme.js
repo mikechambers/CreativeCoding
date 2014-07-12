@@ -109,6 +109,14 @@
             "#6E7476",
             "#4B4E50"
         ],
+        
+        POST_ASTEROID_ENVIRONMENT: [
+            "#8A1700",
+	       "#FF5600",
+	       "#FCFFF8",
+	       "#8ACCE8",
+	       "#273A42"
+        ],
     
         GRAY: [
             "#666666"

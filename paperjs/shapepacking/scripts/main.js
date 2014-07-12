@@ -1,12 +1,13 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Utils, view, Path, FileDownloader, project, Point, Size,
-    Layer, Tool, Rectangle, BlendModes */
+    Layer, Tool, Rectangle, BlendModes, PixelData, console */
 
 (function () {
     "use strict";
     
     paper.install(window);
     
+    var startTime = Date.now();
     
     var config = {
         APP_NAME: "shapepacking",
@@ -15,7 +16,7 @@
         SAVE_PNG_ON_TIMEOUT: false,
         SAVE_SVG_ON_TIMEOUT: false,
         SAVE_CONFIG_ON_TIMEOUT: false,
-        TIMEOUT: 1000,
+        TIMEOUT: 200,
         BOUNDS_PADDING: 5,
         SHAPE_COUNT: 10,
         BASE_SIZE: 2,
@@ -23,6 +24,9 @@
         STROKE_WIDTH: 0.5,
         STROKE_COLOR: "#333333",
         ROTATION_RANGE: 0,
+        CONFIG_TEMPLATE: null,
+        
+        MAX_WIDTH: 0,
         
         CANVAS_WIDTH: 768,
         CANVAS_HEIGHT: 432, //16:9 aspect ratio
@@ -33,28 +37,44 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.TIMEOUT = 2 * 1000;
+    config.TIMEOUT = 10 * 1000;
     
     config.SAVE_CONFIG_ON_TIMEOUT = true;
     config.SAVE_PNG_ON_TIMEOUT = true;
     config.SAVE_SVG_ON_TIMEOUT = true;
     
-    config.SHAPE_COUNT = 25;
-    config.STROKE_WIDTH = 2.0;
-    config.STROKE_COLOR = "#FFFFFF";
+    config.MAX_WIDTH = 15;
+    config.SHAPE_COUNT = 50;
+    config.STROKE_WIDTH = 0.5;
+    config.STROKE_COLOR = "#888888";
+    
+    config.TEMPLATE = "../_templates/hana.png";
+    
+    //config.BACKGROUND_COLOR = "#778899";
+    config.colorTheme = ColorTheme.themes.POST_ASTEROID_ENVIRONMENT;
     
     /*************** End Config Override **********************/
     
     var colorTheme = new ColorTheme(config.colorTheme);
     var t; //paperjs tool reference
+    var fileDownloader;
     
     var backgroundLayer;
     var shapeLayer;
     
     var activeShapes;
     var archivedShapes = [];
+    var pixelData;
     
-    var getColor = function () {
+    var getColor = function (point) {
+                
+        if (config.TEMPLATE) {
+            return pixelData.getHex(point);
+        }
+        
+        if (!config.colorTheme) {
+            return null;
+        }
         
         var color;
         if (config.USE_RANDOM_COLORS) {
@@ -134,6 +154,9 @@
                 return true;
             }
             
+            if (config.MAX_WIDTH && (shape.bounds.width > config.MAX_WIDTH)) {
+                return true;
+            }
         }
         
         return false;
@@ -175,6 +198,10 @@
         return null;
     };
     
+    var getSize = function () {
+        return new Size(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
+    };
+    
     var generateShapes = function () {
         
         var out = [];
@@ -184,13 +211,13 @@
         var size;
         for (i = 0; i < config.SHAPE_COUNT; i++) {
             
-            size = new Size(config.BASE_SIZE, config.BASE_SIZE);
+            size = getSize();
             point = getRandomPointNotInRectangle(size);
 
             rect = new Path.Rectangle({
                 point: point,
                 size: size,
-                fillColor: getColor(),
+                fillColor: getColor(point),
                 strokeColor: config.STROKE_COLOR,
                 strokeWidth: config.STROKE_WIDTH,
                 blendMode: config.BLEND_MODE,
@@ -203,11 +230,22 @@
         return out;
     };
     
+    var getRunningTime = function () {
+        return (Date.now() - startTime);
+    };
+    
+    var saveJSON = function () {
+        var t = getRunningTime();
+        config.renderTime = t;
+        
+        fileDownloader.downloadConfig(config);
+    };
+    
     var stopAnimation = function () {
+        console.log("Animation stopped : " + getRunningTime() + " ms");
         view.onFrame = null;
     };
     
-    var fileDownloader;
     window.onload = function () {
 
         fileDownloader = new FileDownloader(config.APP_NAME);
@@ -229,86 +267,92 @@
         
         rect.fillColor = config.BACKGROUND_COLOR;
 
-        shapeLayer = new Layer();
-        activeShapes = generateShapes();
-        archivedShapes = activeShapes;
         
-        view.onFrame = function (event) {
+        var _f = function (pd) {
+            
+            pixelData = pd;
+            shapeLayer = new Layer();
+            activeShapes = generateShapes();
+            archivedShapes = activeShapes;
 
-            var len = activeShapes.length;
-            
-            var isGrowing = false;
-            
-            var shape;
-            var i;
-            for (i = 0; i < len; i++) {
-                shape = activeShapes[i];
-                
-                if (checkIntersection(shape)) {
-                    continue;
-                }
-                
-                shape.bounds = shape.bounds.expand(1);
-                shape.position = shape.position.abs();
-                
-                /*
-                if (checkIntersection(shape)) {
-                    shape.bounds = shape.bounds.expand(-1);
+            view.onFrame = function (event) {
+
+                var len = activeShapes.length;
+
+                var isGrowing = false;
+
+                var shape;
+                var i;
+                for (i = 0; i < len; i++) {
+                    shape = activeShapes[i];
+
+                    if (checkIntersection(shape)) {
+                        continue;
+                    }
+
+                    shape.bounds = shape.bounds.expand(1);
                     shape.position = shape.position.abs();
-                    continue;
+
+                    isGrowing = true;
+
                 }
-                */
-                
-                isGrowing = true;
-                
-            }
-            
-            if (!isGrowing) {
-                try {
-                    activeShapes = generateShapes();
-                } catch (e) {
-                    console.log(e.message);
+
+                if (!isGrowing) {
+                    try {
+                        activeShapes = generateShapes();
+                    } catch (e) {
+                        console.log(e.message);
+                        stopAnimation();
+
+                        if (config.SAVE_SVG_ON_TIMEOUT) {
+                            fileDownloader.downloadSVGFromProject(paper.project);
+                        }
+
+                        if (config.SAVE_PNG_ON_TIMEOUT) {
+                            fileDownloader.downloadImageFromCanvas(drawCanvas);
+                        }
+
+                        if (config.SAVE_CONFIG_ON_TIMEOUT) {
+                            saveJSON();
+                        }
+
+                        return;
+                    }
+
+                    archivedShapes = archivedShapes.concat(activeShapes);
+                }
+            };
+
+            view.update();
+
+            t = new Tool();
+
+            //Listen for SHIFT-p to save content as SVG file.
+            //Listen for SHIFT-o to save as PNG
+            t.onKeyUp = function (event) {
+                if (event.character === "S") {
+                    fileDownloader.downloadSVGFromProject(paper.project);
+                } else if (event.character === "P") {
+                    fileDownloader.downloadImageFromCanvas(drawCanvas);
+                } else if (event.character === "J") {
+                    saveJSON();
+                } else if (event.character === "x") {
                     stopAnimation();
-                    
-                    if (config.SAVE_SVG_ON_TIMEOUT) {
-                        fileDownloader.downloadSVGFromProject(paper.project);
-                    }
-
-                    if (config.SAVE_PNG_ON_TIMEOUT) {
-                        fileDownloader.downloadImageFromCanvas(drawCanvas);
-                    }
-
-                    if (config.SAVE_CONFIG_ON_TIMEOUT) {
-                        fileDownloader.downloadConfig(config);
-                    }
-                    
-                    return;
                 }
-                
-                archivedShapes = archivedShapes.concat(activeShapes);
-            }
+            };
+            
         };
         
-        view.update();
-
-        t = new Tool();
-
-        //Listen for SHIFT-p to save content as SVG file.
-        //Listen for SHIFT-o to save as PNG
-        t.onKeyUp = function (event) {
-            if (event.character === "S") {
-                stopAnimation();
-                fileDownloader.downloadSVGFromProject(paper.project);
-            } else if (event.character === "P") {
-                stopAnimation();
-                fileDownloader.downloadImageFromCanvas(drawCanvas);
-            } else if (event.character === "J") {
-                stopAnimation();
-                fileDownloader.downloadConfig(config);
-            } else if (event.character === "x") {
-                stopAnimation();
-            }
-        };
-
+        if (config.TEMPLATE) {
+            PixelData.initFromImage(
+                config.TEMPLATE,
+                drawCanvas.width,
+                drawCanvas.height,
+                config.ALLOW_TEMPLATE_SKEW,
+                _f
+            );
+        } else {
+            _f();
+        }
     };
 }());
