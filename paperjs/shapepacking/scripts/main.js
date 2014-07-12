@@ -9,6 +9,10 @@
     
     var startTime = Date.now();
     
+    //todo: set a total render timeout, i.e. after 30 minutes it stops
+    //todo impliment the QuadTree
+    //todo: first time you hit timeout, then change count to 1
+    
     var config = {
         APP_NAME: "shapepacking",
         BACKGROUND_COLOR: "#eee",
@@ -37,21 +41,22 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.TIMEOUT = 10 * 1000;
+    config.TIMEOUT = 120 * 1000;
     
+    config.RUN_IN_BACKGROUND = true;
     config.SAVE_CONFIG_ON_TIMEOUT = true;
     config.SAVE_PNG_ON_TIMEOUT = true;
     config.SAVE_SVG_ON_TIMEOUT = true;
     
-    config.MAX_WIDTH = 15;
-    config.SHAPE_COUNT = 50;
-    config.STROKE_WIDTH = 0.5;
-    config.STROKE_COLOR = "#888888";
+    config.MAX_WIDTH = 25;
+    config.SHAPE_COUNT = 10;
+    config.STROKE_WIDTH = 1.0;
+    config.STROKE_COLOR = "#ffffff";
     
-    config.TEMPLATE = "../_templates/hana.png";
+    config.TEMPLATE = "../_templates/mesh.png";
     
-    //config.BACKGROUND_COLOR = "#778899";
-    config.colorTheme = ColorTheme.themes.POST_ASTEROID_ENVIRONMENT;
+    config.BACKGROUND_COLOR = "#FFFFFF";
+    config.colorTheme = ["#FFFFFF"];
     
     /*************** End Config Override **********************/
     
@@ -119,7 +124,7 @@
     };
     
     var checkIntersection = function (shape) {
-
+        
         if (shape.bounds.x + shape.bounds.width > view.bounds.width - config.BOUNDS_PADDING ||
                 shape.bounds.x < config.BOUNDS_PADDING ||
                 shape.bounds.y < config.BOUNDS_PADDING ||
@@ -142,7 +147,6 @@
                 continue;
             }
             
-            //todo: also check if it is hitting bounds of view
             if (shape.bounds.intersects(s.bounds)) {
                 return true;
             }
@@ -223,7 +227,7 @@
                 blendMode: config.BLEND_MODE,
                 rotation: Utils.getRandomRotationInRange(config.ROTATION_RANGE)
             });
-            
+
             out.push(rect);
         }
         
@@ -242,7 +246,7 @@
     };
     
     var stopAnimation = function () {
-        console.log("Animation stopped : " + getRunningTime() + " ms");
+        console.log("Animation stopped : " + new Date() + " : " + getRunningTime() + " ms");
         view.onFrame = null;
     };
     
@@ -280,12 +284,14 @@
                 var len = activeShapes.length;
 
                 var isGrowing = false;
-
+                
+                
                 var shape;
                 var i;
+
                 for (i = 0; i < len; i++) {
                     shape = activeShapes[i];
-
+                    
                     if (checkIntersection(shape)) {
                         continue;
                     }
@@ -331,8 +337,10 @@
             //Listen for SHIFT-o to save as PNG
             t.onKeyUp = function (event) {
                 if (event.character === "S") {
+                    saveJSON();
                     fileDownloader.downloadSVGFromProject(paper.project);
                 } else if (event.character === "P") {
+                    saveJSON();
                     fileDownloader.downloadImageFromCanvas(drawCanvas);
                 } else if (event.character === "J") {
                     saveJSON();
