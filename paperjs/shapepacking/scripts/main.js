@@ -12,6 +12,9 @@
         APP_NAME: "shapepacking",
         BACKGROUND_COLOR: "#eee",
         RUN_IN_BACKGROUND: true,
+        SAVE_PNG_ON_TIMEOUT: false,
+        SAVE_SVG_ON_TIMEOUT: false,
+        SAVE_CONFIG_ON_TIMEOUT: false,
         TIMEOUT: 1000,
         BOUNDS_PADDING: 5,
         SHAPE_COUNT: 10,
@@ -29,7 +32,14 @@
     };
     
     /*********** Override Config defaults here ******************/
-    config.SHAPE_COUNT = 50;
+    
+    config.TIMEOUT = 2 * 1000;
+    
+    config.SAVE_CONFIG_ON_TIMEOUT = true;
+    config.SAVE_PNG_ON_TIMEOUT = true;
+    config.SAVE_SVG_ON_TIMEOUT = true;
+    
+    config.SHAPE_COUNT = 25;
     config.STROKE_WIDTH = 2.0;
     config.STROKE_COLOR = "#FFFFFF";
     
@@ -160,7 +170,6 @@
             if (config.TIMEOUT && (Date.now() - _t > config.TIMEOUT)) {
                 throw new Error("Timeout looking for points");
             }
-            
         }
         
         return null;
@@ -177,7 +186,7 @@
             
             size = new Size(config.BASE_SIZE, config.BASE_SIZE);
             point = getRandomPointNotInRectangle(size);
-            
+
             rect = new Path.Rectangle({
                 point: point,
                 size: size,
@@ -205,7 +214,6 @@
         var drawCanvas = initCanvas();
         
         drawCanvas.setAttribute("keepalive", config.RUN_IN_BACKGROUND);
-        
         
         paper.setup(drawCanvas);
         
@@ -256,7 +264,27 @@
             }
             
             if (!isGrowing) {
-                activeShapes = generateShapes();
+                try {
+                    activeShapes = generateShapes();
+                } catch (e) {
+                    console.log(e.message);
+                    stopAnimation();
+                    
+                    if (config.SAVE_SVG_ON_TIMEOUT) {
+                        fileDownloader.downloadSVGFromProject(paper.project);
+                    }
+
+                    if (config.SAVE_PNG_ON_TIMEOUT) {
+                        fileDownloader.downloadImageFromCanvas(drawCanvas);
+                    }
+
+                    if (config.SAVE_CONFIG_ON_TIMEOUT) {
+                        fileDownloader.downloadConfig(config);
+                    }
+                    
+                    return;
+                }
+                
                 archivedShapes = archivedShapes.concat(activeShapes);
             }
         };
