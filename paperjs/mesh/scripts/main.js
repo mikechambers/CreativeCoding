@@ -1,6 +1,7 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
-    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes, FileDownloader */
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes,
+    FileDownloader, Utils, MathUtils */
 
 (function () {
     "use strict";
@@ -24,7 +25,6 @@
         MAX_NEIGHBOR_COUNT: 20,
         FIND_NEAREST_NEIGHBOR: true,
 
-        
         STROKE_COLOR: "white",
 
         //soft-light, hard-light, difference, color-dodge
@@ -42,10 +42,12 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.CIRCLE_COUNT = 10;
+    config.CIRCLE_COUNT = 100;
     config.MAX_NEIGHBOR_COUNT = 3;
     
     config.BOUNDS_PADDING = 0;
+    config.STROKE_WIDTH = 1.0;
+    config.STROKE_COLOR = "#111111";
     config.TEMPLATE = "templates/blank_template.gif";
     config.BLEND_MODE = BlendModes.NORMAL;
     config.BACKGROUND_COLOR = "#FFFFFF";
@@ -64,8 +66,6 @@
     var backgroundLayer;
     var circleLayer;
     var linesLayer;
-    
-    var fileNameSuffix = new Date().getTime();
     
     var getColor = function () {
         
@@ -96,29 +96,6 @@
         return v;
     };
     
-    var getRandomPointInView = function (xPadding, yPadding) {
-        var point = new Point(
-            Math.floor(Math.random() * view.bounds.width),
-            Math.floor(Math.random() * view.bounds.height)
-        );
-        
-        if (xPadding || yPadding) {
-            if (point.x < xPadding) {
-                point.x = xPadding;
-            } else if (point.x > view.bounds.width - xPadding) {
-                point.x = view.bounds.width - xPadding;
-            }
-            
-            if (point.y < yPadding) {
-                point.y = yPadding;
-            } else if (point.y > view.bounds.height - yPadding) {
-                point.y = view.bounds.height - yPadding;
-            }
-        }
-        
-        return point;
-    };
-    
     var createCircle = function (point, radius) {
         
         if (!radius) {
@@ -126,7 +103,7 @@
         }
         
         if (!point) {
-            point = getRandomPointInView(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
+            point = Utils.getRandomPointInView(view, config.BOUNDS_PADDING);
         }
         
         var circle = new Shape.Circle({
@@ -174,13 +151,6 @@
 
         return circle;
     };
-
-    var getDistanceBetweenPoints = function (p1, p2) {
-        var _x = p2.x - p1.x;
-        var _y = p2.y - p1.y;
-        
-        return Math.sqrt(_x * _x + _y * _y);
-    };
     
     var _distanceSort = function (a, b) {
         return a.distance - b.distance;
@@ -211,7 +181,7 @@
                 continue;
             }
 
-            dist = getDistanceBetweenPoints(c.position, circle.position);
+            dist = MathUtils.getDistanceBetweenPoints(c.position, circle.position);
             
             //This hashes on the PaperJS naming for each Circle instance
             //we can't hash on the distance (which would be faster), because it is possible 
@@ -246,37 +216,6 @@
         
         return out;
     };
-    
-    function getLineAngle(p1, p2) {
-        //http://stackoverflow.com/questions/9614109/how-to-calculate-an-angle-from-points
-        //get the angle of the line
-        var dy = p2.y - p1.y;
-        var dx = p2.x - p1.x;
-        var angle = Math.atan2(dy, dx);
-        
-        return angle;
-    }
-    
-    function getRadiusPoint(c1, c2) {
-        
-        var p1 = c1.position;
-        var p2 = c2.position;
-        var radius = c1.radius;
-
-        var angle = getLineAngle(p1, p2);
-        
-        //figure out the point on the circle, based on the angle.
-        //this returns the point, relative to (0,0)
-        var p3 = new Point();
-        p3.x = Math.cos(angle) * radius;
-        p3.y = Math.sin(angle) * radius;
-        
-        //need to shift for the center of the circle
-        p3.x = p3.x + p1.x;
-        p3.y = p3.y + p1.y;
-        
-        return p3;
-    }
     
     var cp;
     var connectCircles = function (circles) {

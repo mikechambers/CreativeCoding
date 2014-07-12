@@ -1,6 +1,6 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
-    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes, FileDownloader */
+    Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes, FileDownloader, Utils */
 
 (function () {
     "use strict";
@@ -58,33 +58,6 @@
         return color;
     };
     
-    var getRandomPointInView = function () {
-        
-        var xPadding = config.BOUNDS_PADDING;
-        var yPadding = config.BOUNDS_PADDING;
-        
-        var point = new Point(
-            Math.floor(Math.random() * view.bounds.width),
-            Math.floor(Math.random() * view.bounds.height)
-        );
-        
-        if (xPadding || yPadding) {
-            if (point.x < xPadding) {
-                point.x = xPadding;
-            } else if (point.x > view.bounds.width - xPadding) {
-                point.x = view.bounds.width - xPadding;
-            }
-            
-            if (point.y < yPadding) {
-                point.y = yPadding;
-            } else if (point.y > view.bounds.height - yPadding) {
-                point.y = view.bounds.height - yPadding;
-            }
-        }
-        
-        return point;
-    };
-    
     var initCanvas = function () {
         var drawCanvas = document.getElementById("myCanvas");
         var canvasW = config.CANVAS_WIDTH;
@@ -116,37 +89,6 @@
         return drawCanvas;
     };
     
-    var getRandomSize = function () {
-        var s = new Size(config.BASE_SIZE - 5, config.BASE_SIZE);
-        s = s.multiply(Size.random().add(0.75)).round();
-
-        return s;
-    };
-    
-    var getRandomRotation = function () {
-        
-        var a = config.ROTATION_RANGE;
-        var r = ((Math.random() * a) - a) + (Math.random() * a);
-        
-        return r;
-    };
-    
-    var getPointInBounds = function (size) {
-        var point = getRandomPointInView();
-        var isValid = false;
-        while (!isValid) {
-
-            if ((point.x + size.width + config.BOUNDS_PADDING < view.bounds.width) &&
-                    (point.y + size.height + config.BOUNDS_PADDING < view.bounds.height)) {
-                isValid = true;
-            } else {
-                point = getRandomPointInView();
-            }
-        }
-        
-        return point;
-    };
-    
     var generateTiles = function () {
         
         var out = [];
@@ -156,8 +98,8 @@
         var size;
         for (i = 0; i < config.TILE_COUNT; i++) {
             
-            size = getRandomSize();
-            point = getPointInBounds(size);
+            size = Utils.getRandomSize(config.BASE_SIZE);
+            point = Utils.getRandomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
             
             rect = new Path.Rectangle({
                 point: point,
@@ -166,10 +108,10 @@
                 strokeColor: config.STROKE_COLOR,
                 strokeWidth: config.STROKE_WIDTH,
                 blendMode: config.BLEND_MODE,
-                rotation: getRandomRotation()
+                rotation: Utils.getRandomRotationInRange(config.ROTATION_RANGE)
             });
             
-            out.push(out);
+            out.push(rect);
         }
         
         return out;
