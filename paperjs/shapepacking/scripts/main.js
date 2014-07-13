@@ -41,19 +41,19 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.TIMEOUT = 120 * 1000;
+    config.TIMEOUT = 1000 * 60 * 60;
     
     config.RUN_IN_BACKGROUND = true;
     config.SAVE_CONFIG_ON_TIMEOUT = true;
     config.SAVE_PNG_ON_TIMEOUT = true;
     config.SAVE_SVG_ON_TIMEOUT = true;
     
-    config.MAX_WIDTH = 25;
-    config.SHAPE_COUNT = 10;
-    config.STROKE_WIDTH = 1.0;
+    config.MAX_WIDTH = 35;
+    config.SHAPE_COUNT = 50;
+    config.STROKE_WIDTH = 0.5;
     config.STROKE_COLOR = "#ffffff";
     
-    config.TEMPLATE = "../_templates/mesh.png";
+    config.TEMPLATE = "../_templates/mario.png";
     
     config.BACKGROUND_COLOR = "#FFFFFF";
     config.colorTheme = ["#FFFFFF"];
