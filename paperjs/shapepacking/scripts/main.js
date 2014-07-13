@@ -9,9 +9,7 @@
     
     var startTime = Date.now();
     
-    //todo: set a total render timeout, i.e. after 30 minutes it stops
-    //todo impliment the QuadTree
-    //todo: first time you hit timeout, then change count to 1
+    //todo: first time 
     
     var config = {
         APP_NAME: "shapepacking",
@@ -21,7 +19,7 @@
         SAVE_SVG_ON_TIMEOUT: false,
         SAVE_CONFIG_ON_TIMEOUT: false,
         TIMEOUT: 200,
-        BOUNDS_PADDING: 5,
+        BOUNDS_PADDING: 0,
         SHAPE_COUNT: 10,
         BASE_SIZE: 2,
         BLEND_MODE: BlendModes.NORMAL,
@@ -41,7 +39,7 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.TIMEOUT = 1000 * 60 * 60;
+    config.TIMEOUT = 1000 * 60 * 5;
     
     config.RUN_IN_BACKGROUND = true;
     config.SAVE_CONFIG_ON_TIMEOUT = true;
@@ -51,12 +49,12 @@
     config.MAX_WIDTH = 35;
     config.SHAPE_COUNT = 50;
     config.STROKE_WIDTH = 0.5;
+    config.BASE_SIZE = 2;
     config.STROKE_COLOR = "#ffffff";
     
-    config.TEMPLATE = "../_templates/mario.png";
+    config.TEMPLATE = "../_templates/temple.png";
     
     config.BACKGROUND_COLOR = "#FFFFFF";
-    config.colorTheme = ["#FFFFFF"];
     
     /*************** End Config Override **********************/
     
@@ -64,12 +62,18 @@
     var t; //paperjs tool reference
     var fileDownloader;
     
+    var shapeCount = config.SHAPE_COUNT;
+    
     var backgroundLayer;
     var shapeLayer;
     
     var activeShapes;
     var archivedShapes = [];
     var pixelData;
+    
+    var canvasPoints;
+    var progressDiv;
+    var generation = 0;
     
     var getColor = function (point) {
                 
@@ -125,10 +129,12 @@
     
     var checkIntersection = function (shape) {
         
-        if (shape.bounds.x + shape.bounds.width > view.bounds.width - config.BOUNDS_PADDING ||
-                shape.bounds.x < config.BOUNDS_PADDING ||
-                shape.bounds.y < config.BOUNDS_PADDING ||
-                shape.bounds.y + shape.bounds.height > view.bounds.height - config.BOUNDS_PADDING) {
+        var bounds = shape.bounds;
+        var viewBounds = view.bounds;
+        if (bounds.x + bounds.width > viewBounds.width - config.BOUNDS_PADDING ||
+                bounds.x < config.BOUNDS_PADDING ||
+                bounds.y < config.BOUNDS_PADDING ||
+                bounds.y + bounds.height > viewBounds.height - config.BOUNDS_PADDING) {
             
             return true;
         }
@@ -137,7 +143,8 @@
         var _arr = archivedShapes;
         
         var len = _arr.length;
-        
+
+        var sBounds;
         var s;
         var i;
         for (i = 0; i < len; i++) {
@@ -147,18 +154,19 @@
                 continue;
             }
             
-            if (shape.bounds.intersects(s.bounds)) {
+            sBounds = s.bounds;
+            if (bounds.intersects(sBounds)) {
                 return true;
             }
             
-            b = shape.bounds.expand(1);
-            b.point = b.point.abs();
+            b = bounds.expand(1);
+            //b.point = b.point.abs();
 
-            if (b.intersects(s.bounds)) {
+            if (b.intersects(sBounds)) {
                 return true;
             }
             
-            if (config.MAX_WIDTH && (shape.bounds.width > config.MAX_WIDTH)) {
+            if (config.MAX_WIDTH && (bounds.width > config.MAX_WIDTH)) {
                 return true;
             }
         }
@@ -166,11 +174,36 @@
         return false;
     };
 
+    var updateProgress = function () {
+        if (!progressDiv) {
+            progressDiv = document.getElementById("progress");
+        }
+        
+        progressDiv.innerHTML = "Points Remaining : " + canvasPoints.length +
+            "<br />Total Shapes : " + archivedShapes.length +
+            "<br />Generation : " + generation;
+        
+    };
+    
+    var removeRandomCanvasPoint = function () {
+        var len = canvasPoints.length;
+        
+        if (!len) {
+            throw new Error("No Canvas Points Left");
+        }
+        
+        var o = canvasPoints.splice(Math.floor(Math.random() * len), 1);
+        
+        updateProgress();
+        return o[0];
+    };
+    
     var getRandomPointNotInRectangle = function (size) {
-        var p = Utils.getRandomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
+        //var p = Utils.getRandomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
+        var p = removeRandomCanvasPoint();
         
         var len = archivedShapes.length;
-        
+
         var r = new Rectangle(p, size);
 
         var _t = Date.now();
@@ -182,7 +215,7 @@
             for (i = 0; i < len; i++) {
                 shape = archivedShapes[i];
                 if (shape.bounds.intersects(r)) {
-                    p = Utils.getRandomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
+                    p = removeRandomCanvasPoint();
                     r.x = p.x;
                     r.y = p.y;
                     isInShape = true;
@@ -202,18 +235,48 @@
         return null;
     };
     
+    var initCanvasPoints = function () {
+        var out = [];
+        
+        var w = view.bounds.width;
+        var h = view.bounds.height;
+        
+        var padding = config.BOUNDS_PADDING;
+        
+        var i;
+        var k;
+        
+        var p;
+        for (i = padding; i < h - padding; i++) {
+            for (k = padding; k < w - padding; k++) {
+                p = new Point(k, i);
+                out.push(p);
+            }
+        }
+        console.log(out.length, config.CANVAS_WIDTH * config.CANVAS_HEIGHT);
+        return out;
+    };
+    
     var getSize = function () {
-        return new Size(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
+        
+        return new Size(1, 1);
+        //return new Size(config.BOUNDS_PADDING, config.BOUNDS_PADDING);
     };
     
     var generateShapes = function () {
+        
+        generation++;
+        
+        if (generation > 200) {
+            shapeCount = 5;
+        }
         
         var out = [];
         var i;
         var rect;
         var point;
         var size;
-        for (i = 0; i < config.SHAPE_COUNT; i++) {
+        for (i = 0; i < shapeCount; i++) {
             
             size = getSize();
             point = getRandomPointNotInRectangle(size);
@@ -275,6 +338,8 @@
         var _f = function (pd) {
             
             pixelData = pd;
+            canvasPoints = initCanvasPoints();
+            
             shapeLayer = new Layer();
             activeShapes = generateShapes();
             archivedShapes = activeShapes;
@@ -284,7 +349,6 @@
                 var len = activeShapes.length;
 
                 var isGrowing = false;
-                
                 
                 var shape;
                 var i;
@@ -297,7 +361,7 @@
                     }
 
                     shape.bounds = shape.bounds.expand(1);
-                    shape.position = shape.position.abs();
+                    //shape.position = shape.position.abs();
 
                     isGrowing = true;
 
