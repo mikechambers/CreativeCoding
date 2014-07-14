@@ -46,13 +46,16 @@
     config.SAVE_PNG_ON_TIMEOUT = true;
     config.SAVE_SVG_ON_TIMEOUT = true;
     
-    config.MAX_WIDTH = 35;
+    config.MAX_WIDTH = 15;
     config.SHAPE_COUNT = 50;
     config.STROKE_WIDTH = 0.5;
     config.BASE_SIZE = 2;
     config.STROKE_COLOR = "#ffffff";
     
-    config.TEMPLATE = "../_templates/temple.png";
+    config.CANVAS_WIDTH = 400;
+    config.CANVAS_HEIGHT = 400;
+    
+    config.TEMPLATE = "../_templates/wood_400_400.png";
     
     config.BACKGROUND_COLOR = "#FFFFFF";
     
@@ -253,7 +256,7 @@
                 out.push(p);
             }
         }
-        console.log(out.length, config.CANVAS_WIDTH * config.CANVAS_HEIGHT);
+
         return out;
     };
     
@@ -374,18 +377,26 @@
                         console.log(e.message);
                         stopAnimation();
 
-                        if (config.SAVE_SVG_ON_TIMEOUT) {
-                            fileDownloader.downloadSVGFromProject(paper.project);
-                        }
 
                         if (config.SAVE_PNG_ON_TIMEOUT) {
+                            console.log("Saving PNG");
                             fileDownloader.downloadImageFromCanvas(drawCanvas);
                         }
 
                         if (config.SAVE_CONFIG_ON_TIMEOUT) {
+                            console.log("Saving Config");
                             saveJSON();
                         }
 
+                        if (config.SAVE_SVG_ON_TIMEOUT) {
+                            console.log("Preparing to save SVG");
+                            
+                            var _to = setTimeout(function () {
+                                fileDownloader.downloadSVGFromProject(paper.project);
+                                console.log("Complete");
+                            }, 2 * 1000);
+                        }
+                        
                         return;
                     }
 
