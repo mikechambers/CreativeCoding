@@ -42,18 +42,29 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.CIRCLE_COUNT = 100;
-    config.MAX_NEIGHBOR_COUNT = 3;
+    
+    config.CIRCLE_COUNT = 3800;//3800
+    config.MAX_NEIGHBOR_COUNT = 20;
+    config.TEMPLATE = "templates/cc_template_768.png";
+    //config.BOUNDS_PADDING = 50;
     
     config.BOUNDS_PADDING = 0;
-    config.STROKE_WIDTH = 1.0;
-    config.STROKE_COLOR = "#111111";
-    config.TEMPLATE = "templates/blank_template.gif";
-    config.BLEND_MODE = BlendModes.NORMAL;
-    config.BACKGROUND_COLOR = "#FFFFFF";
-    config.USE_RANDOM_COLORS = false;
+    config.colorTheme = ColorTheme.themes.BLUE_AND_PINK;
+    config.BLEND_MODE = BlendModes.SOFT_LIGHT;
     
-    config.colorTheme = ColorTheme.themes.PHAEDRA;
+    
+    //config.CIRCLE_COUNT = 100;
+    //config.MAX_NEIGHBOR_COUNT = 3;
+    
+    //config.BOUNDS_PADDING = 0;
+    //config.STROKE_WIDTH = 1.0;
+    //config.STROKE_COLOR = "#111111";
+    //config.TEMPLATE = "templates/blank_template.gif";
+    //config.BLEND_MODE = BlendModes.NORMAL;
+    //config.BACKGROUND_COLOR = "#FFFFFF";
+    //config.USE_RANDOM_COLORS = false;
+    
+    //config.colorTheme = ColorTheme.themes.PHAEDRA;
     
     /*************** End Config Override **********************/
     
