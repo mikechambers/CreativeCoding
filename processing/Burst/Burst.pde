@@ -178,7 +178,7 @@ void saveAll () {
 }
 
 String getSavePath(String extension) {
-	return "images/" + Config.name + "_" + suffix + "." + extension;
+	return "output/" + Config.name + "_" + suffix + "." + extension;
 }
 
 void saveConfig () {
