@@ -25,6 +25,7 @@ static class Config {
 String suffix;
 
 void initConfig () {
+  Point p = new Point(0,0);
 }
  
 void initialize() {
