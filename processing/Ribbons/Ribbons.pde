@@ -1,3 +1,5 @@
+#include ..\includes\Point.pde
+
 import java.util.Date;
 import java.lang.reflect.*;
 import processing.pdf.*;
