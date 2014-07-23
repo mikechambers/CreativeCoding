@@ -1,4 +1,5 @@
-#include ..\includes\Point.pde
+#include ../includes/Point.pde
+#include ../includes/CaptureUtils.pde
 
 import java.util.Date;
 import java.lang.reflect.*;
