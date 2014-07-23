@@ -1,4 +1,5 @@
 #include ../includes/Point.pde
+#include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
 
 import java.util.Date;
@@ -32,7 +33,6 @@ void initConfig () {
 }
  
 void initialize() {
-
 	initConfig();
 
 	Date d = new Date();
@@ -59,6 +59,27 @@ void setup(){
 
 void draw(){
 
+}
+
+Point lastPoint = null;
+void mousePressed() {
+  Point p = new Point(mouseX, mouseY);
+  
+  drawCircle(p, 2);
+  
+  if(lastPoint != null) {
+    line(p.x, p.y, lastPoint.x, lastPoint.y);
+    
+    //draw rectangle here.
+    //get center point
+    //draw rectangle centered on that point
+    //rotate to angle of line
+    //or
+    //figure out points from end points and connect
+    
+  }
+  
+  lastPoint = p;
 }
 
 void keyReleased () {
