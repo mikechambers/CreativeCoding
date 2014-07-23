@@ -1,6 +1,7 @@
 #include ../includes/Point.pde
 #include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
+#include ../includes/MathUtils.pde
 
 import java.util.Date;
 import java.lang.reflect.*;
@@ -29,7 +30,7 @@ static class Config {
 String suffix;
 
 void initConfig () {
-  Point p = new Point(0,0);
+	Config.recordPDF = true;
 }
  
 void initialize() {
@@ -70,6 +71,22 @@ void mousePressed() {
   if(lastPoint != null) {
     line(p.x, p.y, lastPoint.x, lastPoint.y);
     
+    Point centerPoint = getCenterPointOfLine(lastPoint, p);
+
+    drawCircle(centerPoint, 5);
+
+    Point p1 = new Point(lastPoint.x, lastPoint.y - 10);
+    Point p2 = new Point(lastPoint.x, lastPoint.y + 10);
+    Point p3 = new Point(p.x, p.y + 10);
+    Point p4 = new Point(p.x, p.y - 10);
+
+    beginShape();
+    vertex(p1.x, p1.y);
+    vertex(p2.x, p2.y);
+    vertex(p3.x, p3.y);
+    vertex(p4.x, p4.y);
+    endShape(CLOSE);
+
     //draw rectangle here.
     //get center point
     //draw rectangle centered on that point
