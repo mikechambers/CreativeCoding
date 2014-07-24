@@ -15,6 +15,7 @@ void beginPDFRecord () {
 void saveAll () {
 	saveImage();
 	saveConfig();
+	savePDF();
 }
 
 String getSavePath(String extension) {

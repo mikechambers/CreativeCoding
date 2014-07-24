@@ -75,7 +75,7 @@ class ColorTheme {
 
 		themes.put("FIRENZE", FIRENZE);
 
-		_theme = getTheme(themeName);
+		setTheme(themeName);
 	}
 
 	int getRandomColor() {
@@ -85,5 +85,13 @@ class ColorTheme {
 
 	int[] getTheme(String name) {
 		return themes.get(name);
+	}
+
+	void setTheme(String themeName) {
+		_theme = getTheme(themeName);
+	}
+
+	void addTheme(String themeName, int[] colors) {
+		themes.put(themeName, colors);
 	}
 }

@@ -24,8 +24,7 @@ static class Config {
 
 	static int frameRate = 30;
 
-	static String colorTheme = "CROSSWALK";
-	static float alpha = 0.5;
+	static String themeName = "CROSSWALK";
 
 	static float BASE_RIBBON_WIDTH = 20;
 
@@ -38,7 +37,10 @@ String suffix;
 
 void initConfig () {
 	Config.recordPDF = true;
-	Config.strokeColor = 0x00FFFFFF;
+	Config.strokeColor = 0xFFeeeeee;
+	Config.bgColor = 0xFF111111;
+	Config.fillAlpha = 0;
+	Config.themeName = "FLAT_DESIGN_COLORS";
 }
 
 ColorTheme theme;
@@ -53,7 +55,7 @@ void initialize() {
 	
 	frameRate(Config.frameRate);
 
-	theme = new ColorTheme(Config.colorTheme);
+	theme = new ColorTheme(Config.themeName);
 
 	if(Config.recordPDF) {
 		beginPDFRecord();
@@ -77,7 +79,7 @@ void draw(){
 Point lastPoint = null;
 Point lastP3 = null;
 Point lastP4 = null;
-void mouseDragged() {
+void mousePressed() {
   Point p = new Point(mouseX, mouseY);
 
   //drawCircle(p, 2);
@@ -87,10 +89,10 @@ void mouseDragged() {
 	  float distance = getDistanceBetweenPoints(lastPoint, p);
 
 	  if(distance < 20) {
-	  	return;
+	  	//return;
 	  }
 
-    line(p.x, p.y, lastPoint.x, lastPoint.y);
+    //line(p.x, p.y, lastPoint.x, lastPoint.y);
     
     Point centerPoint = getCenterPointOfLine(lastPoint, p);
 
@@ -119,7 +121,7 @@ void mouseDragged() {
     Point p3 = getPointOnCircle(p, Config.BASE_RIBBON_WIDTH, ((3 * PI)/2) + angle);
     Point p4 = getPointOnCircle(p, Config.BASE_RIBBON_WIDTH, HALF_PI + angle);
 
-    fill(setAlphaOfColor(theme.getRandomColor(), Config.alpha));
+    fill(setAlphaOfColor(theme.getRandomColor(), Config.fillAlpha));
 
     beginShape();
     vertex(p1.x, p1.y);
