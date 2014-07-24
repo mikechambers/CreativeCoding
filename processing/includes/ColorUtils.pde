@@ -37,10 +37,8 @@ class Color {
 }
 */
 
-static class ColorUtil {
-	static int setAlphaOfColor(int hexColor, float alpha) {
-		int a = floor((255) * alpha);
+int setAlphaOfColor(int hexColor, float alpha) {
+	int a = floor((255) * alpha);
 
-		return (hexColor & 0xFFFFFF) | (a << 24);
-	}
+	return (hexColor & 0xFFFFFF) | (a << 24);
 }

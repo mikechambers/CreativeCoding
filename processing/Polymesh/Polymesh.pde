@@ -1,3 +1,7 @@
+#include ../includes/Utils.pde
+#include ../includes/MathUtils.pde
+#include ../includes/Point.pde
+
 import java.util.Date;
 import java.lang.reflect.*;
 import processing.pdf.*;
@@ -252,25 +256,6 @@ void saveImage() {
 	saveFrame(n);
 }
 
-/********** Point ***************/
-
-class Point {
-
-	float x = 0.0;
-	float y = 0.0;
-
-	Point (float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	Point () {
-	}
-}
-
-void drawCircle(Point p, float radius) {
-	ellipse(p.x, p.y, radius * 2, radius * 2);
-}
 
 
 

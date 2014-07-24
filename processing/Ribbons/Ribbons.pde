@@ -2,6 +2,8 @@
 #include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
 #include ../includes/MathUtils.pde
+#include ../includes/ColorTheme.pde
+#include ../includes/ColorUtils.pde
 
 import java.util.Date;
 import java.lang.reflect.*;
@@ -22,6 +24,11 @@ static class Config {
 
 	static int frameRate = 30;
 
+	static String colorTheme = "CROSSWALK";
+	static float alpha = 0.5;
+
+	static float BASE_RIBBON_WIDTH = 20;
+
 	static int width = 768;
 	static int height = 432;
 }
@@ -31,8 +38,11 @@ String suffix;
 
 void initConfig () {
 	Config.recordPDF = true;
+	Config.strokeColor = 0x00FFFFFF;
 }
- 
+
+ColorTheme theme;
+
 void initialize() {
 	initConfig();
 
@@ -42,6 +52,8 @@ void initialize() {
 	size(Config.width, Config.height);
 	
 	frameRate(Config.frameRate);
+
+	theme = new ColorTheme(Config.colorTheme);
 
 	if(Config.recordPDF) {
 		beginPDFRecord();
@@ -63,22 +75,51 @@ void draw(){
 }
 
 Point lastPoint = null;
-void mousePressed() {
+Point lastP3 = null;
+Point lastP4 = null;
+void mouseDragged() {
   Point p = new Point(mouseX, mouseY);
-  
-  drawCircle(p, 2);
+
+  //drawCircle(p, 2);
   
   if(lastPoint != null) {
+
+	  float distance = getDistanceBetweenPoints(lastPoint, p);
+
+	  if(distance < 20) {
+	  	return;
+	  }
+
     line(p.x, p.y, lastPoint.x, lastPoint.y);
     
     Point centerPoint = getCenterPointOfLine(lastPoint, p);
 
-    drawCircle(centerPoint, 5);
+    //drawCircle(centerPoint, 5);
 
-    Point p1 = new Point(lastPoint.x, lastPoint.y - 10);
-    Point p2 = new Point(lastPoint.x, lastPoint.y + 10);
-    Point p3 = new Point(p.x, p.y + 10);
-    Point p4 = new Point(p.x, p.y - 10);
+    float angle = getAngleOfLine(lastPoint, p);
+
+    //this works well, but side angles are always 90 degress
+    //Point p1 = new Point(lastPoint.x, lastPoint.y - 10);
+    //Point p2 = new Point(lastPoint.x, lastPoint.y + 10);
+    //Point p3 = new Point(p.x, p.y + 10);
+    //Point p4 = new Point(p.x, p.y - 10);
+
+
+    Point p1;
+    Point p2;
+
+    if(lastP3 != null) {
+    	p1 = lastP4;
+    	p2 = lastP3;
+    } else {
+    	p1 = getPointOnCircle(lastPoint, Config.BASE_RIBBON_WIDTH,  HALF_PI + angle);
+    	p2 = getPointOnCircle(lastPoint, Config.BASE_RIBBON_WIDTH, ((3 * PI)/2) + angle);
+    }
+    
+    Point p3 = getPointOnCircle(p, Config.BASE_RIBBON_WIDTH, ((3 * PI)/2) + angle);
+    Point p4 = getPointOnCircle(p, Config.BASE_RIBBON_WIDTH, HALF_PI + angle);
+
+    fill(setAlphaOfColor(theme.getRandomColor(), Config.alpha));
 
     beginShape();
     vertex(p1.x, p1.y);
@@ -87,13 +128,8 @@ void mousePressed() {
     vertex(p4.x, p4.y);
     endShape(CLOSE);
 
-    //draw rectangle here.
-    //get center point
-    //draw rectangle centered on that point
-    //rotate to angle of line
-    //or
-    //figure out points from end points and connect
-    
+    lastP3 = p3;
+    lastP4 = p4;
   }
   
   lastPoint = p;
