@@ -37,10 +37,11 @@ String suffix;
 
 void initConfig () {
 	Config.recordPDF = true;
-	Config.strokeColor = 0xFFeeeeee;
-	Config.bgColor = 0xFF111111;
-	Config.fillAlpha = 0;
+	Config.strokeColor = 0xFF111111;
+	Config.bgColor = 0xFFeeeeee;
+	Config.fillAlpha = 0.5;
 	Config.themeName = "FLAT_DESIGN_COLORS";
+        Config.strokeWeight = 0.0;
 }
 
 ColorTheme theme;
@@ -53,9 +54,20 @@ void initialize() {
 
 	size(Config.width, Config.height);
 	
+        smooth(8);
+
 	frameRate(Config.frameRate);
 
 	theme = new ColorTheme(Config.themeName);
+	
+        /********************************/
+        //todo: need get figure out how to get rid of gaps
+        //Config.fillAlpha = 1.0;
+	//int[] r = {setAlphaOfColor(0xFFeeeeee, Config.fillAlpha)};
+	//theme.addTheme("red", r);
+	//theme.setTheme("red");
+
+        /********************************/
 
 	if(Config.recordPDF) {
 		beginPDFRecord();
@@ -69,7 +81,11 @@ void setup(){
 	initialize();
 
 	stroke(Config.strokeColor);
-	strokeWeight(Config.strokeWeight);	
+	strokeWeight(Config.strokeWeight);
+
+        if(Config.strokeWeight == 0.0) {
+          noStroke();
+        }
 }
 
 void draw(){
@@ -79,7 +95,7 @@ void draw(){
 Point lastPoint = null;
 Point lastP3 = null;
 Point lastP4 = null;
-void mousePressed() {
+void mouseMoved() {
   Point p = new Point(mouseX, mouseY);
 
   //drawCircle(p, 2);
@@ -88,8 +104,8 @@ void mousePressed() {
 
 	  float distance = getDistanceBetweenPoints(lastPoint, p);
 
-	  if(distance < 20) {
-	  	//return;
+	  if(distance < 40) {
+	  	return;
 	  }
 
     //line(p.x, p.y, lastPoint.x, lastPoint.y);
