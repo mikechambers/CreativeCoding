@@ -60,4 +60,20 @@ public class ColorThemes {
 		0xFFFA847E
 	};
 
+	public static final int[] HBCIRCLES1 = {
+		0xFFF1D03C,
+		0xFFCEDF72,
+		0xFF99D48C,
+		0xFF6DADD9,
+		0xFF5670C8
+	};
+
+	public static final int[] HBCIRCLES2 = {
+		0xFFBB4334,
+		0xFFDB5933,
+		0xFFDC6A31,
+		0xFFE9AD33,
+		0xFFF2D243
+	};
+
 }
