@@ -24,7 +24,7 @@ static class Config {
 
 	static int frameRate = 30;
 
-	static String themeName = "CROSSWALK";
+	static int[] colorTheme = ColorTheme.CROSSWALK;
 
 	static float BASE_RIBBON_WIDTH = 20;
 
@@ -40,7 +40,7 @@ void initConfig () {
 	Config.strokeColor = 0xFF111111;
 	Config.bgColor = 0xFFeeeeee;
 	Config.fillAlpha = 0.5;
-	Config.themeName = "FLAT_DESIGN_COLORS";
+	Config.colorTheme = ColorTheme.FLAT_DESIGN_COLORS;
         Config.strokeWeight = 0.0;
 }
 
@@ -58,7 +58,7 @@ void initialize() {
 
 	frameRate(Config.frameRate);
 
-	theme = new ColorTheme(Config.themeName);
+	theme = new ColorTheme(Config.colorTheme);
 	
         /********************************/
         //todo: need get figure out how to get rid of gaps
