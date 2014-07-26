@@ -2,8 +2,9 @@
 #include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
 #include ../includes/MathUtils.pde
-#include ../includes/ColorTheme.pde
+#include ../includes/ColorThemeManager.pde
 #include ../includes/ColorUtils.pde
+#include ../includes/ColorThemes.java
 
 import java.util.Date;
 import java.lang.reflect.*;
@@ -24,7 +25,7 @@ static class Config {
 
 	static int frameRate = 30;
 
-	static int[] colorTheme = ColorTheme.CROSSWALK;
+	static int[] colorTheme = ColorThemes.CROSSWALK;
 
 	static float BASE_RIBBON_WIDTH = 20;
 
@@ -40,11 +41,11 @@ void initConfig () {
 	Config.strokeColor = 0xFF111111;
 	Config.bgColor = 0xFFeeeeee;
 	Config.fillAlpha = 0.5;
-	Config.colorTheme = ColorTheme.FLAT_DESIGN_COLORS;
+	Config.colorTheme = ColorThemes.FLAT_DESIGN_COLORS;
         Config.strokeWeight = 0.0;
 }
 
-ColorTheme theme;
+ColorThemeManager theme;
 
 void initialize() {
 	initConfig();
@@ -58,7 +59,7 @@ void initialize() {
 
 	frameRate(Config.frameRate);
 
-	theme = new ColorTheme(Config.colorTheme);
+	theme = new ColorThemeManager(Config.colorTheme);
 	
         /********************************/
         //todo: need get figure out how to get rid of gaps

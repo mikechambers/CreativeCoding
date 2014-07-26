@@ -2,7 +2,7 @@
 //or remove static variables
 //could also move the static variables into their own .java file
 
-class ColorTheme {
+public class ColorThemes {
 
 	public static final int[] CROSSWALK = { 
 		0xFFEFC63A,
@@ -58,33 +58,6 @@ class ColorTheme {
 		0xFFB6D15D,
 		0xFFFFD495,
 		0xFFFA847E
-	}; 
+	};
 
-	private int[] _theme;
-	private int _colorIndex = -1;
-
-	ColorTheme(int[] theme){
-		setTheme(theme);
-	}
-
-	int getRandomColor() {
-		//support for alpha?
-		return _theme[floor(random(0, _theme.length))];
-	}
-
-	int getNextColor() {
-		int index = _colorIndex + 1;
-
-		if(index == _theme.length) {
-			index = 0;
-		}
-
-		_colorIndex = index;
-
-		return _theme[index];
-	}
-
-	void setTheme(int[] theme) {
-		_theme = theme;
-	}
 }
