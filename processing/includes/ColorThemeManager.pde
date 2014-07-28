@@ -12,6 +12,18 @@ class ColorThemeManager {
 		return _theme[floor(random(0, _theme.length))];
 	}
 
+	int getPreviousColor() {
+		int index = _colorIndex - 1;
+
+		if(index <= 0) {
+			index = _theme.length - 1;
+		}
+
+		_colorIndex = index;
+
+		return _theme[index];
+	}
+
 	int getNextColor() {
 		int index = _colorIndex + 1;
 

@@ -58,19 +58,40 @@ void initialize() {
 void setup(){
 	initialize();
 
+	noStroke();
 	render();
 }
 
 void render () {
-
-	noStroke();
-
+	
 	Point startPoint = new Point(30,30);
-	float radius = 56;
+	float radius = 63;
 
-	for(int i = 0; i < 5; i++) {
-		fill(theme1.getNextColor());
-		ellipse((startPoint.x + ((i + 1)) * radius), startPoint.y + radius, radius * 2, radius * 2);
+	float startX;
+	float startY;
+	float xModifier = 1;
+	ColorThemeManager theme;
+
+	int rows = 7;
+
+	int k = 0;
+	int i = 0;
+	for(k = 0; k < rows; k++) {
+		theme = ((k % 2) == 0)? theme2 : theme1;
+		startY = startPoint.y + radius + (radius * k);
+
+		xModifier = ((k % 2) == 0)?0:1;
+		for(i = 0; i < 5; i++) {
+
+			startX = (startPoint.x + radius + (radius * xModifier) + (radius * i));
+			fill(theme.getNextColor());
+
+			if(k < rows - 1) {
+				ellipse(startX, startY, radius * 2, radius * 2);
+			} else {
+				arc(startX, startY, radius * 2, radius * 2, PI, PI * 2, CHORD);
+			}
+		}
 	}
 }
 
