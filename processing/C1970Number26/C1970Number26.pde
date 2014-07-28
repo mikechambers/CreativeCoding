@@ -6,7 +6,7 @@
 //#include ../includes/ColorUtils.pde
 #include ../includes/ColorThemes.java
 
-//30 pixel border around, radius 56 pixel, 5 colors, half overlap
+//30 pixel border around, Config.radius 56 pixel, 5 colors, half overlap
 
 
 import java.util.Date;
@@ -17,19 +17,22 @@ static class Config {
 	static String name = "C1970Number26";
 
 	static color bgColor = 0xFFFFFFFF;
-	static float radius = 1.0;
 
 	static int frameRate = 30;
 	static Boolean recordPDF = false;
 
-	static int width = 500;
-	static int height = 500;
+	static float radius = 63;
+	static int padding = 30;
+	static int rows = 7;
+	static int circleCount = 5;
 }
 
 
 String suffix;
 ColorThemeManager theme1 = new ColorThemeManager(ColorThemes.HBCIRCLES1);
 ColorThemeManager theme2 = new ColorThemeManager(ColorThemes.HBCIRCLES2);
+
+
 
 void initConfig () {
 	Config.recordPDF = true;
@@ -41,7 +44,12 @@ void initialize() {
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
-	size(Config.width, Config.height);
+
+	//7 number of Config.rows
+	//30 Config.padding on each side
+	int dimension = floor((Config.radius * Config.rows) + (Config.padding * 2));
+
+	size(dimension, dimension);
 	
     smooth(8);
 
@@ -64,32 +72,29 @@ void setup(){
 
 void render () {
 	
-	Point startPoint = new Point(30,30);
-	float radius = 63;
+	Point startPoint = new Point(Config.padding, Config.padding);
 
 	float startX;
 	float startY;
 	float xModifier = 1;
 	ColorThemeManager theme;
 
-	int rows = 7;
-
 	int k = 0;
 	int i = 0;
-	for(k = 0; k < rows; k++) {
+	for(k = 0; k < Config.rows; k++) {
 		theme = ((k % 2) == 0)? theme2 : theme1;
-		startY = startPoint.y + radius + (radius * k);
+		startY = startPoint.y + Config.radius + (Config.radius * k);
 
 		xModifier = ((k % 2) == 0)?0:1;
-		for(i = 0; i < 5; i++) {
+		for(i = 0; i < Config.circleCount; i++) {
 
-			startX = (startPoint.x + radius + (radius * xModifier) + (radius * i));
+			startX = (startPoint.x + Config.radius + (Config.radius * xModifier) + (Config.radius * i));
 			fill(theme.getNextColor());
 
-			if(k < rows - 1) {
-				ellipse(startX, startY, radius * 2, radius * 2);
+			if(k < Config.rows - 1) {
+				ellipse(startX, startY, Config.radius * 2, Config.radius * 2);
 			} else {
-				arc(startX, startY, radius * 2, radius * 2, PI, PI * 2, CHORD);
+				arc(startX, startY, Config.radius * 2, Config.radius * 2, PI, PI * 2, CHORD);
 			}
 		}
 	}
