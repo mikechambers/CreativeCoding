@@ -1,13 +1,7 @@
 #include ../includes/Point.pde
-//#include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
-//#include ../includes/MathUtils.pde
 #include ../includes/ColorThemeManager.pde
-//#include ../includes/ColorUtils.pde
 #include ../includes/ColorThemes.java
-
-//30 pixel border around, Config.radius 56 pixel, 5 colors, half overlap
-
 
 import java.util.Date;
 import java.lang.reflect.*;
@@ -27,12 +21,9 @@ static class Config {
 	static int circleCount = 5;
 }
 
-
 String suffix;
 ColorThemeManager theme1 = new ColorThemeManager(ColorThemes.HBCIRCLES1);
 ColorThemeManager theme2 = new ColorThemeManager(ColorThemes.HBCIRCLES2);
-
-
 
 void initConfig () {
 	Config.recordPDF = true;
