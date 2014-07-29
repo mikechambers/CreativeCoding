@@ -68,12 +68,28 @@ public class ColorThemes {
 		0xFF5670C8
 	};
 
+	public static final int[] HBCIRCLES1A = {
+		0xFFebac22,
+		0xFFa0ba3a,
+		0xFF419f49,
+		0xFF007488,
+		0xFF1b4688
+	};
+
 	public static final int[] HBCIRCLES2 = {
 		0xFFBB4334,
 		0xFFDB5933,
 		0xFFDC6A31,
 		0xFFE9AD33,
 		0xFFF2D243
+	};
+
+	public static final int[] HBCIRCLES2A = {
+		0xFF9e1c20,
+		0xFFc41e24,
+		0xFFd84321,
+		0xFFec7e21,
+		0xFFeda421
 	};
 
 }

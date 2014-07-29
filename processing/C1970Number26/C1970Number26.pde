@@ -22,10 +22,11 @@ static class Config {
 }
 
 String suffix;
-ColorThemeManager theme1 = new ColorThemeManager(ColorThemes.HBCIRCLES1);
-ColorThemeManager theme2 = new ColorThemeManager(ColorThemes.HBCIRCLES2);
+ColorThemeManager theme1 = new ColorThemeManager(ColorThemes.HBCIRCLES1A);
+ColorThemeManager theme2 = new ColorThemeManager(ColorThemes.HBCIRCLES2A);
 
 void initConfig () {
+	Config.bgColor = 0xFFd7d2cf;
 	Config.recordPDF = true;
 }
 
