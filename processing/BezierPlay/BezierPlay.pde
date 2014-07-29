@@ -42,8 +42,7 @@ void initialize() {
 }
 
 void setup () {
-	initConfig();
-	size(500,500);
+	initialize();
 
 	render();
 }
@@ -98,4 +97,26 @@ void drawSection(float baseY) {
 	vertex(0, height);
 	vertex(startPoint.x, startPoint.y);
 	endShape();
+}
+
+void draw() {
+
+}
+
+void keyReleased () {
+	if (key == ' ') {
+		paused = !paused;
+	}	else if (key == 'p') {
+		saveImage();
+	} else if (key == 'j') {
+		saveConfig();
+	} else if (key == 'p') {
+		savePDF();
+	} else if (key == 'x') {
+		exit();
+	} else if (key == 'a') {
+		saveImage();
+		saveConfig();
+		savePDF();
+	}
 }
