@@ -2,14 +2,15 @@
 #include ../includes/ColorThemeManager.pde
 #include ../includes/ColorThemes.java
 #include ../includes/CaptureUtils.pde
+#include ../includes/Utils.pde
 
 import java.util.Date;
 
 static class Config {
-	static String name = "BezierPlay";
+	static String name = "BezierPlay2";
 	static int frameRate = 30;
 	static Boolean recordPDF = false;
-	static color bgColor = 0xFFFFFFFF;
+	static color bgColor = 0xFF111111;
 	static int width = 500;
 	static int height = 500;
 }
@@ -19,7 +20,7 @@ void initConfig () {
 }
 
 String suffix;
-ColorThemeManager theme = new ColorThemeManager(ColorThemes.HBCIRCLES2A);
+
 
 void initialize() {
 	initConfig();
@@ -44,64 +45,32 @@ void initialize() {
 void setup () {
 	initialize();
 
-	render();
+	fill(0xFFFFFFFF);
+	stroke(0xFFFFFFFF);
 }
 
-	int peaks = 5;
-	float wavelength = 100;
-	float amplitude = wavelength * .75;
-
-void render() {
-
-	int rows = floor(height / amplitude) + 3;
-	for(int i = 0; i < rows; i++) {
-		fill(theme.getNextColor());
-		drawSection(amplitude * (i - 1));
-	}
-
-	
-}
-
-void drawSection(float baseY) {
-
-	Point startPoint = null;
-	Point endPoint = null;
-	int direction = 1;
-
-	beginShape();
-	for(int i = 0; i < peaks; i++) {
-
-		direction = (i % 2 == 0)?-1:1;
-
-		//height - (amplitude * 2)
-		Point p1 = new Point(i * wavelength, baseY);
-		Point p2 = new Point(p1.x + wavelength, baseY);
-
-		if(i == 0) {
-			startPoint = p1;
-		}
-
-
-		Point cp1 = new Point(p1.x, p1.y + (amplitude * direction));
-		Point cp2 = new Point(p2.x, p2.y + (amplitude * direction));
-
-		//bezier(p1.x, p1.y, cp1.x, cp1.y, cp2.x, cp2.y, p2.x, p2.y);
-
-		vertex(p1.x, p1.y);
-		bezierVertex(cp1.x, cp1.y, cp2.x, cp2.y, p2.x, p2.y);
-
-		endPoint = p2;
-	}
-
-	vertex(width, height);
-	vertex(0, height);
-	vertex(startPoint.x, startPoint.y);
-	endShape();
-}
 
 void draw() {
 
 }
+
+Point lastPoint = null;
+void mousePressed() {
+
+	Point p = new Point(mouseX, mouseY);
+
+	drawCircle(p, 1);
+
+	if(lastPoint == null) {
+		lastPoint = p;
+		return;
+	}
+
+	drawLine(lastPoint, p);
+
+	lastPoint = p;
+}
+
 
 void keyReleased () {
 	if (key == ' ') {
