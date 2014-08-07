@@ -12,17 +12,22 @@ static class Config {
 	static int frameRate = 30;
 	static Boolean recordPDF = false;
 	static color bgColor = 0xFF111111;
+	static color strokeColor = 0xFFFFFFFF;
 	static int width = 500;
 	static int height = 500;
+	static Boolean drawControlPoint = false;
 }
 
 void initConfig () {
 	Config.recordPDF = true;
 	Config.frameRate = 60;
+
+	Config.bgColor = 0xFFFFFFFF;
+	Config.strokeColor = 0xFF111111;
+	Config.drawControlPoint = true;
 }
 
 String suffix;
-
 
 void initialize() {
 	initConfig();
@@ -32,7 +37,7 @@ void initialize() {
 
 	size(Config.height, Config.width);
 	
-    smooth(4);
+    //smooth(4);
 
 	frameRate(Config.frameRate);
 
@@ -47,19 +52,30 @@ void initialize() {
 
 void setup () {
 	initialize();
-	stroke(0xFFFFFFFF);
+
 }
 
+
 void draw() {
+
 	background(Config.bgColor);
+
+	stroke(Config.strokeColor);
 	noFill();
 	beginShape();
 
 	for (QuadraticCurve c : curves) {
-		drawCircle(c.cp, 1);
-		drawLine(c.cp, c.p1);
-		drawLine(c.cp, c.p2);
 
+		if(Config.drawControlPoint) {
+
+			strokeWeight(1.0);
+			drawCircle(c.cp, 2);
+			strokeDash(0.5);
+			drawLine(c.cp, c.p1);
+			drawLine(c.cp, c.p2);
+		}
+
+		strokeWeight(2.0);
 		vertex(c.p1.x, c.p1.y);
 		quadraticVertex(c.cp.x, c.cp.y, c.p2.x, c.p2.y);
 	}
@@ -98,14 +114,6 @@ void mousePressed () {
 	curves.add(currentCurve);
 
 	lastCp = mousePoint;
-}
-
-Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
-	//http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B.C3.A9zier_curves
-	float x = (1 - t) * (1 - t) * p1.x + 2 * (1 - t) * t * cp.x + t * t * p2.x;
-	float y = (1 - t) * (1 - t) * p1.y + 2 * (1 - t) * t * cp.y + t * t * p2.y;
-
-	return new Point(x,y);
 }
 
 void keyReleased () {
