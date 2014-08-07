@@ -32,7 +32,7 @@ void initialize() {
 
 	size(Config.height, Config.width);
 	
-    smooth(8);
+    smooth(4);
 
 	frameRate(Config.frameRate);
 
@@ -40,45 +40,38 @@ void initialize() {
 		beginPDFRecord();
 	}
 
+	background(Config.bgColor);
 	fill(Config.bgColor);
 	rect(-1,-1, width + 1, height + 1);
 }
 
-
-
 void setup () {
 	initialize();
-
-	//fill(0xFFFFFFFF);
 	stroke(0xFFFFFFFF);
-
-	//p1 = new Point(50,100);
-	//p2 = new Point(250,100);
-	//p3 = new Point(450,100);
-
-	//cp1 = new Point(p1.x + 100, p1.y + 50);
-	//cp2 = new Point(p2.x + 100, p2.y - 50);
 }
 
 void draw() {
-	for (QuadraticCurve c : curves) {
+	background(Config.bgColor);
+	noFill();
+	beginShape();
 
-		//right now, draw individual curves
-		//but they could be one continuous one
-		noFill();
-		beginShape();
+	for (QuadraticCurve c : curves) {
+		drawCircle(c.cp, 1);
+		drawLine(c.cp, c.p1);
+		drawLine(c.cp, c.p2);
+
 		vertex(c.p1.x, c.p1.y);
 		quadraticVertex(c.cp.x, c.cp.y, c.p2.x, c.p2.y);
-		//quadraticVertex(cp2.x, cp2.y, p3.x, p3.y);
-		endShape();
 	}
+
+	endShape();
 }
 
 	
 ArrayList<QuadraticCurve> curves = new ArrayList<QuadraticCurve>();
 
 Point lastCp = null;
-QuadraticCurve currentCurve = null;
+//QuadraticCurve currentCurve = null;
 
 void mousePressed () {
 
@@ -90,11 +83,9 @@ void mousePressed () {
 		return;
 	}
 
-	currentCurve = new QuadraticCurve();
+	QuadraticCurve currentCurve = new QuadraticCurve();
 
 	currentCurve.cp = lastCp;
-
-	drawCircle(currentCurve.cp, 1);
 
 	if(curves.size() > 0) {
 		QuadraticCurve _tmp = curves.get(curves.size() - 1);
@@ -108,34 +99,6 @@ void mousePressed () {
 
 	lastCp = mousePoint;
 }
-
-/*
-float t = 0;
-int direction = 1;
-void draw() {
-
-	t = t + (.01 * direction);
-
-	if(t >= 1 || t <= 0) {
-		direction *= -1;
-	}
-
-	background(Config.bgColor);
-
-	drawCircle(cp1, 4);
-	drawCircle(cp2, 4);
-
-	beginShape();
-	vertex(p1.x, p1.y);
-	quadraticVertex(cp1.x, cp1.x, p2.x, p2.y);
-	quadraticVertex(cp2.x, cp2.y, p3.x, p3.y);
-	endShape();
-
-	Point p = findPointOnQuadraticCurve(p1, p2, cp1, t);
-	ellipseMode(CENTER);
-	drawCircle(p, 2);
-}
-*/
 
 Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
 	//http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B.C3.A9zier_curves
