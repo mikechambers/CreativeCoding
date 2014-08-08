@@ -13,24 +13,32 @@ static class Config {
 	static Boolean recordPDF = false;
 	static color bgColor = 0xFF111111;
 	static color strokeColor = 0xFFFFFFFF;
-	static int width = 500;
-	static int height = 500;
+	static int width = 640;
+	static int height = 640;
 	static Boolean drawControlPoint = false;
+	static Boolean useFill = false;
+	static int[] colorTheme = ColorThemes.HBCIRCLES1;
 }
+
+ColorThemeManager theme;
 
 void initConfig () {
 	Config.recordPDF = true;
 	Config.frameRate = 60;
 
 	Config.bgColor = 0xFFFFFFFF;
-	Config.strokeColor = 0xFF111111;
-	Config.drawControlPoint = true;
+	Config.strokeColor = 0x00111111;
+	Config.drawControlPoint = false;
+
+	Config.useFill = true;
 }
 
 String suffix;
 
 void initialize() {
 	initConfig();
+
+	theme = new ColorThemeManager(Config.colorTheme);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
@@ -52,7 +60,6 @@ void initialize() {
 
 void setup () {
 	initialize();
-
 }
 
 
@@ -61,10 +68,15 @@ void draw() {
 	background(Config.bgColor);
 
 	stroke(Config.strokeColor);
+	
 	noFill();
-	beginShape();
 
+	theme.reset();
 	for (QuadraticCurve c : curves) {
+
+		if(Config.useFill) {
+			fill(theme.getNextColor());
+		}
 
 		if(Config.drawControlPoint) {
 
@@ -75,12 +87,17 @@ void draw() {
 			drawLine(c.cp, c.p2);
 		}
 
+		beginShape();
 		strokeWeight(2.0);
 		vertex(c.p1.x, c.p1.y);
 		quadraticVertex(c.cp.x, c.cp.y, c.p2.x, c.p2.y);
-	}
 
-	endShape();
+		if(Config.useFill) {
+			endShape(CLOSE);
+		} else {
+			endShape();
+		}
+	}
 }
 
 	
@@ -89,7 +106,7 @@ ArrayList<QuadraticCurve> curves = new ArrayList<QuadraticCurve>();
 Point lastCp = null;
 //QuadraticCurve currentCurve = null;
 
-void mousePressed () {
+void mouseMoved () {
 
 	Point mousePoint = new Point(mouseX, mouseY);
 

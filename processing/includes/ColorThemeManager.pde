@@ -24,6 +24,10 @@ class ColorThemeManager {
 		return _theme[index];
 	}
 
+	void reset() {
+		_colorIndex = 0;
+	}
+
 	int getNextColor() {
 		int index = _colorIndex + 1;
 
