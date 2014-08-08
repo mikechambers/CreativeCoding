@@ -17,7 +17,7 @@ static class Config {
 	static int height = 640;
 	static Boolean drawControlPoint = false;
 	static Boolean useFill = false;
-	static int[] colorTheme = ColorThemes.HBCIRCLES1;
+	static String colorThemeName = "CROSSWALK";
 }
 
 ColorThemeManager theme;
@@ -38,7 +38,7 @@ String suffix;
 void initialize() {
 	initConfig();
 
-	theme = new ColorThemeManager(Config.colorTheme);
+	theme = new ColorThemeManager(Config.colorThemeName);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());

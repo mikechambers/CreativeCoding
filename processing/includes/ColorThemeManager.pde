@@ -3,8 +3,19 @@ class ColorThemeManager {
 	private int[] _theme;
 	private int _colorIndex = -1;
 
-	ColorThemeManager(int[] theme){
-		setTheme(theme);
+	ColorThemeManager(String name){
+
+		try {
+			Field f = ColorThemes.class.getField(name);
+
+			f.setAccessible(true);
+
+			int[] _tmp = (int[]) f.get(null);
+
+			setTheme(_tmp);
+		} catch (Exception e) {
+			println("Error loading color theme : " + name);
+		}
 	}
 
 	int getRandomColor() {
