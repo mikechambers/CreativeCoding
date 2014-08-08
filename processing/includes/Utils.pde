@@ -29,3 +29,22 @@ Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
 
 	return new Point(x,y);
 }
+
+class QuadraticCurve {
+
+	Point p1 = null;
+	Point p2 = null;
+	Point cp = null;
+	QuadraticCurve (Point _p1, Point _p2, Point _cp) {
+		p1 = _p1;
+		p2 = _p2;
+		cp = _cp;
+	}
+
+	QuadraticCurve () {
+
+	}
+}
+
+
+

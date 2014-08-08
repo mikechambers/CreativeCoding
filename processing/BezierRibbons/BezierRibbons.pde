@@ -20,11 +20,16 @@ static class Config {
 	static Boolean useFill = false;
 	static String colorThemeName = "HBCIRCLES1";
 	static float fillAlpha = 1.0;
+	static Boolean animateRibbon = false;
+	static int maxRibbonLength = 20;
 }
 
 ColorThemeManager theme;
 
 void initConfig () {
+	Config.width = 1280;
+	Config.height = 720;
+
 	Config.recordPDF = true;
 	Config.frameRate = 60;
 
@@ -34,6 +39,8 @@ void initConfig () {
 
 	Config.useFill = true;
 	Config.fillAlpha = 0.8;
+	Config.animateRibbon = true;
+	Config.maxRibbonLength = 20;
 }
 
 String suffix;
@@ -46,7 +53,7 @@ void initialize() {
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
-	size(Config.height, Config.width);
+	size(Config.width, Config.height);
 	
     //smooth(4);
 
@@ -74,11 +81,14 @@ void draw() {
 	
 	noFill();
 
-	theme.reset();
-	for (QuadraticCurve c : curves) {
+	for (RibbonSegment segment : segments) {
+
+		QuadraticCurve c = segment.curve;
 
 		if(Config.useFill) {
-			fill(setAlphaOfColor(theme.getNextColor(), Config.fillAlpha));
+			fill(
+					setAlphaOfColor(segment.segmentColor, Config.fillAlpha)
+				);
 		}
 
 		if(Config.drawControlPoint) {
@@ -125,7 +135,7 @@ void draw() {
 }
 
 	
-ArrayList<QuadraticCurve> curves = new ArrayList<QuadraticCurve>();
+ArrayList<RibbonSegment> segments = new ArrayList<RibbonSegment>();
 
 Point lastCp = null;
 //QuadraticCurve currentCurve = null;
@@ -144,17 +154,22 @@ void mouseMoved () {
 
 	currentCurve.cp = lastCp;
 
-	if(curves.size() > 0) {
-		QuadraticCurve _tmp = curves.get(curves.size() - 1);
+	if(segments.size() > 0) {
+		QuadraticCurve _tmp = segments.get(segments.size() - 1).curve;
 		currentCurve.p1 = _tmp.p2;
 	} else {
 		currentCurve.p1 = getCenterPointOfLine(lastCp, mousePoint);
 	}
 
 	currentCurve.p2 = getCenterPointOfLine(lastCp, mousePoint);
-	curves.add(currentCurve);
+
+	segments.add(new RibbonSegment(currentCurve, theme.getNextColor()));
 
 	lastCp = mousePoint;
+
+	if(Config.animateRibbon && segments.size() > Config.maxRibbonLength) {
+		segments.remove(0);
+	}
 }
 
 void keyReleased () {
@@ -175,20 +190,16 @@ void keyReleased () {
 	}
 }
 
+class RibbonSegment {
 
-class QuadraticCurve {
+	QuadraticCurve curve;
+	int segmentColor;
 
-	Point p1 = null;
-	Point p2 = null;
-	Point cp = null;
-	QuadraticCurve (Point _p1, Point _p2, Point _cp) {
-		p1 = _p1;
-		p2 = _p2;
-		cp = _cp;
+	RibbonSegment(QuadraticCurve _curve, int _color) {
+		curve = _curve;
+		segmentColor = _color;
 	}
 
-	QuadraticCurve () {
-
-	}
 
 }
+
