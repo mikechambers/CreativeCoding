@@ -24,6 +24,7 @@ static class Config {
 	static String blendMode = "NORMAL";
 	static int shapeWidth = 25;
 	static int shapeHeight = 25;
+	static float rotation = 0;
 }
 
 String suffix;
@@ -122,7 +123,11 @@ void createTiles () {
         	noFill();
         }
 
-        rect(point.x, point.y, size.width, size.height);
+        pushMatrix();
+        translate(point.x, point.y);
+        rotate(radians(Config.rotation));
+        rect(0, 0, size.width, size.height);
+        popMatrix();
 
         column++;
     }
