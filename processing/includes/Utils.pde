@@ -46,5 +46,14 @@ class QuadraticCurve {
 	}
 }
 
+class Size {
+	float width = 0.0;
+	float height = 0.0;
+
+	Size(float width, float height) {
+		this.width = width;
+		this.height = height;
+	}
+}
 
 

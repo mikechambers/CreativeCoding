@@ -1,6 +1,6 @@
 //either remove all processing code and make this a .java file
 //or remove static variables
-//could also move the static variables into their own .java file
+//could also move the static variables int[]o their own .java file
 
 public class ColorThemes {
 
@@ -36,7 +36,7 @@ public class ColorThemes {
 		0xFF1DB7CC
 	};
 
-	public static final  int[] AQUA_SKY = {
+	public static final int[] AQUA_SKY = {
 		0xFF3CD6E8,
 		0xFF42BAFF,
 		0xFF4FFFE1,
@@ -91,5 +91,62 @@ public class ColorThemes {
 		0xFFec7e21,
 		0xFFeda421
 	};
+
+    public static final int[] PHAEDRA = {
+        0xFFFF6138,
+        0xFFFFFF9D,
+        0xFFBEEB9F,
+        0xFF79BD8F,
+        0xFF00A388
+    };
+    
+    public static final int[] FOREVER_LOSTS = {
+        0xFF5D4157,
+        0xFF838689,
+        0xFFA8CABA,
+        0xFFCAD7B2,
+        0xFFEBE3AA
+    };
+    
+    public static final int[] ONLY_HUMAN = {
+        0xFFE0FFB3,
+        0xFF61C791,
+        0xFF31797D,
+        0xFF2A2F36,
+        0xFFF23C55
+    };
+
+    public static final int[] TOKYO_TRACK = {
+        0xFFA4727E,
+        0xFFD1DA96,
+        0xFFA4A877,
+        0xFFA8896F,
+        0xFFA4776B
+    };     
+
+    public static final int[] TOKYO_ALLEY = {
+        0xFFA83151,
+        0xFF722037,
+        0xFF263A5A,
+        0xFFC3E8F2,
+        0xFFF0CC7D
+    };      
+    
+    public static final int[] BLUE_GREY = {
+        0xFFE6F1F5,
+        0xFF636769,
+        0xFFAAB3B6,
+        0xFF6E7476,
+        0xFF4B4E50
+    };
+    
+    public static final int[] POST_ASTEROID_ENVIRONMENT = {
+       0xFF8A1700,
+       0xFFFF5600,
+       0xFFFCFFF8,
+       0xFF8ACCE8,
+       0xFF273A42
+    };
+
 
 }
