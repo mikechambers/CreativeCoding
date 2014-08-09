@@ -19,6 +19,7 @@ static class Config {
 	static String colorThemeName = "HBCIRCLES1";
 	static float fillAlpha = 1.0;
 	static float BOUNDS_PADDING = 5.0;
+	static float SHAPE_SPACING = 20.0;
 	static Boolean useStroke = true;
 }
 
@@ -28,12 +29,12 @@ ColorThemeManager theme;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 5;
-	Config.fillAlpha = 1.0;
+	Config.SHAPE_SPACING = -5;
+	Config.fillAlpha = 0.5;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
-
+	Config.recordPDF = true;
 	Config.colorThemeName = "PHAEDRA";
-
 }
 
 void initialize() {
@@ -76,21 +77,21 @@ void createTiles () {
     float _x;
     float _y;
     
-    Size size = new Size(100,5);
+    Size size = new Size(30,30);
     
     Boolean shouldContinue = true;
     while (shouldContinue) {
         
-        _x = (column * size.width) + (Config.BOUNDS_PADDING * (column + 1));
+        _x = (column * size.width) + (Config.SHAPE_SPACING * column) + Config.BOUNDS_PADDING;
         
         if (_x + size.width + Config.BOUNDS_PADDING > Config.width) {
             column = 0;
             row++;
         }
         
-        _x = (column * size.width) + (Config.BOUNDS_PADDING * (column + 1));
+        _x = (column * size.width) + (Config.SHAPE_SPACING * column) + Config.BOUNDS_PADDING;
         
-        _y = row * size.height + (Config.BOUNDS_PADDING * (row + 1));
+        _y = row * size.height + (Config.SHAPE_SPACING * row) + Config.BOUNDS_PADDING;
         if (_y + size.height + Config.BOUNDS_PADDING > Config.height) {
             
             shouldContinue = false;
