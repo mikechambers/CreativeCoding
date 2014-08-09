@@ -21,20 +21,25 @@ static class Config {
 	static float BOUNDS_PADDING = 5.0;
 	static float SHAPE_SPACING = 20.0;
 	static Boolean useStroke = true;
+	static String blendMode = "NORMAL";
+	static int shapeWidth = 25;
+	static int shapeHeight = 25;
 }
-
 
 String suffix;
 ColorThemeManager theme;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 5;
-	Config.SHAPE_SPACING = -5;
+	Config.SHAPE_SPACING = -10;
 	Config.fillAlpha = 0.5;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
-	Config.colorThemeName = "PHAEDRA";
+	Config.colorThemeName = "HBCIRCLES2A";
+	Config.blendMode = "NORMAL";
+	Config.shapeWidth = 25;
+	Config.shapeHeight = 25;
 }
 
 void initialize() {
@@ -77,7 +82,7 @@ void createTiles () {
     float _x;
     float _y;
     
-    Size size = new Size(30,30);
+    Size size = new Size(Config.shapeWidth, Config.shapeHeight);
     
     Boolean shouldContinue = true;
     while (shouldContinue) {
@@ -103,6 +108,8 @@ void createTiles () {
             _y
         );
         
+        setBlendModeByName(Config.blendMode);
+
         if(Config.useStroke) {
         	stroke(Config.strokeColor);
         } else {

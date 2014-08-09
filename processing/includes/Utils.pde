@@ -30,6 +30,47 @@ Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
 	return new Point(x,y);
 }
 
+void setBlendModeByName(String blendModeName) {
+	int mode = BLEND;
+
+	if(blendModeName == "REPLACE") {
+		mode = REPLACE;
+	} else if (blendModeName == "BLEND") {
+		mode = BLEND;
+	} else if (blendModeName == "ADD") {
+		mode = ADD;
+	} else if (blendModeName == "SUBTRACT") {
+		mode = SUBTRACT;
+	} else if (blendModeName == "LIGHTEST") {
+		mode = LIGHTEST;
+	}  else if (blendModeName == "DARKEST") {
+		mode = DARKEST;
+	} else if (blendModeName == "DIFFERENCE") {
+		mode = DIFFERENCE;
+	} else if (blendModeName == "EXCLUSION") {
+		mode = EXCLUSION;
+	} else if (blendModeName == "MULTIPLY") {
+		mode = MULTIPLY;
+	} else if (blendModeName == "SCREEN") {
+		mode = SCREEN;
+	}  else if (blendModeName == "OVERLAY") {
+		mode = OVERLAY;
+	} else if (blendModeName == "HARD_LIGHT") {
+		mode = HARD_LIGHT;
+	} else if (blendModeName == "SOFT_LIGHT") {
+		mode = SOFT_LIGHT;
+	} else if (blendModeName == "DODGE") {
+		mode = DODGE;
+	} else if (blendModeName == "BURN") {
+		mode = BURN;
+	}  else if (blendModeName == "NORMAL") {
+		mode = BLEND;
+	}
+
+  blendMode(mode);
+}
+
+
 class QuadraticCurve {
 
 	Point p1 = null;
