@@ -1,5 +1,4 @@
-#include ../includes/Point.pde
-#include ../includes/ColorThemeManager.pde
+#include ../includes/ColorThemeManager.java
 #include ../includes/ColorThemes.java
 #include ../includes/CaptureUtils.pde
 #include ../includes/Utils.pde
@@ -149,22 +148,4 @@ void keyReleased () {
 		saveConfig();
 		savePDF();
 	}
-}
-
-
-class QuadraticCurve {
-
-	Point p1 = null;
-	Point p2 = null;
-	Point cp = null;
-	QuadraticCurve (Point _p1, Point _p2, Point _cp) {
-		p1 = _p1;
-		p2 = _p2;
-		cp = _cp;
-	}
-
-	QuadraticCurve () {
-
-	}
-
 }

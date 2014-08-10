@@ -1,9 +1,10 @@
 #include ../includes/Utils.pde
 #include ../includes/MathUtils.pde
-#include ../includes/Point.pde
+#include ../includes/ColorThemes.java
+#include ../includes/ColorThemeManager.java
+#include ../includes/CaptureUtils.pde
 
 import java.util.Date;
-import java.lang.reflect.*;
 import processing.pdf.*;
 
 static class Config {
@@ -19,21 +20,13 @@ static class Config {
 	static float fillAlpha = 1.0;
 
 	static int padding = 0;
-
 	static int vertextLimit = 3;
-	
 	static float radius = 2.0;
-
 	static Boolean dofill = false;
-
 	static Boolean drawLines = true;
-
 	static Boolean scaleRadius = true;
-
 	static int frameRate = 30;
-
 	static int blendMode = NORMAL;
-
 	static int width = 400;
 	static int height = 400;
 
@@ -67,14 +60,12 @@ Boolean paused = false;
 int[] colors;
 
 void initColors (){
-	ColorThemes c = new ColorThemes();
-
-	colors = c.getTheme(Config.colorTheme);
+	colors = ColorThemeManager.getThemeByName(Config.colorTheme);
 
 	int len = colors.length;
 
 	for(int i = 0; i < len; i++) {
-		colors[i] = ColorUtil.setAlphaOfColor(colors[i], Config.fillAlpha);
+		colors[i] = setAlphaOfColor(colors[i], Config.fillAlpha);
 	}
 }
 
@@ -196,71 +187,3 @@ void mouseClicked() {
 	fill(Config.strokeColor);
 	drawCircle(p, Config.radius);
 }
-
-/************ utils **************/
-
-void savePDF() {
-
-	if(!Config.recordPDF) {
-		return;
-	}
-
-	endRecord();
-}
-
-void beginPDFRecord () {
-	String n = getSavePath("pdf");
-	beginRecord(PDF, n);
-}
-
-void saveAll () {
-	saveImage();
-	saveConfig();
-}
-
-String getSavePath(String extension) {
-	return "output/" + Config.name + "_" + suffix + "." + extension;
-}
-
-void saveConfig () {
-
-	String n = getSavePath("config");
-	PrintWriter output = createWriter(n);
-
-	Field[] fields = Config.class.getDeclaredFields();
-	for (Field f : fields) {
-		f.setAccessible(true);
-	    if (
-	    		Modifier.isStatic(
-	    			f.getModifiers()
-	    		)
-	    	) {
-
-	    	try {
-	    		output.println("Config." + f.getName() + " = " + (String.valueOf(f.get(null))) + ";");
-	    	}
-	    	catch (Exception e) {
-	    		println(e.getMessage());
-	    	}
-	        
-	    }
-
-	}
-
-	output.flush();
-	output.close();
-}
-
-void saveImage() {
-	String n = getSavePath("png");
-	saveFrame(n);
-}
-
-
-
-
-
-
-
-
-

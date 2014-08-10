@@ -6,6 +6,9 @@ class ImageData {
 	private PImage img = null;
 	private int[] pixels;
 
+	ImageData () {
+	}
+
 	ImageData (String imageName) {
 		initAndLoadWithImage(imageName);
 	}

@@ -1,26 +1,38 @@
+import java.lang.reflect.*;
+import java.util.Random;
+
 class ColorThemeManager {
 
 	private int[] _theme;
 	private int _colorIndex = -1;
 
 	ColorThemeManager(String name){
+		_theme = ColorThemeManager.getThemeByName(name);
+	}
 
+	static int[] getThemeByName(String name) {
+
+		int[] _tmp = null;
 		try {
 			Field f = ColorThemes.class.getField(name);
 
 			f.setAccessible(true);
 
-			int[] _tmp = (int[]) f.get(null);
+			_tmp = (int[]) f.get(null);
 
-			setTheme(_tmp);
 		} catch (Exception e) {
-			println("Error loading color theme : " + name);
+			System.out.println("Error loading color theme : " + name);
 		}
+
+		return _tmp;
 	}
 
 	int getRandomColor() {
-		//support for alpha?
-		return _theme[floor(random(0, _theme.length))];
+
+		int index = new Random().nextInt(_theme.length);
+		return _theme[index];
+
+		//return _theme[floor(random(0, _theme.length))];
 	}
 
 	int getPreviousColor() {

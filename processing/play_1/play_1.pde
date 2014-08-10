@@ -5,7 +5,6 @@ color fillColor = strokeColor;
 float radius = 8;
 Point lastPoint;
 
-
 void setup () {
 	size(400,400);
 	stroke(255);

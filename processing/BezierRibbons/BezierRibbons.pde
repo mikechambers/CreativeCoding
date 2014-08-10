@@ -1,10 +1,8 @@
-#include ../includes/Point.pde
-#include ../includes/ColorThemeManager.pde
+#include ../includes/ColorThemeManager.java
 #include ../includes/ColorThemes.java
 #include ../includes/CaptureUtils.pde
 #include ../includes/Utils.pde
 #include ../includes/MathUtils.pde
-#include ../includes/ColorUtils.pde
 #include ../includes/Ribbon.pde
 
 import java.util.Date;

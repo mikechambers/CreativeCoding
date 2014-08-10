@@ -1,5 +1,4 @@
-#include ../includes/Point.pde
-#include ../includes/ColorThemeManager.pde
+#include ../includes/ColorThemeManager.java
 #include ../includes/ColorThemes.java
 #include ../includes/CaptureUtils.pde
 #include ../includes/Utils.pde

@@ -1,11 +1,9 @@
 import java.util.Date;
 
-#include ../includes/ColorThemeManager.pde
+#include ../includes/ColorThemeManager.java
 #include ../includes/CaptureUtils.pde
 #include ../includes/ColorThemes.java
-#include ../includes/Point.pde
 #include ../includes/Utils.pde
-#include ../includes/ColorUtils.pde
 #include ../includes/ImageData.pde
 
 static class Config {
@@ -126,7 +124,19 @@ void createTiles () {
         }
 
         if(Config.useFill) {
-        	int c = (imageData != null)?imageData.getColor(point):theme.getRandomColor();
+        	//int c = (imageData != null)?imageData.getColor(point):;
+
+        	int c = 0;
+
+        	if(imageData != null) {
+
+        		Bounds b = new Bounds(point, size);
+        		c = imageData.getColor(b.getCenterPoint());
+
+        	} else {
+        		c = theme.getRandomColor();
+        	}
+
         	fill(setAlphaOfColor(c, Config.fillAlpha));
 
         } else {

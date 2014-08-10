@@ -22,12 +22,19 @@ void strokeDash(float width) {
   	g2.setStroke(pen);
 }
 
-Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
-	//http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B.C3.A9zier_curves
-	float x = (1 - t) * (1 - t) * p1.x + 2 * (1 - t) * t * cp.x + t * t * p2.x;
-	float y = (1 - t) * (1 - t) * p1.y + 2 * (1 - t) * t * cp.y + t * t * p2.y;
+class QuadraticCurve {
 
-	return new Point(x,y);
+	Point p1 = null;
+	Point p2 = null;
+	Point cp = null;
+	QuadraticCurve (Point _p1, Point _p2, Point _cp) {
+		p1 = _p1;
+		p2 = _p2;
+		cp = _cp;
+	}
+
+	QuadraticCurve () {
+	}
 }
 
 void setBlendModeByName(String blendModeName) {
@@ -70,23 +77,6 @@ void setBlendModeByName(String blendModeName) {
   blendMode(mode);
 }
 
-
-class QuadraticCurve {
-
-	Point p1 = null;
-	Point p2 = null;
-	Point cp = null;
-	QuadraticCurve (Point _p1, Point _p2, Point _cp) {
-		p1 = _p1;
-		p2 = _p2;
-		cp = _cp;
-	}
-
-	QuadraticCurve () {
-
-	}
-}
-
 class Size {
 	float width = 0.0;
 	float height = 0.0;
@@ -95,6 +85,63 @@ class Size {
 		this.width = width;
 		this.height = height;
 	}
+}
+
+class Bounds {
+	float x = 0.0;
+	float y = 0.0;
+	float width = 0.0;
+	float height = 0.0;
+
+	Bounds (float x, float y, float width, float height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+
+	Bounds(float width, float height) {
+		this(0, 0, width, height);
+	}
+
+	Bounds(Point p, Size s) {
+		this(p.x, p.y, s.width, s.height);
+	}
+
+	Bounds(Size s) {
+		this(0, 0, s.width, s.height);
+	}
+
+	Bounds() {
+	}
+
+	Point getCenterPoint() {
+		Point p = new Point();
+		p.x = (width / 2) + x;
+		p.y = (height / 2) + y;
+
+		return p;
+	}
+}
+
+class Point {
+
+	float x = 0.0;
+	float y = 0.0;
+
+	Point (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	Point () {
+	}
+}
+
+int setAlphaOfColor(int hexColor, float alpha) {
+	int a = floor((255) * alpha);
+
+	return (hexColor & 0xFFFFFF) | (a << 24);
 }
 
 

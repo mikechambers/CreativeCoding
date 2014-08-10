@@ -1,7 +1,7 @@
-#include ../includes/Point.pde
+#include ../includes/Utils.pde
 #include ../includes/CaptureUtils.pde
-#include ../includes/ColorThemeManager.pde
 #include ../includes/ColorThemes.java
+#include ../includes/ColorThemeManager.java
 
 import java.util.Date;
 import java.lang.reflect.*;
@@ -22,8 +22,8 @@ static class Config {
 }
 
 String suffix;
-ColorThemeManager theme1 = new ColorThemeManager(ColorThemes.HBCIRCLES1A);
-ColorThemeManager theme2 = new ColorThemeManager(ColorThemes.HBCIRCLES2A);
+ColorThemeManager theme1 = new ColorThemeManager("HBCIRCLES1A");
+ColorThemeManager theme2 = new ColorThemeManager("HBCIRCLES2A");
 
 void initConfig () {
 	Config.bgColor = 0xFFd7d2cf;

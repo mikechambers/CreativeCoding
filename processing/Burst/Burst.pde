@@ -1,4 +1,3 @@
-#include ../includes/Point.pde
 #include ../includes/CaptureUtils.pde
 #include ../includes/Utils.pde
 
