@@ -6,6 +6,7 @@ import java.util.Date;
 #include ../includes/Point.pde
 #include ../includes/Utils.pde
 #include ../includes/ColorUtils.pde
+#include ../includes/ImageData.pde
 
 static class Config {
 	static String name = "TileEngine";
@@ -25,22 +26,25 @@ static class Config {
 	static int shapeWidth = 25;
 	static int shapeHeight = 25;
 	static float rotation = 0;
+	static String imagePath = null;
 }
 
 String suffix;
 ColorThemeManager theme;
+ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 5;
 	Config.SHAPE_SPACING = -10;
 	Config.fillAlpha = 0.5;
-	Config.useStroke = true;
+	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
-	Config.blendMode = "NORMAL";
+	Config.blendMode = "MULTIPLY";
 	Config.shapeWidth = 25;
 	Config.shapeHeight = 25;
+	Config.imagePath = "../images/sfsunset874x874.png";
 }
 
 void initialize() {
@@ -62,6 +66,10 @@ void initialize() {
 	background(Config.bgColor);
 	fill(Config.bgColor);
 	rect(-1,-1, width + 1, height + 1);
+
+	if(Config.imagePath != null) {
+		imageData = new ImageData(Config.imagePath, new Size(Config.width, Config.height));
+	}
 }
 
 void setup() {
@@ -85,6 +93,8 @@ void createTiles () {
     
     Size size = new Size(Config.shapeWidth, Config.shapeHeight);
     
+    setBlendModeByName(Config.blendMode);
+
     Boolean shouldContinue = true;
     while (shouldContinue) {
         
@@ -108,8 +118,6 @@ void createTiles () {
             _x,
             _y
         );
-        
-        setBlendModeByName(Config.blendMode);
 
         if(Config.useStroke) {
         	stroke(Config.strokeColor);
@@ -118,7 +126,9 @@ void createTiles () {
         }
 
         if(Config.useFill) {
-        	fill(setAlphaOfColor(theme.getRandomColor(), Config.fillAlpha));
+        	int c = (imageData != null)?imageData.getColor(point):theme.getRandomColor();
+        	fill(setAlphaOfColor(c, Config.fillAlpha));
+
         } else {
         	noFill();
         }
@@ -132,7 +142,6 @@ void createTiles () {
         column++;
     }
 };
-
 
 
 void keyReleased () {
