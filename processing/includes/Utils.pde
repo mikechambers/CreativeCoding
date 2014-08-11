@@ -7,7 +7,21 @@ void drawLine(Point p1, Point p2) {
 }
 
 Point getRandomPoint(int padding) {
-	return new Point(random(padding, width - padding), random(padding, height - padding));
+
+	Bounds bounds = new Bounds();
+	bounds.x = padding;
+	bounds.y = padding;
+	bounds.width = width - (padding * 2);
+	bounds.height = height - (padding * 2);
+
+	return getRandomPointInBounds(bounds);
+}
+
+Point getRandomPointInBounds(Bounds bounds) {
+	return new Point(
+		random(bounds.x, bounds.width - bounds.x), 
+		random(bounds.y, bounds.height - bounds.y)
+	);
 }
 
 import java.awt.BasicStroke;
