@@ -39,17 +39,17 @@ void initConfig () {
 	Config.width = 640;
 	Config.height = 640;
 
-	Config.recordPDF = false;
+	Config.recordPDF = true;
 	Config.frameRate = 60;
 
 	Config.bgColor = 0xFFFFFFFF;
-	Config.strokeColor = 0x00111111;
+	Config.strokeColor = 0xFF111111;
 
 	Config.useFill = true;
-	Config.fillAlpha = 10.0;
+	Config.fillAlpha = 0.5;
 	Config.animateRibbon = false;
 	Config.maxRibbonLength = 100;
-	Config.movementThreshold = 30;
+	Config.movementThreshold = 20;
 
 	Config.imageDataPath = "../images/sfsunset874x874.png";
 }
@@ -69,10 +69,6 @@ void initialize() {
     //smooth(4);
 
 	frameRate(Config.frameRate);
-
-	if(Config.recordPDF) {
-		beginPDFRecord();
-	}
 
 	background(Config.bgColor);
 	fill(Config.bgColor);
@@ -146,6 +142,15 @@ void update () {
 	ribbon.addControlPoint(_copyPoint);
 }
 
+void renderToPDF() {
+	if(Config.recordPDF) {
+		beginPDFRecord();
+	}
+
+	ribbon.render();
+
+	savePDF();
+}
 
 void keyReleased () {
 	if (key == ' ') {
@@ -155,12 +160,12 @@ void keyReleased () {
 	} else if (key == 'j') {
 		saveConfig();
 	} else if (key == 'p') {
-		savePDF();
+		renderToPDF();
 	} else if (key == 'x') {
 		exit();
 	} else if (key == 'a') {
 		saveImage();
 		saveConfig();
-		savePDF();
+		renderToPDF();
 	}
 }

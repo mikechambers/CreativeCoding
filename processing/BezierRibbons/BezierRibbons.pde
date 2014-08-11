@@ -43,7 +43,7 @@ void initConfig () {
 	Config.maxRibbonLength = 100;
 	Config.movementThreshold = 5;
 
-	Config.imageDataPath = "../images/flower640x640.png";
+	Config.imageDataPath = "../images/sfsunset874x874.png";
 }
 
 String suffix;
@@ -61,10 +61,6 @@ void initialize() {
     //smooth(4);
 
 	frameRate(Config.frameRate);
-
-	if(Config.recordPDF) {
-		beginPDFRecord();
-	}
 
 	background(Config.bgColor);
 	fill(Config.bgColor);
@@ -113,6 +109,16 @@ void mouseMoved () {
 	ribbon.addControlPoint(mousePoint);
 }
 
+void renderToPDF() {
+	if(Config.recordPDF) {
+		beginPDFRecord();
+	}
+
+	ribbon.render();
+
+	savePDF();
+}
+
 void keyReleased () {
 	if (key == ' ') {
 		paused = !paused;
@@ -120,13 +126,13 @@ void keyReleased () {
 		saveImage();
 	} else if (key == 'j') {
 		saveConfig();
-	} else if (key == 'p') {
-		savePDF();
+	} else if (key == 'd') {
+		renderToPDF();
 	} else if (key == 'x') {
 		exit();
 	} else if (key == 'a') {
 		saveImage();
 		saveConfig();
-		savePDF();
+		renderToPDF();
 	}
 }

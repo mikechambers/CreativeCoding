@@ -13,6 +13,7 @@ void savePDF() {
 
 void beginPDFRecord () {
 	String n = getSavePath("pdf");
+	println(n);
 	beginRecord(PDF, n);
 }
 
