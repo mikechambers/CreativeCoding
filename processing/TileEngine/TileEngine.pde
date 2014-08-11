@@ -7,6 +7,10 @@ import java.util.Date;
 #include ../includes/ImageData.pde
 
 static class Config {
+
+    static final String MODE_TRIANGLE = "MODE_TRIANGLE";
+    static final String MODE_RECTANGLE = "MODE_RECTANGLE";
+
 	static String name = "TileEngine";
 	static int frameRate = 30;
 	static Boolean recordPDF = false;
@@ -23,8 +27,9 @@ static class Config {
 	static String blendMode = "NORMAL";
 	static int shapeWidth = 25;
 	static int shapeHeight = 25;
-	static float rotation = 0;
+	static float rotation = 0; // in angles
 	static String imagePath = null;
+    static String shapeMode = Config.MODE_RECTANGLE;
 }
 
 String suffix;
@@ -33,16 +38,18 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 1;
-	Config.SHAPE_SPACING = 0;
+	Config.SHAPE_SPACING = -10;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
-	Config.blendMode = "MULTIPLY";
+	Config.blendMode = "SOFT_LIGHT";
 	Config.shapeWidth = 20;
 	Config.shapeHeight = 20;
 	Config.imagePath = "../images/sfsunset874x874.png";
+    Config.shapeMode = Config.MODE_TRIANGLE;
+    Config.rotation = 45;
 }
 
 void initialize() {
@@ -145,27 +152,30 @@ void createTiles () {
         }
 
         pushMatrix();
-        //translate(point.x, point.y);
-        //rotate(radians(Config.rotation));
-        //rect(0, 0, size.width, size.height);
+        translate(point.x, point.y);
+        rotate(radians(Config.rotation));
 
-        //todo: need to get the color from the center point
+        if(Config.shapeMode == Config.MODE_RECTANGLE) {
+            rect(0, 0, size.width, size.height);
+        } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
+            int c = imageData.getColor(new Point(point.x, point.y));
+            fill(setAlphaOfColor(c, Config.fillAlpha));
+            beginShape();
+            vertex(0, 0);
+            vertex(0 + size.width, 0);
+            vertex(0, 0 + size.height);
+            endShape(CLOSE);
 
-        int c = imageData.getColor(new Point(point.x, point.y));
-        fill(setAlphaOfColor(c, Config.fillAlpha));
-        beginShape();
-        vertex(point.x, point.y);
-        vertex(point.x + size.width, point.y);
-        vertex(point.x, point.y + size.height);
-        endShape(CLOSE);
-
-        c = imageData.getColor(new Point(point.x + size.width, point.y + size.height));
-        fill(setAlphaOfColor(c, Config.fillAlpha));
-        beginShape();
-        vertex(point.x + size.width, point.y);
-        vertex(point.x, point.y + size.height);
-        vertex(point.x + size.width, point.y + size.height);
-        endShape(CLOSE);
+            c = imageData.getColor(new Point(point.x + size.width, point.y + size.height));
+            fill(setAlphaOfColor(c, Config.fillAlpha));
+            beginShape();
+            vertex(0 + size.width, 0);
+            vertex(0, 0 + size.height);
+            vertex(0 + size.width, 0 + size.height);
+            endShape(CLOSE);
+        } else {
+            println("Unregonized Config.shapeMode :" + Config.shapeMode);
+        }
 
         popMatrix();
 
