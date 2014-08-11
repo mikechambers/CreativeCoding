@@ -4,6 +4,7 @@
 #include ../includes/Utils.pde
 #include ../includes/MathUtils.pde
 #include ../includes/Ribbon.pde
+#include ../includes/ImageData.pde
 
 import java.util.Date;
 
@@ -25,6 +26,7 @@ static class Config {
 
 ColorThemeManager theme;
 Ribbon ribbon;
+ImageData imageData;
 
 void initConfig () {
 	Config.width = 1280;
@@ -38,7 +40,7 @@ void initConfig () {
 
 	Config.useFill = true;
 	Config.fillAlpha = 0.8;
-	Config.animateRibbon = true;
+	Config.animateRibbon = false;
 	Config.maxRibbonLength = 100;
 	Config.movementThreshold = 30;
 }
@@ -71,7 +73,9 @@ void initialize() {
 void setup () {
 	initialize();
 
-	ribbon = new Ribbon(theme);
+	imageData = new ImageData("../images/sfsunset874x874.png", new Size(Config.width, Config.height));
+
+	ribbon = new Ribbon(imageData);
 	ribbon.useFill = Config.useFill;
 	ribbon.strokeColor = Config.strokeColor;
 	ribbon.fillAlpha = Config.fillAlpha;

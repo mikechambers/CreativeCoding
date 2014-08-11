@@ -42,6 +42,10 @@ Point getPointOnCircleAlongLine (Point centerPoint1, float radius1, Point center
 
 }
 
+Point findPointOnQuadraticCurve(QuadraticCurve curve, float t) {
+	return findPointOnQuadraticCurve(curve.p1, curve.p2, curve.cp, t);
+}
+
 Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
 	//http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B.C3.A9zier_curves
 	float x = (1 - t) * (1 - t) * p1.x + 2 * (1 - t) * t * cp.x + t * t * p2.x;

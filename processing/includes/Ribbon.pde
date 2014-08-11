@@ -7,6 +7,7 @@ class Ribbon {
 	Boolean animateRibbon = false;
 	int maxRibbonLength = 20;
 	ColorThemeManager theme = null;
+	ImageData imageData = null;
 
 	ArrayList<RibbonSegment> segments;
 	Ribbon () {
@@ -16,6 +17,11 @@ class Ribbon {
 	Ribbon (ColorThemeManager theme) {
 		this();
 		this.theme = theme;
+	}
+
+	Ribbon (ImageData imageData) {
+		this();
+		this.imageData = imageData;
 	}
 
 	void render() {
@@ -89,8 +95,17 @@ class Ribbon {
 
 		currentCurve.p2 = getCenterPointOfLine(_lastCp, cp);
 
-		//todo: this will barf if we dont set a theme
-		segments.add(new RibbonSegment(currentCurve, theme.getNextColor()));
+		
+		int c = 0x00000000;
+
+		if(imageData != null) {
+			Point midPoint = findPointOnQuadraticCurve(currentCurve, 0.5);
+			c = imageData.getColor(midPoint);
+		} else if (theme != null) {
+			c = theme.getNextColor();
+		}
+
+		segments.add(new RibbonSegment(currentCurve, c));
 
 		_lastCp = cp;
 
