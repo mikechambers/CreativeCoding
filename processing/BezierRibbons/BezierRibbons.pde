@@ -22,6 +22,7 @@ static class Config {
 	static Boolean animateRibbon = false;
 	static int maxRibbonLength = 20;
 	static int movementThreshold = 0;
+	static String imageDataPath = null;
 }
 
 ColorThemeManager theme;
@@ -43,6 +44,8 @@ void initConfig () {
 	Config.animateRibbon = false;
 	Config.maxRibbonLength = 100;
 	Config.movementThreshold = 30;
+
+	Config.imageDataPath = "../images/sfsunset874x874.png";
 }
 
 String suffix;
@@ -73,9 +76,13 @@ void initialize() {
 void setup () {
 	initialize();
 
-	imageData = new ImageData("../images/sfsunset874x874.png", new Size(Config.width, Config.height));
+	if(Config.imageDataPath != null) {
+		imageData = new ImageData(Config.imageDataPath, new Size(Config.width, Config.height));
+		ribbon = new Ribbon(imageData);
+	} else {
+		ribbon = new Ribbon(theme);
+	}
 
-	ribbon = new Ribbon(imageData);
 	ribbon.useFill = Config.useFill;
 	ribbon.strokeColor = Config.strokeColor;
 	ribbon.fillAlpha = Config.fillAlpha;
