@@ -150,6 +150,14 @@ class Point {
 
 	Point () {
 	}
+
+	@Override public String toString() {
+		return "Point("+ x + ","+y+")";
+	}
+
+	Point copy() {
+		return new Point(x, y);
+	}
 }
 
 int setAlphaOfColor(int hexColor, float alpha) {

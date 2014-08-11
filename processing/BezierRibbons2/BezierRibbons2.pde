@@ -5,11 +5,13 @@
 #include ../includes/MathUtils.pde
 #include ../includes/Ribbon.pde
 #include ../includes/ImageData.pde
+#include ../includes/BouncingPoint.pde
+#include ../includes/RotatingPoint.pde
 
 import java.util.Date;
 
 static class Config {
-	static String name = "BezierRibbons";
+	static String name = "BezierRibbons2";
 	static int frameRate = 30;
 	static Boolean recordPDF = false;
 	static color bgColor = 0xFF111111;
@@ -23,27 +25,33 @@ static class Config {
 	static int maxRibbonLength = 20;
 	static int movementThreshold = 0;
 	static String imageDataPath = null;
+	static String blendMode = "NORMAL";
 }
 
 ColorThemeManager theme;
 Ribbon ribbon;
 ImageData imageData;
 
-void initConfig () {
+BouncingPoint trackPoint;
+RotatingPoint targetPoint;
 
-	Config.recordPDF = true;
+void initConfig () {
+	Config.width = 640;
+	Config.height = 640;
+
+	Config.recordPDF = false;
 	Config.frameRate = 60;
 
 	Config.bgColor = 0xFFFFFFFF;
 	Config.strokeColor = 0x00111111;
 
 	Config.useFill = true;
-	Config.fillAlpha = 0.5;
+	Config.fillAlpha = 10.0;
 	Config.animateRibbon = false;
 	Config.maxRibbonLength = 100;
-	Config.movementThreshold = 5;
+	Config.movementThreshold = 30;
 
-	Config.imageDataPath = "../images/flower640x640.png";
+	Config.imageDataPath = "../images/sfsunset874x874.png";
 }
 
 String suffix;
@@ -86,22 +94,45 @@ void setup () {
 	ribbon.fillAlpha = Config.fillAlpha;
 	ribbon.animateRibbon = Config.animateRibbon;
 	ribbon.maxRibbonLength = Config.maxRibbonLength;
+
+	trackPoint = new BouncingPoint(new Bounds(0,0, Config.width, Config.height), 5.0);
+	targetPoint = new RotatingPoint(trackPoint.position, 50.0);
+
+
+	setBlendModeByName(Config.blendMode);
 }
 
 
+Point _lastPoint;
 void draw() {
 
 	background(Config.bgColor);
 
+	update();
 	ribbon.render();
 }
 
-Point _lastPoint;
-void mouseMoved () {
 
-	Point mousePoint = new Point(mouseX, mouseY);
+void update () {
+
+	Point mousePoint = targetPoint.updatePosition(trackPoint.updatePosition());
+
+		Bounds bounds = new Bounds(0,0, Config.width, Config.height);
+		if(mousePoint.x < bounds.x) {
+			return;
+		} else if (mousePoint.x > bounds.x + bounds.width) {
+			mousePoint.x = bounds.x + bounds.width;
+			return;
+		}
+
+		if(mousePoint.y < bounds.y) {
+			return;
+		} else if (mousePoint.y > bounds.y + bounds.height) {
+			return;
+		}
 
 	if(_lastPoint != null) {
+
 		float distance = getDistanceBetweenPoints(_lastPoint, mousePoint);
 
 		if(distance < Config.movementThreshold) {
@@ -109,9 +140,12 @@ void mouseMoved () {
 		}
 	}
 
-	_lastPoint = mousePoint;
-	ribbon.addControlPoint(mousePoint);
+	Point _copyPoint = mousePoint.copy();
+	_lastPoint = _copyPoint;
+
+	ribbon.addControlPoint(_copyPoint);
 }
+
 
 void keyReleased () {
 	if (key == ' ') {
