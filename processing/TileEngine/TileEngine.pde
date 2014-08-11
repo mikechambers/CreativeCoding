@@ -32,16 +32,16 @@ ColorThemeManager theme;
 ImageData imageData;
 
 void initConfig () {
-	Config.BOUNDS_PADDING = 5;
-	Config.SHAPE_SPACING = -10;
-	Config.fillAlpha = 0.5;
+	Config.BOUNDS_PADDING = 1;
+	Config.SHAPE_SPACING = 0;
+	Config.fillAlpha = 1.0;
 	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
 	Config.blendMode = "MULTIPLY";
-	Config.shapeWidth = 25;
-	Config.shapeHeight = 25;
+	Config.shapeWidth = 20;
+	Config.shapeHeight = 20;
 	Config.imagePath = "../images/sfsunset874x874.png";
 }
 
@@ -54,6 +54,7 @@ void initialize() {
 	suffix = String.valueOf(d.getTime());
 
 	size(Config.width, Config.height);
+    smooth(0);
 
 	frameRate(Config.frameRate);
 
@@ -144,9 +145,28 @@ void createTiles () {
         }
 
         pushMatrix();
-        translate(point.x, point.y);
-        rotate(radians(Config.rotation));
-        rect(0, 0, size.width, size.height);
+        //translate(point.x, point.y);
+        //rotate(radians(Config.rotation));
+        //rect(0, 0, size.width, size.height);
+
+        //todo: need to get the color from the center point
+
+        int c = imageData.getColor(new Point(point.x, point.y));
+        fill(setAlphaOfColor(c, Config.fillAlpha));
+        beginShape();
+        vertex(point.x, point.y);
+        vertex(point.x + size.width, point.y);
+        vertex(point.x, point.y + size.height);
+        endShape(CLOSE);
+
+        c = imageData.getColor(new Point(point.x + size.width, point.y + size.height));
+        fill(setAlphaOfColor(c, Config.fillAlpha));
+        beginShape();
+        vertex(point.x + size.width, point.y);
+        vertex(point.x, point.y + size.height);
+        vertex(point.x + size.width, point.y + size.height);
+        endShape(CLOSE);
+
         popMatrix();
 
         column++;
