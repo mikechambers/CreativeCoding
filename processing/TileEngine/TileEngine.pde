@@ -11,6 +11,7 @@ static class Config {
 
     static final String MODE_TRIANGLE = "MODE_TRIANGLE";
     static final String MODE_RECTANGLE = "MODE_RECTANGLE";
+    static final String MODE_CIRCLE = "MODE_CIRCLE";
 
 	static String name = "TileEngine";
 	static int frameRate = 30;
@@ -49,7 +50,7 @@ void initConfig () {
 	Config.shapeWidth = 20;
 	Config.shapeHeight = 20;
 	Config.imagePath = "../images/sfsunset874x874.png";
-    Config.shapeMode = Config.MODE_TRIANGLE;
+    Config.shapeMode = Config.MODE_CIRCLE;
 }
 
 void initialize() {
@@ -92,7 +93,12 @@ void updateFill(Point[] points) {
         int _c = 0;
 
         if(imageData != null) {
-            _c = imageData.getColor(getCentroidOfPolygon(points));
+
+            if(points.length == 1) {
+                _c = imageData.getColor(points[0]);
+            } else {
+                _c = imageData.getColor(getCentroidOfPolygon(points));
+            }
         } else {
             _c = theme.getRandomColor();
         }
@@ -152,8 +158,12 @@ void createTiles () {
         translate(point.x, point.y);
         rotate(radians(Config.rotation));
 
-
-        if(Config.shapeMode == Config.MODE_RECTANGLE) {
+        if(Config.shapeMode == Config.MODE_CIRCLE) {
+            Point[] points = {point};
+            updateFill(points);
+            ellipseMode(CORNER);
+            ellipse(0, 0, size.width, size.height);
+        } else if (Config.shapeMode == Config.MODE_RECTANGLE) {
 
             Point[] points = {
                 point,
