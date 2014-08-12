@@ -40,17 +40,18 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 1;
-	Config.SHAPE_SPACING = 0;
+	Config.SHAPE_SPACING = -10;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
-	Config.blendMode = "NORMAL";
+	Config.blendMode = "SOFT_LIGHT";
 	Config.shapeWidth = 20;
 	Config.shapeHeight = 20;
-	Config.imagePath = "../images/sfsunset874x874.png";
-    Config.shapeMode = Config.MODE_CIRCLE;
+	Config.imagePath = "../images/sky2640x640.png";
+    Config.shapeMode = Config.MODE_TRIANGLE;
+    Config.rotation = 25;
 }
 
 void initialize() {
