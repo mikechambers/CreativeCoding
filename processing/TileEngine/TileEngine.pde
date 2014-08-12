@@ -39,17 +39,16 @@ ImageData imageData;
 void initConfig () {
 	Config.BOUNDS_PADDING = 1;
 	Config.SHAPE_SPACING = -10;
-	Config.fillAlpha = 1.0;
+	Config.fillAlpha = 0.5;
 	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
-	Config.blendMode = "SOFT_LIGHT";
+	Config.blendMode = "NORMAL";
 	Config.shapeWidth = 20;
 	Config.shapeHeight = 20;
 	Config.imagePath = "../images/sfsunset874x874.png";
     Config.shapeMode = Config.MODE_TRIANGLE;
-    Config.rotation = 45;
 }
 
 void initialize() {
@@ -160,6 +159,7 @@ void createTiles () {
         } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
             int c = imageData.getColor(new Point(point.x, point.y));
             fill(setAlphaOfColor(c, Config.fillAlpha));
+
             beginShape();
             vertex(0, 0);
             vertex(0 + size.width, 0);
@@ -168,6 +168,7 @@ void createTiles () {
 
             c = imageData.getColor(new Point(point.x + size.width, point.y + size.height));
             fill(setAlphaOfColor(c, Config.fillAlpha));
+
             beginShape();
             vertex(0 + size.width, 0);
             vertex(0, 0 + size.height);

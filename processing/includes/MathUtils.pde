@@ -53,3 +53,35 @@ Point findPointOnQuadraticCurve(Point p1, Point p2, Point cp, float t) {
 
 	return new Point(x,y);
 }
+
+//http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
+Point getCentroidOfPolygon(Point[] points) {
+	float a = 0.0;
+	int len = points.length;
+	
+	Point p0;
+	Point p1;
+	float _x = 0.0;
+	float _y = 0.0;
+	for(int i = 0; i < len; i++){
+
+		if(i < len - 1) {
+			p0 = points[i];
+			p1 = points[i + 1];
+		} else {
+			p0 = points[i];
+			p1 = points[0];
+		}
+
+		a += ((p0.x * p1.y) - (p1.x * p0.y));
+		_x += ((p0.x + p1.x) * ((p0.x * p1.y) - (p1.x * p0.y)));
+		_y += ((p0.y + p1.y) * ((p0.x * p1.y) - (p1.x * p0.y)));
+	}
+
+	a = a * 0.5;
+
+	_x = _x / (6.0 * a);
+	_y = _y / (6.0 * a);
+
+	return new Point(_x, _y);
+}
