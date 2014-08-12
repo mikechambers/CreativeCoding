@@ -5,6 +5,7 @@ import java.util.Date;
 #include ../includes/ColorThemes.java
 #include ../includes/Utils.pde
 #include ../includes/ImageData.pde
+#include ../includes/MathUtils.pde
 
 static class Config {
 
@@ -38,8 +39,8 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 1;
-	Config.SHAPE_SPACING = -10;
-	Config.fillAlpha = 0.5;
+	Config.SHAPE_SPACING = 0;
+	Config.fillAlpha = 1.0;
 	Config.useStroke = false;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
@@ -85,9 +86,26 @@ void setup() {
 void draw(){
 }
 
+void updateFill(Point[] points) {
+
+    if(Config.useFill) {
+        int _c = 0;
+
+        if(imageData != null) {
+            _c = imageData.getColor(getCentroidOfPolygon(points));
+        } else {
+            _c = theme.getRandomColor();
+        }
+
+        fill(setAlphaOfColor(_c, Config.fillAlpha));
+
+    } else {
+        noFill();
+    }
+}
+
 void createTiles () {
-    
-    //var out = [];
+
     int i;
     Point point;
     
@@ -130,35 +148,32 @@ void createTiles () {
         	noStroke();
         }
 
-        if(Config.useFill) {
-        	//int c = (imageData != null)?imageData.getColor(point):;
-
-        	int c = 0;
-
-        	if(imageData != null) {
-
-        		Bounds b = new Bounds(point, size);
-        		c = imageData.getColor(b.getCenterPoint());
-
-        	} else {
-        		c = theme.getRandomColor();
-        	}
-
-        	fill(setAlphaOfColor(c, Config.fillAlpha));
-
-        } else {
-        	noFill();
-        }
-
         pushMatrix();
         translate(point.x, point.y);
         rotate(radians(Config.rotation));
 
+
         if(Config.shapeMode == Config.MODE_RECTANGLE) {
+
+            Point[] points = {
+                point,
+                new Point(point.x + size.width, point.y),
+                new Point(point.x + size.width, point.y + size.height),
+                new Point(point.x, point.y + size.width)
+            };
+
+            updateFill(points);
+
             rect(0, 0, size.width, size.height);
         } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
-            int c = imageData.getColor(new Point(point.x, point.y));
-            fill(setAlphaOfColor(c, Config.fillAlpha));
+
+            Point[] points = {
+                new Point(point.x, point.y),
+                new Point(point.x + size.width, point.y),
+                new Point(point.x, point.y + size.height)
+            };
+
+            updateFill(points);
 
             beginShape();
             vertex(0, 0);
@@ -166,14 +181,21 @@ void createTiles () {
             vertex(0, 0 + size.height);
             endShape(CLOSE);
 
-            c = imageData.getColor(new Point(point.x + size.width, point.y + size.height));
-            fill(setAlphaOfColor(c, Config.fillAlpha));
+            points[0].x = point.x + size.width;
+            points[0].y = point.y;
+            points[1].x = point.x;
+            points[1].y = point.y + size.height;
+            points[2].x = point.x + size.width;
+            points[2].y = point.y + size.height;
+
+            updateFill(points);
 
             beginShape();
             vertex(0 + size.width, 0);
             vertex(0, 0 + size.height);
             vertex(0 + size.width, 0 + size.height);
             endShape(CLOSE);
+
         } else {
             println("Unregonized Config.shapeMode :" + Config.shapeMode);
         }

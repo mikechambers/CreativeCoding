@@ -42,6 +42,7 @@ class ImageData {
 		return hex(pixel);
 	}
 
+	/*
 	RGBA getRGBA(Point point) {
 		int pixel = getColor(point);
 
@@ -53,9 +54,10 @@ class ImageData {
 
 		return out;
 	}
+	*/
 }
 
-
+/*
 class RGBA {
 	int r = 0;
 	int g = 0;
@@ -63,9 +65,13 @@ class RGBA {
 	int a = 0;
 
 	RGBA(int r, int g, int b, int a){
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
 	}
 
 	RGBA(){
-
 	}
 }
+*/

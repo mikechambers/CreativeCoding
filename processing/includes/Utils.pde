@@ -166,4 +166,7 @@ int setAlphaOfColor(int hexColor, float alpha) {
 	return (hexColor & 0xFFFFFF) | (a << 24);
 }
 
+void vertex(Point p) {
+	vertex(p.x, p.y);
+}
 
