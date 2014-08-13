@@ -32,6 +32,8 @@ static class Config {
 	static float rotation = 0; // in angles
 	static String imagePath = null;
     static String shapeMode = Config.MODE_RECTANGLE;
+    static int cornerRadius = 0;
+    static int smoothLevel = 0;
 }
 
 String suffix;
@@ -39,19 +41,21 @@ ColorThemeManager theme;
 ImageData imageData;
 
 void initConfig () {
-	Config.BOUNDS_PADDING = 1;
-	Config.SHAPE_SPACING = -10;
+	Config.BOUNDS_PADDING = 5;
+	Config.SHAPE_SPACING = 5;
 	Config.fillAlpha = 1.0;
-	Config.useStroke = false;
+	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
-	Config.blendMode = "SOFT_LIGHT";
+	Config.blendMode = "NORMAL";
 	Config.shapeWidth = 20;
 	Config.shapeHeight = 20;
-	Config.imagePath = "../images/sky2640x640.png";
-    Config.shapeMode = Config.MODE_TRIANGLE;
-    Config.rotation = 25;
+    Config.cornerRadius = 7;
+    Config.smoothLevel = 4;
+	//Config.imagePath = "../images/heart.jpg";
+    //Config.shapeMode = Config.MODE_TRIANGLE;
+    //Config.rotation = 25;
 }
 
 void initialize() {
@@ -59,11 +63,14 @@ void initialize() {
 
 	theme = new ColorThemeManager(Config.colorThemeName);
 
+    int[] t = {0xFFFFFFFF};
+    theme.setTheme(t);
+
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
 	size(Config.width, Config.height);
-    smooth(0);
+    smooth(Config.smoothLevel);
 
 	frameRate(Config.frameRate);
 
@@ -175,7 +182,7 @@ void createTiles () {
 
             updateFill(points);
 
-            rect(0, 0, size.width, size.height);
+            rect(0, 0, size.width, size.height, Config.cornerRadius);
         } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
 
             Point[] points = {
