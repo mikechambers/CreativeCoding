@@ -6,12 +6,14 @@ import java.util.Date;
 #include ../includes/Utils.pde
 #include ../includes/ImageData.pde
 #include ../includes/MathUtils.pde
+#include ../includes/InvaderFactory.pde
 
 static class Config {
 
     static final String MODE_TRIANGLE = "MODE_TRIANGLE";
     static final String MODE_RECTANGLE = "MODE_RECTANGLE";
     static final String MODE_CIRCLE = "MODE_CIRCLE";
+    static final String MODE_INVADER = "MODE_INVADER";
 
 	static String name = "TileEngine";
 	static int frameRate = 30;
@@ -41,8 +43,8 @@ ColorThemeManager theme;
 ImageData imageData;
 
 void initConfig () {
-	Config.BOUNDS_PADDING = 5;
-	Config.SHAPE_SPACING = 5;
+	Config.BOUNDS_PADDING = 10;
+	Config.SHAPE_SPACING = 20;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
@@ -54,7 +56,7 @@ void initConfig () {
     Config.cornerRadius = 7;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/heart.jpg";
-    //Config.shapeMode = Config.MODE_TRIANGLE;
+    Config.shapeMode = Config.MODE_INVADER;
     //Config.rotation = 25;
 }
 
@@ -131,6 +133,11 @@ void createTiles () {
     Size size = new Size(Config.shapeWidth, Config.shapeHeight);
     
     setBlendModeByName(Config.blendMode);
+
+    InvaderFactory invaderFactory = null;
+    if(Config.shapeMode == Config.MODE_INVADER) {
+        invaderFactory = new InvaderFactory(5, 5, size.width, size.height, true);
+    }
 
     Boolean shouldContinue = true;
     while (shouldContinue) {
@@ -214,6 +221,8 @@ void createTiles () {
             vertex(0 + size.width, 0 + size.height);
             endShape(CLOSE);
 
+        } else if (Config.shapeMode == Config.MODE_INVADER) {
+            invaderFactory.generate();
         } else {
             println("Unregonized Config.shapeMode :" + Config.shapeMode);
         }
