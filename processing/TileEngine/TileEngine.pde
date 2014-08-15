@@ -49,19 +49,19 @@ void initConfig () {
 	Config.BOUNDS_PADDING = 10;
 	Config.SHAPE_SPACING = 10;
 	Config.fillAlpha = 1.0;
-	Config.useStroke = true;
+	Config.useStroke = false;
 	Config.strokeColor = 0xFF000000;
     Config.bgColor = 0xFFFFFFFF;
 	Config.recordPDF = true;
-	Config.colorThemeName = "HBCIRCLES2A";
+	Config.colorThemeName = "BLACK";
 	Config.blendMode = "NORMAL";
 	Config.shapeWidth = 25;
 	Config.shapeHeight = 25;
     Config.cornerRadius = 0;
     Config.smoothLevel = 4;
-	//Config.imagePath = "../images/heart.jpg";
+	//Config.imagePath = "../images/sky2640x640.png";
     Config.shapeMode = Config.MODE_INVADER;
-    //Config.rotation = 25;
+    //Config.rotation = 45;
     Config.allowDuplicates = false;
     Config.gridColumnLength = 5;
     Config.gridRowLength = 5;
@@ -71,9 +71,6 @@ void initialize() {
 	initConfig();
 
 	theme = new ColorThemeManager(Config.colorThemeName);
-
-    int[] t = {0xFFFFFFFF};
-    theme.setTheme(t);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
@@ -109,10 +106,10 @@ void setup() {
 void draw(){
 }
 
-void updateFill(Point[] points) {
+int updateFill(Point[] points) {
 
+    int _c = 0x00000000;
     if(Config.useFill) {
-        int _c = 0;
 
         if(imageData != null) {
 
@@ -125,11 +122,13 @@ void updateFill(Point[] points) {
             _c = theme.getRandomColor();
         }
 
-        fill(setAlphaOfColor(_c, Config.fillAlpha));
-
+        _c = setAlphaOfColor(_c, Config.fillAlpha);
+        fill(_c);
     } else {
         noFill();
     }
+
+    return _c;
 }
 
 void createTiles () {
@@ -222,6 +221,16 @@ void createTiles () {
                 endShape(CLOSE);
 
             } else if (Config.shapeMode == Config.MODE_INVADER) {
+
+               Point[] points = {
+                    point,
+                    new Point(point.x + size.width, point.y),
+                    new Point(point.x + size.width, point.y + size.height),
+                    new Point(point.x, point.y + size.width)
+                };
+
+                invaderFactory.fillColor = updateFill(points);
+
                 Invader invader = invaderFactory.generate();
                 shape(invader.shape);
             } else {

@@ -148,5 +148,9 @@ public class ColorThemes {
        0xFF273A42
     };
 
+    public static final int[] BLACK = {
+       0xFF000000
+    };
+
 
 }
