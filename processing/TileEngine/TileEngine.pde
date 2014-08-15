@@ -36,6 +36,9 @@ static class Config {
     static String shapeMode = Config.MODE_RECTANGLE;
     static int cornerRadius = 0;
     static int smoothLevel = 0;
+    static Boolean allowDuplicates = true;
+    static int gridColumnLength = 5;
+    static int gridRowLength = 5;
 }
 
 String suffix;
@@ -44,20 +47,23 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 10;
-	Config.SHAPE_SPACING = 1;
+	Config.SHAPE_SPACING = 10;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 2;
-	Config.shapeHeight = 2;
-    Config.cornerRadius = 7;
+	Config.shapeWidth = 25;
+	Config.shapeHeight = 25;
+    Config.cornerRadius = 0;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/heart.jpg";
     Config.shapeMode = Config.MODE_INVADER;
     //Config.rotation = 25;
+    Config.allowDuplicates = false;
+    Config.gridColumnLength = 5;
+    Config.gridRowLength = 5;
 }
 
 void initialize() {
@@ -127,9 +133,6 @@ void updateFill(Point[] points) {
 
 int totalCount = 0;
 void createTiles () {
-
-    int i;
-    Point point;
     
     int row = 0;
     int column = 0;
@@ -140,105 +143,93 @@ void createTiles () {
     
     setBlendModeByName(Config.blendMode);
 
+    int _c = floor((Config.width - (Config.BOUNDS_PADDING * 2) ) / (Config.SHAPE_SPACING + size.width));
+    int _r = floor((Config.height - (Config.BOUNDS_PADDING * 2) ) / (Config.SHAPE_SPACING + size.height));
+
     InvaderFactory invaderFactory = null;
     if(Config.shapeMode == Config.MODE_INVADER) {
-        invaderFactory = new InvaderFactory(5, 5, size.width, size.height, false);
+        invaderFactory = new InvaderFactory(Config.gridColumnLength, Config.gridRowLength, size.width, size.height, Config.allowDuplicates);
+
+        if((_c * _r) > invaderFactory.maxUniqueCombinations) {
+            println("Warning : total slots greater than unique combinations. Forcing allowDuplicates to true");
+            invaderFactory.allowDuplicates = true;
+        }
     }
 
-    Boolean shouldContinue = true;
-    while (shouldContinue) {
-        
-        _x = (column * size.width) + (Config.SHAPE_SPACING * column) + Config.BOUNDS_PADDING;
-        
-        if (_x + size.width + Config.BOUNDS_PADDING > Config.width) {
-            column = 0;
-            row++;
+    Point point = new Point(0,0);
+    for (int i = 0; i < _c; ++i) {
+        for(int k = 0; k < _r; k++) {
+
+            point.x = (i * size.width) + (Config.SHAPE_SPACING * i) + Config.BOUNDS_PADDING;
+            point.y = (k * size.height) + (Config.SHAPE_SPACING * k) + Config.BOUNDS_PADDING;
+
+            if(Config.useStroke) {
+                stroke(Config.strokeColor);
+            } else {
+                noStroke();
+            }
+
+            pushMatrix();
+            translate(point.x, point.y);
+            rotate(radians(Config.rotation));
+
+            if(Config.shapeMode == Config.MODE_CIRCLE) {
+                Point[] points = {point};
+                updateFill(points);
+                ellipseMode(CORNER);
+                ellipse(0, 0, size.width, size.height);
+            } else if (Config.shapeMode == Config.MODE_RECTANGLE) {
+
+                Point[] points = {
+                    point,
+                    new Point(point.x + size.width, point.y),
+                    new Point(point.x + size.width, point.y + size.height),
+                    new Point(point.x, point.y + size.width)
+                };
+
+                updateFill(points);
+
+                rect(0, 0, size.width, size.height, Config.cornerRadius);
+            } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
+
+                Point[] points = {
+                    new Point(point.x, point.y),
+                    new Point(point.x + size.width, point.y),
+                    new Point(point.x, point.y + size.height)
+                };
+
+                updateFill(points);
+
+                beginShape();
+                vertex(0, 0);
+                vertex(0 + size.width, 0);
+                vertex(0, 0 + size.height);
+                endShape(CLOSE);
+
+                points[0].x = point.x + size.width;
+                points[0].y = point.y;
+                points[1].x = point.x;
+                points[1].y = point.y + size.height;
+                points[2].x = point.x + size.width;
+                points[2].y = point.y + size.height;
+
+                updateFill(points);
+
+                beginShape();
+                vertex(0 + size.width, 0);
+                vertex(0, 0 + size.height);
+                vertex(0 + size.width, 0 + size.height);
+                endShape(CLOSE);
+
+            } else if (Config.shapeMode == Config.MODE_INVADER) {
+                Invader invader = invaderFactory.generate();
+                shape(invader.shape);
+            } else {
+                println("Unregonized Config.shapeMode :" + Config.shapeMode);
+            }
+
+            popMatrix();
         }
-        
-        _x = (column * size.width) + (Config.SHAPE_SPACING * column) + Config.BOUNDS_PADDING;
-        
-        _y = row * size.height + (Config.SHAPE_SPACING * row) + Config.BOUNDS_PADDING;
-        if (_y + size.height + Config.BOUNDS_PADDING > Config.height) {
-            
-            shouldContinue = false;
-            break;
-        }
-        
-        point = new Point(
-            _x,
-            _y
-        );
-
-        if(Config.useStroke) {
-        	stroke(Config.strokeColor);
-        } else {
-        	noStroke();
-        }
-
-        pushMatrix();
-        translate(point.x, point.y);
-        rotate(radians(Config.rotation));
-
-        if(Config.shapeMode == Config.MODE_CIRCLE) {
-            Point[] points = {point};
-            updateFill(points);
-            ellipseMode(CORNER);
-            ellipse(0, 0, size.width, size.height);
-        } else if (Config.shapeMode == Config.MODE_RECTANGLE) {
-
-            Point[] points = {
-                point,
-                new Point(point.x + size.width, point.y),
-                new Point(point.x + size.width, point.y + size.height),
-                new Point(point.x, point.y + size.width)
-            };
-
-            updateFill(points);
-
-            rect(0, 0, size.width, size.height, Config.cornerRadius);
-        } else if (Config.shapeMode == Config.MODE_TRIANGLE) {
-
-            Point[] points = {
-                new Point(point.x, point.y),
-                new Point(point.x + size.width, point.y),
-                new Point(point.x, point.y + size.height)
-            };
-
-            updateFill(points);
-
-            beginShape();
-            vertex(0, 0);
-            vertex(0 + size.width, 0);
-            vertex(0, 0 + size.height);
-            endShape(CLOSE);
-
-            points[0].x = point.x + size.width;
-            points[0].y = point.y;
-            points[1].x = point.x;
-            points[1].y = point.y + size.height;
-            points[2].x = point.x + size.width;
-            points[2].y = point.y + size.height;
-
-            updateFill(points);
-
-            beginShape();
-            vertex(0 + size.width, 0);
-            vertex(0, 0 + size.height);
-            vertex(0 + size.width, 0 + size.height);
-            endShape(CLOSE);
-
-        } else if (Config.shapeMode == Config.MODE_INVADER) {
-            Invader invader = invaderFactory.generate();
-            shape(invader.shape);
-        } else {
-            println("Unregonized Config.shapeMode :" + Config.shapeMode);
-        }
-
-        popMatrix();
-
-        totalCount++;
-
-        column++;
     }
 
     println("Total : " + totalCount);
