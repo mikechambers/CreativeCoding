@@ -44,15 +44,15 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 10;
-	Config.SHAPE_SPACING = 20;
+	Config.SHAPE_SPACING = 2;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 20;
-	Config.shapeHeight = 20;
+	Config.shapeWidth = 4;
+	Config.shapeHeight = 4;
     Config.cornerRadius = 7;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/heart.jpg";
@@ -71,7 +71,12 @@ void initialize() {
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
-	size(Config.width, Config.height);
+    if(Config.shapeMode == Config.MODE_INVADER) {
+        size(Config.width, Config.height, P2D);
+    } else {
+        size(Config.width, Config.height);
+    }
+
     smooth(Config.smoothLevel);
 
 	frameRate(Config.frameRate);
@@ -222,7 +227,8 @@ void createTiles () {
             endShape(CLOSE);
 
         } else if (Config.shapeMode == Config.MODE_INVADER) {
-            invaderFactory.generate();
+            Invader invader = invaderFactory.generate();
+            shape(invader.shape);
         } else {
             println("Unregonized Config.shapeMode :" + Config.shapeMode);
         }

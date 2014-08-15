@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 class InvaderFactory {
 
 	int columnCount = 5;
@@ -5,9 +7,9 @@ class InvaderFactory {
 	float pixelWidth = 5;
 	float pixelHeight = 5;
 	int fillColor = 0xFF000000;
-	Boolean allowDuplicates = false;
+	Boolean allowDuplicates = true;
 
-	//HashMap hashes<String, Boolean>;
+	HashMap hashes;
 
 	InvaderFactory (int columnCount, int rowCount, float width, float height, Boolean allowDuplicates) {
 		this.columnCount = columnCount;
@@ -19,11 +21,31 @@ class InvaderFactory {
 		this.allowDuplicates = allowDuplicates;
 
 		if(!this.allowDuplicates) {
-			//hashes = new HashMap<String, Boolean>();
+			hashes = new HashMap();
 		}
 	}
 
-	void generate() {
+	Invader generate() {
+		Invader invader = null;
+
+		while(true) {
+			invader = _generate();
+			
+			if(allowDuplicates) {
+				return invader;
+			}
+
+			Object exists = hashes.get(invader.hash);
+
+			if(exists != null) {
+				hashes.put(invader.hash, invader);
+				return invader;
+			}
+		}	
+
+	}
+
+	Invader _generate() {
 
 		float width = pixelWidth;
 		float height = pixelHeight;
@@ -34,29 +56,56 @@ class InvaderFactory {
 
 		char[] slots = new char[totalCols * rows];
 		char fillChar;
-	
+		
+		PShape invader = createShape(GROUP);
+		noStroke();
+
+		Boolean doFill = false;
 		for(int i = 0; i < halfCols; i++) {
 			for(int k = 0; k < rows; k++) {
 				fillChar = '0';
-				noStroke();
-				noFill();
-				if(random(1) > 0.5) {
-					fillChar = '1';
-					fill(fillColor);
-				}
+
+
+				doFill = (random(1) > 0.5);
 
 				slots[int(i + (k * totalCols))] = fillChar;
-				//return pixels[floor(point.x) + (floor(point.y) * img.width)];
-				rect(width * i, height * k, width, height);
+
+				PShape _tmp = createShape(RECT, width * i, height * k, width, height);
+
+				if(doFill) {
+					fillChar = '1';
+					_tmp.setFill(fillColor);
+				} else {
+					_tmp.setFill(false);
+				}
+
+				invader.addChild(_tmp);
 
 				if(i < halfCols - 1) {
 					slots[int((totalCols - i - 1) + (k * totalCols))] = fillChar;
-					rect(width * (totalCols - i - 1), height * k, width, height);
+					_tmp = createShape(RECT, width * (totalCols - i - 1), height * k, width, height);
+
+
+					if(doFill) {
+						_tmp.setFill(fillColor);
+					} else {
+						_tmp.setFill(false);
+					}
+
+					invader.addChild(_tmp);
 				}
 			}
 		}
 
-		println(new String(slots));
-	}
+		return new Invader(invader, new String(slots));
+	}	
+}
 
+class Invader {
+	PShape shape;
+	String hash;
+	Invader(PShape shape, String hash) {
+		this.shape = shape;
+		this.hash = hash;
+	}
 }
