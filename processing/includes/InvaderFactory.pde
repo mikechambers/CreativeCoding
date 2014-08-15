@@ -70,7 +70,7 @@ class InvaderFactory {
 		char fillChar;
 		
 		PShape invader = createShape(GROUP);
-		noStroke();
+		//noStroke();
 
 		Boolean doFill = false;
 		for(int i = 0; i < halfCols; i++) {

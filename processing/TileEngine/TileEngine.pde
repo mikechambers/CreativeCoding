@@ -50,7 +50,8 @@ void initConfig () {
 	Config.SHAPE_SPACING = 10;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
-	Config.strokeColor = 0xFF333333;
+	Config.strokeColor = 0xFF000000;
+    Config.bgColor = 0xFFFFFFFF;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
 	Config.blendMode = "NORMAL";
