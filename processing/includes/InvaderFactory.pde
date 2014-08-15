@@ -7,7 +7,8 @@ class InvaderFactory {
 	float pixelWidth = 5;
 	float pixelHeight = 5;
 	int fillColor = 0xFF000000;
-	Boolean allowDuplicates = true;
+	Boolean allowDuplicates = false;
+	int maxUniqueCombinations = 0;
 
 	HashMap hashes;
 
@@ -15,16 +16,24 @@ class InvaderFactory {
 		this.columnCount = columnCount;
 		this.rowCount = rowCount;
 
+
+
+
 		pixelWidth = width / columnCount;
 		pixelHeight = height / rowCount;
 
 		this.allowDuplicates = allowDuplicates;
+
+		int totalUniqueCells = ceil(float(this.columnCount) / 2) * rowCount;
+		maxUniqueCombinations = int(pow(2, totalUniqueCells));
+		
 
 		if(!this.allowDuplicates) {
 			hashes = new HashMap();
 		}
 	}
 
+	int dupeFound = 0;
 	Invader generate() {
 		Invader invader = null;
 
@@ -35,12 +44,15 @@ class InvaderFactory {
 				return invader;
 			}
 
-			Object exists = hashes.get(invader.hash);
+			//Object exists = hashes.get(invader.hash);
 
-			if(exists != null) {
+			if(!hashes.containsKey(invader.hash)) {
 				hashes.put(invader.hash, invader);
 				return invader;
 			}
+
+			dupeFound++;
+			println(dupeFound);
 		}	
 
 	}

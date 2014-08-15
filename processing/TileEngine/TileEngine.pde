@@ -44,15 +44,15 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 10;
-	Config.SHAPE_SPACING = 2;
+	Config.SHAPE_SPACING = 1;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF333333;
 	Config.recordPDF = true;
 	Config.colorThemeName = "HBCIRCLES2A";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 4;
-	Config.shapeHeight = 4;
+	Config.shapeWidth = 2;
+	Config.shapeHeight = 2;
     Config.cornerRadius = 7;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/heart.jpg";
@@ -125,6 +125,7 @@ void updateFill(Point[] points) {
     }
 }
 
+int totalCount = 0;
 void createTiles () {
 
     int i;
@@ -141,7 +142,7 @@ void createTiles () {
 
     InvaderFactory invaderFactory = null;
     if(Config.shapeMode == Config.MODE_INVADER) {
-        invaderFactory = new InvaderFactory(5, 5, size.width, size.height, true);
+        invaderFactory = new InvaderFactory(5, 5, size.width, size.height, false);
     }
 
     Boolean shouldContinue = true;
@@ -235,8 +236,12 @@ void createTiles () {
 
         popMatrix();
 
+        totalCount++;
+
         column++;
     }
+
+    println("Total : " + totalCount);
 };
 
 
