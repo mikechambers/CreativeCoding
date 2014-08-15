@@ -14,6 +14,7 @@ static class Config {
     static final String MODE_RECTANGLE = "MODE_RECTANGLE";
     static final String MODE_CIRCLE = "MODE_CIRCLE";
     static final String MODE_INVADER = "MODE_INVADER";
+    static final String MODE_LINES = "MODE_LINES";
 
 	static String name = "TileEngine";
 	static int frameRate = 30;
@@ -46,21 +47,21 @@ ColorThemeManager theme;
 ImageData imageData;
 
 void initConfig () {
-	Config.BOUNDS_PADDING = 10;
-	Config.SHAPE_SPACING = 10;
+	Config.BOUNDS_PADDING = 5;
+	Config.SHAPE_SPACING = 0;
 	Config.fillAlpha = 1.0;
-	Config.useStroke = false;
+	Config.useStroke = true;
 	Config.strokeColor = 0xFF000000;
     Config.bgColor = 0xFFFFFFFF;
 	Config.recordPDF = true;
 	Config.colorThemeName = "BLACK";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 25;
-	Config.shapeHeight = 25;
+	Config.shapeWidth = 10;
+	Config.shapeHeight = 10;
     Config.cornerRadius = 0;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/sky2640x640.png";
-    Config.shapeMode = Config.MODE_INVADER;
+    Config.shapeMode = Config.MODE_LINES;
     //Config.rotation = 45;
     Config.allowDuplicates = false;
     Config.gridColumnLength = 5;
@@ -220,6 +221,8 @@ void createTiles () {
                 vertex(0 + size.width, 0 + size.height);
                 endShape(CLOSE);
 
+            } else if (Config.shapeMode == Config.MODE_LINES) {
+                generateLine(size);
             } else if (Config.shapeMode == Config.MODE_INVADER) {
 
                Point[] points = {
@@ -244,6 +247,51 @@ void createTiles () {
     println("Total : " + (_c * _r));
 };
 
+void generateLine(Size size) {
+    Point p = new Point(0,0);
+    int r = int(random(0, 4));
+
+    Point startPoint = null;
+    switch(r){
+        case 0:
+            startPoint = p;
+            break;
+        case 1:
+            startPoint = new Point(p.x + size.width, p.y);
+            break;
+        case 2:
+            startPoint = new Point(p.x + size.width, p.y + size.height);
+            break;
+        case 3:
+            startPoint = new Point(p.x, p.y + size.width);
+            break;
+    }
+
+    r = int(random(0, 4));
+
+    Point endPoint = null;
+    switch(r){
+        case 0:
+            endPoint = p;
+            break;
+        case 1:
+            endPoint = new Point(p.x + size.width, p.y);
+            break;
+        case 2:
+            endPoint = new Point(p.x + size.width, p.y + size.height);
+            break;
+        case 3:
+            endPoint = new Point(p.x, p.y + size.width);
+            break;
+    }
+
+    if(startPoint.equals(endPoint)) {
+        generateLine(size);
+        return;
+    }
+
+    drawLine(startPoint, endPoint);
+}
 
 void keyReleased () {
 	if (key == ' ') {
