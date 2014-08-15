@@ -132,7 +132,6 @@ void updateFill(Point[] points) {
     }
 }
 
-int totalCount = 0;
 void createTiles () {
     
     int row = 0;
@@ -233,7 +232,7 @@ void createTiles () {
         }
     }
 
-    println("Total : " + totalCount);
+    println("Total : " + (_c * _r));
 };
 
 
