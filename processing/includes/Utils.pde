@@ -3,7 +3,7 @@ void drawCircle(Point p, float radius) {
 }
 
 void drawLine(Point p1, Point p2) {
-	line(p1.x, p1.y, p2.x, p2.y);
+	line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
 }
 
 Point getRandomPoint(int padding) {
@@ -142,17 +142,23 @@ class Point {
 
 	float x = 0.0;
 	float y = 0.0;
+	float z = 0.0;
 
 	Point (float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
+	Point (float x, float y, float z) {
+		this(x, y);
+		this.z = z;
+	}
+
 	Point () {
 	}
 
 	Boolean equals(Point p) {
-		return (this.x == p.x && this.y == p.y);
+		return (this.x == p.x && this.y == p.y && this.z == p.z);
 	}
 
 	@Override public String toString() {
