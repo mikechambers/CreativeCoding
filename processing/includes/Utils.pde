@@ -7,6 +7,14 @@ void drawLine(Point p1, Point p2) {
 	line(p1.x, p1.y, p2.x, p2.y);
 }
 
+void drawLine(LineSegment _line) {
+	drawLine(_line.p1, _line.p2);
+}
+
+Point getMousePoint () {
+	return new Point(mouseX, mouseY);
+}
+
 Point getRandomPoint(int padding) {
 
 	Bounds bounds = new Bounds();
@@ -100,6 +108,22 @@ class Size {
 		this.width = width;
 		this.height = height;
 	}
+}
+
+
+class LineSegment {
+	Point p1;
+	Point p2;
+
+	LineSegment() {
+
+	}
+
+	LineSegment (Point p1, Point p2) {
+		this.p1 = p1;
+		this.p2 = p2;
+	}
+
 }
 
 class Bounds {
