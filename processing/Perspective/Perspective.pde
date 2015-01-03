@@ -76,4 +76,8 @@ void draw() {
 	drawLine(fTop, lvp);
 	drawLine(fTop, rvp);
 
+	drawLine(rightBottomPoint, lvp);
+	drawLine(leftBottomPoint, rvp);
+
+
 }
