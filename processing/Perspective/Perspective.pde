@@ -99,7 +99,9 @@ Point findLineIntersection(Point p1, Point p2, Point p3, Point p4) {
 				(p3.x * p4.y) - 
 				(p3.y * p4.x)
 			)
-		) / 
+		)
+	) / 
+	(
 		(
 			(p1.x - p2.x) * 
 			(p3.y - p4.y)
@@ -110,7 +112,37 @@ Point findLineIntersection(Point p1, Point p2, Point p3, Point p4) {
 		)
 	);
 
-	println(_x);
+
+	float _y =
+	(
+		(
+			(
+				(p1.x * p2.y) - 
+				(p1.y * p2.x)
+			) *
+			(p3.y - p4.y)
+		) - 
+		(
+			(p1.y - p2.y) *
+			(
+				(p3.x * p4.y) - 
+				(p3.y - p4.x)
+			)
+		)
+	) /
+	(
+		(
+			(p1.x - p2.x) *
+			(p3.y - p4.y)
+		) - 
+		(
+			(p1.y - p2.y) * 
+			(p3.x - p4.x)
+		)
+	);
+
+
+	println(_y);
 
 	return new Point();
 }
