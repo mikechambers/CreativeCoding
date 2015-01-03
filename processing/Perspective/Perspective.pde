@@ -1,5 +1,6 @@
 
 #include ../includes/Utils.pde
+#include ../includes/MathUtils.pde
 
 
 static class Config {
@@ -57,6 +58,17 @@ void draw() {
 	drawCircle(mousePoint, dotRadius);
 
 	Point fTop = new Point(mousePoint.x, mousePoint.y - 100);
+
+
+	Point leftBottomPoint = getPointOnLine(mousePoint, lvp, 100.0);
+	drawCircle(leftBottomPoint, dotRadius);
+
+	Point rightBottomPoint = getPointOnLine(mousePoint, rvp, 100.0);
+	drawCircle(rightBottomPoint, dotRadius);
+
+	//need to add function to detect where two lines intersect.
+	//Point leftTopPoint = getPointOnLine(fTop, lvp, 100.0);
+	//drawCircle(leftTopPoint, dotRadius);	
 
 	drawCircle(fTop, dotRadius);
 
