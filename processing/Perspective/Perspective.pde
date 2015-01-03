@@ -79,5 +79,38 @@ void draw() {
 	drawLine(rightBottomPoint, lvp);
 	drawLine(leftBottomPoint, rvp);
 
+	findLineIntersection(lvp, mousePoint, lvp, fTop);
+}
 
+//http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+Point findLineIntersection(Point p1, Point p2, Point p3, Point p4) {
+	float _x =
+	(
+		(
+			(
+				(p1.x * p2.y) - 
+				(p1.y * p2.x)
+			) * 
+			(p3.x - p4.x)
+		) - 
+		(
+			(p1.x - p2.x) * 
+			(
+				(p3.x * p4.y) - 
+				(p3.y * p4.x)
+			)
+		) / 
+		(
+			(p1.x - p2.x) * 
+			(p3.y - p4.y)
+		) - 
+		(
+			(p1.y - p2.y) * 
+			(p3.x - p4.x)
+		)
+	);
+
+	println(_x);
+
+	return new Point();
 }
