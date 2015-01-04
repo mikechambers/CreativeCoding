@@ -79,10 +79,17 @@ void draw() {
 	drawLine(leftBottomPoint, rvp);
 
 	Point _tmpLeft = new Point(leftBottomPoint.x, leftBottomPoint.y - 10);
+	Point leftTopPoint = findLineIntersection(leftBottomPoint, _tmpLeft, lvp, fTop);
 
-	Point _p = findLineIntersection(leftBottomPoint, _tmpLeft, lvp, fTop);
+	Point _tmpRight = new Point(rightBottomPoint.x, rightBottomPoint.y - 10);
+	Point rightTopPoint = findLineIntersection(rightBottomPoint, _tmpRight, rvp, fTop);
 
-	drawLine(leftBottomPoint, _p);
+	drawCircle(rightTopPoint, dotRadius);
+	drawLine(rightTopPoint, lvp);
+	drawLine(rightBottomPoint, rightTopPoint);
 
-	drawCircle(_p, dotRadius);
+	drawLine(leftBottomPoint, leftTopPoint);
+	drawLine(leftTopPoint, rvp);
+
+	drawCircle(leftTopPoint, dotRadius);
 }
