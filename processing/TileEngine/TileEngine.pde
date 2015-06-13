@@ -15,6 +15,7 @@ static class Config {
     static final String MODE_CIRCLE = "MODE_CIRCLE";
     static final String MODE_INVADER = "MODE_INVADER";
     static final String MODE_LINES = "MODE_LINES";
+    static final String MODE_SHAPE = "MODE_SHAPE";
 
 	static String name = "TileEngine";
 	static int frameRate = 30;
@@ -34,12 +35,14 @@ static class Config {
 	static int shapeHeight = 25;
 	static float rotation = 0; // in angles
 	static String imagePath = null;
+    static String shapePath = null;
     static String shapeMode = Config.MODE_RECTANGLE;
     static int cornerRadius = 0;
     static int smoothLevel = 0;
     static Boolean allowDuplicates = true;
     static int gridColumnLength = 5;
     static int gridRowLength = 5;
+    static Boolean animate = false;
 }
 
 String suffix;
@@ -48,24 +51,26 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 5;
-	Config.SHAPE_SPACING = 0;
+	Config.SHAPE_SPACING = 1;
 	Config.fillAlpha = 1.0;
 	Config.useStroke = true;
 	Config.strokeColor = 0xFF000000;
     Config.bgColor = 0xFFFFFFFF;
-	Config.recordPDF = true;
-	Config.colorThemeName = "BLACK";
+	Config.recordPDF = false;
+	Config.colorThemeName = "POST_ASTEROID_ENVIRONMENT";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 10;
-	Config.shapeHeight = 10;
+	Config.shapeWidth = 100;
+	Config.shapeHeight = 100;
     Config.cornerRadius = 0;
     Config.smoothLevel = 4;
 	//Config.imagePath = "../images/sky2640x640.png";
-    Config.shapeMode = Config.MODE_LINES;
+    Config.shapeMode = Config.MODE_SHAPE;
     //Config.rotation = 45;
     Config.allowDuplicates = false;
-    Config.gridColumnLength = 5;
-    Config.gridRowLength = 5;
+    Config.gridColumnLength = 10;
+    Config.gridRowLength = 10;
+    Config.shapePath = "../images/mesh_head.svg";
+    Config.animate = true;
 }
 
 void initialize() {
@@ -105,6 +110,10 @@ void setup() {
 }
 
 void draw(){
+    if(Config.animate) {
+        background(Config.bgColor);
+        createTiles();
+    };
 }
 
 int updateFill(Point[] points) {
@@ -155,6 +164,11 @@ void createTiles () {
             invaderFactory.allowDuplicates = true;
         }
     }
+
+    PShape s = null;
+    if(Config.shapeMode == Config.MODE_SHAPE) {
+        s = loadShape(Config.shapePath);
+    };
 
     Point point = new Point(0,0);
     for (int i = 0; i < _c; ++i) {
@@ -223,6 +237,54 @@ void createTiles () {
 
             } else if (Config.shapeMode == Config.MODE_LINES) {
                 generateLine(size);
+            } else if (Config.shapeMode == Config.MODE_SHAPE) {
+                //todo: fill out here
+                //point.x
+                //point.y
+
+                //insert shapre here
+
+                Point[] points = {
+                    point,
+                    new Point(point.x + size.width, point.y),
+                    new Point(point.x + size.width, point.y + size.height),
+                    new Point(point.x, point.y + size.width)
+                };
+
+                //updateFill(points);
+
+
+                color c = theme.getRandomColor();
+
+                /*
+                float R = red(c);
+                float G = green(c);
+                float B = blue(c);
+                float minRGB = min(R,min(G,B));
+                float maxRGB = max(R,max(G,B));
+                float minPlusMax = minRGB + maxRGB;
+                color complement = color(minPlusMax-R, minPlusMax-G, minPlusMax-B);
+                */
+
+                //fill(c);
+
+                //noStroke();
+                //noFill();
+                //rect(0, 0, size.width, size.height, Config.cornerRadius);
+
+                s.disableStyle();
+
+    
+                fill(c);
+                //stroke(0xFF244674);
+                noStroke();
+                //stroke();
+
+                shape(s, 0, 0, size.width, size.height);
+                //shape(s);
+                s.enableStyle();
+
+
             } else if (Config.shapeMode == Config.MODE_INVADER) {
 
                Point[] points = {
