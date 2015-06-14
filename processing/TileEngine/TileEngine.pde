@@ -16,6 +16,7 @@ static class Config {
     static final String MODE_INVADER = "MODE_INVADER";
     static final String MODE_LINES = "MODE_LINES";
     static final String MODE_SHAPE = "MODE_SHAPE";
+    static final String MODE_PIXEL_SHAPE = "MODE_PIXEL_SHAPE";
 
 	static String name = "TileEngine";
 	static int frameRate = 30;
@@ -59,18 +60,18 @@ void initConfig () {
 	Config.recordPDF = false;
 	Config.colorThemeName = "POST_ASTEROID_ENVIRONMENT";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 100;
-	Config.shapeHeight = 100;
+	Config.shapeWidth = 10;
+	Config.shapeHeight = 10;
     Config.cornerRadius = 0;
     Config.smoothLevel = 4;
-	//Config.imagePath = "../images/sky2640x640.png";
-    Config.shapeMode = Config.MODE_SHAPE;
+	Config.imagePath = "../images/mesh_head640x640.png";
+    Config.shapeMode = Config.MODE_PIXEL_SHAPE;
     //Config.rotation = 45;
     Config.allowDuplicates = false;
     Config.gridColumnLength = 10;
     Config.gridRowLength = 10;
-    Config.shapePath = "../images/mesh_head.svg";
-    Config.animate = true;
+    Config.shapePath = "../images/line.svg";
+    //Config.animate = true;
 }
 
 void initialize() {
@@ -166,7 +167,7 @@ void createTiles () {
     }
 
     PShape s = null;
-    if(Config.shapeMode == Config.MODE_SHAPE) {
+    if(Config.shapeMode == Config.MODE_SHAPE || Config.shapeMode == Config.MODE_PIXEL_SHAPE) {
         s = loadShape(Config.shapePath);
     };
 
@@ -244,14 +245,7 @@ void createTiles () {
 
                 //insert shapre here
 
-                Point[] points = {
-                    point,
-                    new Point(point.x + size.width, point.y),
-                    new Point(point.x + size.width, point.y + size.height),
-                    new Point(point.x, point.y + size.width)
-                };
-
-                //updateFill(points);
+                Point[] points = {point};
 
 
                 color c = theme.getRandomColor();
@@ -266,22 +260,32 @@ void createTiles () {
                 color complement = color(minPlusMax-R, minPlusMax-G, minPlusMax-B);
                 */
 
-                //fill(c);
+                s.disableStyle();
 
-                //noStroke();
-                //noFill();
-                //rect(0, 0, size.width, size.height, Config.cornerRadius);
+                updateFill(points);
+                noStroke();
+                shape(s, 0, 0, size.width, size.height);
+                s.enableStyle();
+
+            } else if (Config.shapeMode == Config.MODE_PIXEL_SHAPE) {
+
+                //based on the area of the space
+                //updateFill(points);
+
+               Point[] points = {
+                    point,
+                    new Point(point.x + size.width, point.y),
+                    new Point(point.x + size.width, point.y + size.height),
+                    new Point(point.x, point.y + size.width)
+                };
 
                 s.disableStyle();
 
     
-                fill(c);
-                //stroke(0xFF244674);
+                updateFill(points);
                 noStroke();
-                //stroke();
 
                 shape(s, 0, 0, size.width, size.height);
-                //shape(s);
                 s.enableStyle();
 
 
@@ -305,8 +309,6 @@ void createTiles () {
             popMatrix();
         }
     }
-
-    println("Total : " + (_c * _r));
 };
 
 void generateLine(Size size) {
