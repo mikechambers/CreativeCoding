@@ -1,9 +1,8 @@
-#include ../includes/CaptureUtils.pde
-#include ../includes/Utils.pde
-
 import java.util.Date;
-import java.lang.reflect.*;
-import processing.pdf.*;
+//import java.lang.reflect.*;
+//import processing.pdf.*;
+#include ../includes/Utils.pde
+#include ../includes/CaptureUtils.pde
 
 static class Config {
 	static String name = "Burst";
@@ -69,14 +68,18 @@ float rotation = 0;
 
 float distance = Config.baseDistance;
 
+void settings() {
+	size(100, 400, FX2D);
+}
+
 void setup(){
 
 	initConfig();
+	surface.setResizable(true);
+	surface.setSize(Config.height, Config.width);	
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
-
-	size(Config.width, Config.height);
 
 	if(Config.recordPDF) {
 		beginPDFRecord();
@@ -85,7 +88,7 @@ void setup(){
 	background(Config.bgColor);
 
 	fill(Config.bgColor);
-	rect(-1,-1, width + 1, height + 1);
+	rect(-1,-1, Config.width + 1, Config.height + 1);
 
 	noFill();
 	frameRate(Config.frameRate);
@@ -94,7 +97,7 @@ void setup(){
 		fill(Config.fillColor);
 	}
 
-	centerPoint = new Point(width / 2, height / 2);
+	centerPoint = new Point(Config.width / 2, Config.height / 2);
 
 	stroke(Config.strokeColor);
 	strokeWeight(Config.strokeWeight);
@@ -158,4 +161,3 @@ void keyReleased () {
 		savePDF();
 	}
 }
-

@@ -35,6 +35,10 @@ ImageData imageData;
 BouncingPoint trackPoint;
 RotatingPoint targetPoint;
 
+void settings() {
+	size(100,400, FX2D);
+}
+
 void initConfig () {
 	Config.width = 640;
 	Config.height = 640;
@@ -58,13 +62,13 @@ String suffix;
 
 void initialize() {
 	initConfig();
+	surface.setResizable(true);
+	surface.setSize(Config.height, Config.width);	
 
 	theme = new ColorThemeManager(Config.colorThemeName);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
-
-	size(Config.width, Config.height);
 	
     //smooth(4);
 
@@ -154,7 +158,7 @@ void renderToPDF() {
 
 void keyReleased () {
 	if (key == ' ') {
-		paused = !paused;
+		//paused = !paused;
 	}	else if (key == 'p') {
 		saveImage();
 	} else if (key == 'j') {

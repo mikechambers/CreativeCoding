@@ -3,8 +3,12 @@
 
 int bgColor = 0xFFFFFFFF;
 InvaderFactory factory;
+
+void settings(){
+	size(640, 640, FX2D);
+}
+
 void setup() {
-	size(640, 640);
 
 	frameRate(1);
 	stroke(0xFF000000);
@@ -26,7 +30,8 @@ void draw() {
 void generateInvader () {
 	background(bgColor);
 
-	factory.generate(new Point(100,100));
+	Invader inv = factory.generate();
+	shape(inv.shape);	
 }
 
 void mousePressed () {

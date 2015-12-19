@@ -3,8 +3,12 @@
 int segmentCount = 45;
 float radius = 200.0;
 
+void settings() {
+	size(720, 720, FX2D);
+}
+
 void setup() {
-	size(720, 720);
+	
 }
 
 void draw() {

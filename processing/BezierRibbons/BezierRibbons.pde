@@ -48,24 +48,28 @@ void initConfig () {
 
 String suffix;
 
+public void settings () {
+	size(100,400, FX2D);
+}
+
 void initialize() {
 	initConfig();
+	surface.setResizable(true);
+	surface.setSize(Config.height, Config.width);
 
 	theme = new ColorThemeManager(Config.colorThemeName);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
-
-	size(Config.width, Config.height);
 	
-    //smooth(4);
-
 	frameRate(Config.frameRate);
 
 	background(Config.bgColor);
 	fill(Config.bgColor);
 	rect(-1,-1, width + 1, height + 1);
 }
+
+
 
 void setup () {
 	initialize();
@@ -121,7 +125,7 @@ void renderToPDF() {
 
 void keyReleased () {
 	if (key == ' ') {
-		paused = !paused;
+		// /paused = !paused;
 	}	else if (key == 'p') {
 		saveImage();
 	} else if (key == 'j') {

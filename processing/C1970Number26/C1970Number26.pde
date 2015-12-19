@@ -4,8 +4,8 @@
 #include ../includes/ColorThemeManager.java
 
 import java.util.Date;
-import java.lang.reflect.*;
-import processing.pdf.*;
+//import java.lang.reflect.*;
+//import processing.pdf.*;
 
 static class Config {
 	static String name = "C1970Number26";
@@ -30,8 +30,14 @@ void initConfig () {
 	Config.recordPDF = true;
 }
 
+void settings() {
+	size(100,400, FX2D);
+	smooth(8);
+}
+
 void initialize() {
 	initConfig();
+	surface.setResizable(true);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
@@ -41,9 +47,7 @@ void initialize() {
 	//30 Config.padding on each side
 	int dimension = floor((Config.radius * Config.rows) + (Config.padding * 2));
 
-	size(dimension, dimension);
-	
-    smooth(8);
+	surface.setSize(dimension, dimension);
 
 	frameRate(Config.frameRate);
 
@@ -52,7 +56,7 @@ void initialize() {
 	}
 
 	fill(Config.bgColor);
-	rect(-1,-1, width + 1, height + 1);
+	rect(-1,-1, dimension + 1, dimension + 1);
 }
 
 void setup(){
@@ -63,7 +67,6 @@ void setup(){
 }
 
 void render () {
-	
 	Point startPoint = new Point(Config.padding, Config.padding);
 
 	float startX;
@@ -95,7 +98,7 @@ void render () {
 
 void keyReleased () {
 	if (key == ' ') {
-		paused = !paused;
+		//paused = !paused;
 	}	else if (key == 'p') {
 		saveImage();
 	} else if (key == 'j') {

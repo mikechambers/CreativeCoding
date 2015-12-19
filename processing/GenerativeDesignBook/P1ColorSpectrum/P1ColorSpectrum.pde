@@ -3,9 +3,11 @@
 int stepX;
 int stepY;
 
-void setup() {
-	size(720,720calc);
+void settings () {
+	size(720, 720, FX2D);
+}
 
+void setup() {
 	background(0);
 	noStroke();
 }
