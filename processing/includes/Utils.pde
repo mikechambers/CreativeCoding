@@ -198,6 +198,21 @@ class Point {
 	}
 }
 
+class Rectangle {
+
+	Bounds bounds;
+
+	Rectangle (float x, float y, float width, float height) {
+		this.bounds = new Bounds(x, y, width, height);
+	}
+
+	Rectangle() {
+		this(0.0, 0.0, 0.0, 0.0);
+	}
+
+}
+
+
 int setAlphaOfColor(int hexColor, float alpha) {
 	int a = floor((255) * alpha);
 

@@ -48,13 +48,15 @@
     
     //config.MAX_WIDTH = 35;
     config.SHAPE_COUNT = 500;
-    config.STROKE_WIDTH = 0.0;
+    config.STROKE_WIDTH = 1.0;
     config.BASE_SIZE = 2;
     config.STROKE_COLOR = "#ffffff";
     
-    config.TEMPLATE = "../_templates/mario.png";
+    config.TEMPLATE = "../_templates/mesh_head640x640.png";
     
     config.BACKGROUND_COLOR = "#FFFFFF";
+    config.CANVAS_WIDTH = 640;
+    config.CANVAS_HEIGHT = 640
     
     /*************** End Config Override **********************/
     

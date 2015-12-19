@@ -52,20 +52,20 @@ ImageData imageData;
 
 void initConfig () {
 	Config.BOUNDS_PADDING = 5;
-	Config.SHAPE_SPACING = 1;
+	Config.SHAPE_SPACING = 5;
 	Config.fillAlpha = 1.0;
-	Config.useStroke = true;
+	Config.useStroke = false;
 	Config.strokeColor = 0xFF000000;
     Config.bgColor = 0xFFFFFFFF;
-	Config.recordPDF = false;
-	Config.colorThemeName = "POST_ASTEROID_ENVIRONMENT";
+	Config.recordPDF = true;
+	Config.colorThemeName = "TOKYO_TRACK";
 	Config.blendMode = "NORMAL";
-	Config.shapeWidth = 10;
-	Config.shapeHeight = 10;
-    Config.cornerRadius = 0;
+	Config.shapeWidth = 25;
+	Config.shapeHeight = 25;
+    Config.cornerRadius = 3;
     Config.smoothLevel = 4;
 	Config.imagePath = "../images/mesh_head640x640.png";
-    Config.shapeMode = Config.MODE_PIXEL_SHAPE;
+    Config.shapeMode = Config.MODE_CIRCLE;
     //Config.rotation = 45;
     Config.allowDuplicates = false;
     Config.gridColumnLength = 10;
@@ -215,6 +215,10 @@ void createTiles () {
 
                 updateFill(points);
 
+                if(!Config.useStroke) {
+                    noStroke();
+                }
+
                 beginShape();
                 vertex(0, 0);
                 vertex(0 + size.width, 0);
@@ -237,7 +241,20 @@ void createTiles () {
                 endShape(CLOSE);
 
             } else if (Config.shapeMode == Config.MODE_LINES) {
+
+                if(Config.imagePath != null) {
+                    Point[] points = {
+                        point,
+                        new Point(point.x + size.width, point.y),
+                        new Point(point.x + size.width, point.y + size.height),
+                        new Point(point.x, point.y + size.width)
+                    };
+
+                    stroke(imageData.getColor(getCentroidOfPolygon(points)));
+                }
+
                 generateLine(size);
+
             } else if (Config.shapeMode == Config.MODE_SHAPE) {
                 //todo: fill out here
                 //point.x
