@@ -1,5 +1,5 @@
 void setup() {
-	size(720, 720);
+	size(720, 720, FX2D);
 }
 
 void draw() {

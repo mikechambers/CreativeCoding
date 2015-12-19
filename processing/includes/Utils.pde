@@ -33,16 +33,14 @@ Point getRandomPointInBounds(Bounds bounds) {
 	);
 }
 
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
-void strokeDash(float width) {
+//todo: there is probably some way to just expose this to processing
+import processing.javafx.PGraphicsFX2D;
+void strokeDash(double width, double offset) {
+  	((PGraphicsFX2D) g).strokeDash(width, offset);
+}
 
-	BasicStroke pen;
-	float[] dashes = { 2.0f};
-	pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
-
-	Graphics2D g2 = ((PGraphicsJava2D) g).g2;
-  	g2.setStroke(pen);
+void noDash() {
+	((PGraphicsFX2D) g).noDash();
 }
 
 class QuadraticCurve {

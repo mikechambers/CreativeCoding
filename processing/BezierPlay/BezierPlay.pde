@@ -27,9 +27,9 @@ void initialize() {
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
-	size(Config.height, Config.width);
-	
-    smooth(8);
+	surface.setResizable(true);
+	surface.setSize(Config.height, Config.width);
+	//size(Config.height, Config.width);
 
 	frameRate(Config.frameRate);
 
@@ -42,6 +42,10 @@ void initialize() {
 }
 
 void setup () {
+	size(400,400);
+	smooth(8);
+
+
 	initialize();
 
 	fill(0xFFFFFFFF);
@@ -73,7 +77,7 @@ void mousePressed() {
 
 void keyReleased () {
 	if (key == ' ') {
-		paused = !paused;
+		//paused = !paused;
 	}	else if (key == 'p') {
 		saveImage();
 	} else if (key == 'j') {

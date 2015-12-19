@@ -16,9 +16,6 @@ class InvaderFactory {
 		this.columnCount = columnCount;
 		this.rowCount = rowCount;
 
-
-
-
 		pixelWidth = width / columnCount;
 		pixelHeight = height / rowCount;
 

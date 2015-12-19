@@ -26,10 +26,10 @@ void initConfig () {
 	Config.frameRate = 60;
 
 	Config.bgColor = 0xFFFFFFFF;
-	Config.strokeColor = 0x00111111;
-	Config.drawControlPoint = false;
+	Config.strokeColor = 0xFF111111;
+	Config.drawControlPoint = true;
 
-	Config.useFill = true;
+	Config.useFill = false;
 }
 
 String suffix;
@@ -37,12 +37,15 @@ String suffix;
 void initialize() {
 	initConfig();
 
+	surface.setResizable(true);
+	surface.setSize(Config.height, Config.width);
+
 	theme = new ColorThemeManager(Config.colorThemeName);
 
 	Date d = new Date();
 	suffix = String.valueOf(d.getTime());
 
-	size(Config.height, Config.width);
+	//size(Config.height, Config.width);
 	
     //smooth(4);
 
@@ -55,6 +58,10 @@ void initialize() {
 	background(Config.bgColor);
 	fill(Config.bgColor);
 	rect(-1,-1, width + 1, height + 1);
+}
+
+public void settings () {
+	size(400,400, FX2D);
 }
 
 void setup () {
@@ -71,6 +78,7 @@ void draw() {
 	noFill();
 
 	theme.reset();
+
 	for (QuadraticCurve c : curves) {
 
 		if(Config.useFill) {
@@ -80,14 +88,22 @@ void draw() {
 		if(Config.drawControlPoint) {
 
 			strokeWeight(1.0);
-			drawCircle(c.cp, 2);
-			strokeDash(0.5);
+			stroke(0x55000000);
+			drawCircle(c.cp, 1);
+
+			strokeDash(2.0, 2.0);
+
 			drawLine(c.cp, c.p1);
 			drawLine(c.cp, c.p2);
+
+			noDash();
+			noStroke();
 		}
 
+		stroke(Config.strokeColor);
+		strokeWeight(1.0);
+
 		beginShape();
-		strokeWeight(2.0);
 		vertex(c.p1.x, c.p1.y);
 		quadraticVertex(c.cp.x, c.cp.y, c.p2.x, c.p2.y);
 
@@ -134,7 +150,6 @@ void mouseMoved () {
 
 void keyReleased () {
 	if (key == ' ') {
-		paused = !paused;
 	}	else if (key == 'p') {
 		saveImage();
 	} else if (key == 'j') {
