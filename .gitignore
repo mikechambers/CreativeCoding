@@ -4,6 +4,7 @@ output/
 code/
 *.class
 
+screenshots/
 
 # Xcode
 #
