@@ -1,52 +1,183 @@
 #include "ofApp.h"
 
-/************ Settings *************/
+
 ofBlendMode BLEND_MODE = OF_BLENDMODE_DISABLED;
 int const MIN_WIDTH = 10;
-int const MAX_WIDTH = 100;
-int const HEIGHT = 2; // this also becomes width if RANDOM_WIDTH is false
-bool const RANDOM_WIDTH = TRUE;
+int const MAX_WIDTH = 250;
+int const HEIGHT = 10; // this also becomes width if RANDOM_WIDTH is false
+bool const RANDOM_WIDTH = true;
 bool const INFLUENCE_WIDTH = FALSE; //whether the width is adjust pased on position
 bool const DRAW_RECT_ROUNDED = FALSE;
 bool const DRAW_IMAGE = FALSE;
-bool const ANIMATE = true;
-string IMAGE = "images/mike.png";
-
-
-ofImage image;
-int xMouse = 0;
-int yMouse = 0;
-
-ofFbo fbo;
+bool const ANIMATE = FALSE;
+bool const CALCULATE_Z = true;
 
 bool hasRendered = false;
 
+ofImage image;
+ofVboMesh mesh;
+
+ofEasyCam cam;
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    //ofImage::grabScreen
-    
-    //image.jpg / car.png
-	bool imageLoaded = image.load(IMAGE);
+
+    bool imageLoaded = image.load("../../../images/test.jpg");
     
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;
         ofExit();
     }
     
-    //todo: check if image loaded.
+    image.resize(640, 640);
     
-	ofSetWindowShape(image.getWidth(), image.getHeight());
-	
-    fbo.allocate(image.getWidth(), image.getHeight(), GL_RGBA);
+    ofSetWindowShape(image.getWidth(), image.getHeight());
+    
+    mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    mesh.enableColors();
+    mesh.enableIndices();
+    
+    cam.enableOrtho();
+}
 
+//--------------------------------------------------------------
+void ofApp::update(){
+
+    if(hasRendered) {
+        return;
+    }
+    
+    mesh.clear();
+    
+    //fbo.begin();
+    //ofClear(255,255,255, 0);
+    
+    //need to put this is a regular vbo
+    /*
+    if(DRAW_IMAGE){
+        image.draw(0,0);
+    }
+     */
+    
+    
+    //ofEnableBlendMode(BLEND_MODE);
+    
+    
+    int rWidth = HEIGHT;
+    int rHeight = HEIGHT;
+    
+    //todo: might need to get from window in case we scale image
+    //should this be a float?
+    int w = image.getWidth();
+    int h = image.getHeight();
+    
+    for(int i = 0; i < h;) {
+        for(int k = 0; k < w;) {
+            
+            if(RANDOM_WIDTH) {
+                
+                int rW = MAX_WIDTH;
+                if(INFLUENCE_WIDTH) {
+                    //this generates width. if random number is 0, then max width with be 2 x min width
+                    rW = (MAX_WIDTH *  ((float(k) / float(w)))) + (MIN_WIDTH * 2); // subtract ratio from 1 to reverse side
+                }
+                
+                rWidth = int(ofRandom(
+                                      MIN_WIDTH,
+                                      rW
+                                      ));
+            }
+            
+            //make sure the width / rect doesnt go out of bounds
+            if(rWidth + k > w) {
+                int tmp = (rWidth + k) - w;
+                rWidth -= tmp;
+            }
+            
+            ofRectangle rect = ofRectangle::ofRectangle(k, i, rWidth, rHeight);
+            
+            ofColor color = getColorForSubsection(rect);
+            
+            
+            float z = 0.0;
+            
+            if(CALCULATE_Z) {
+                float saturation = color.getSaturation();
+                z = ofMap(saturation, 0, 255, 0, 200);
+            }
+            
+            //ofDrawRectangle(k, i, rWidth, rHeight);
+            
+            ofVec3f tLeft(k, i, z); //0
+            ofVec3f bLeft(k, i + rHeight, z); //1
+            ofVec3f tRight(k + rWidth, i, z); //2
+            ofVec3f bRight(k + rWidth, i + rHeight, z); //3
+            
+            int index = mesh.getNumVertices();
+            
+            mesh.addVertex(tLeft);
+            mesh.addColor(color);
+            
+            mesh.addVertex(bLeft);
+            mesh.addColor(color);
+            
+            mesh.addVertex(tRight);
+            mesh.addColor(color);
+            
+            mesh.addVertex(bRight);
+            mesh.addColor(color);
+            
+            mesh.addIndex(index);
+            mesh.addIndex(index + 1);
+            mesh.addIndex(index + 2);
+            
+            mesh.addIndex(index + 1);
+            mesh.addIndex(index + 2);
+            mesh.addIndex(index + 3);
+            
+            k += rWidth;
+            
+        }
+        i += rHeight;
+        
+    }
+    
+    hasRendered = !ANIMATE;
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+    
+    
+    
+    cam.begin();
+    
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / -2, ofGetHeight() / -2);
+    ofBackground(0, 0, 0);
+    //image.draw(0, 0, 0);
+    //ofEnableSmoothing();
+    
+    
+    if(DRAW_IMAGE){
+        image.draw(0,0);
+    }
+    
+    mesh.draw();
+    
+    ofPopMatrix();
+    
+    cam.end();
+    
 }
 
 ofColor ofApp::getColorForSubsection(ofRectangle rect) {
     ofPixels crop;
     
     image.getPixels().cropTo(crop,rect.x,rect.y,rect.width, rect.height);
-
+    
     int r = 0;
     int g = 0;
     int b = 0;
@@ -73,99 +204,12 @@ ofColor ofApp::getColorForSubsection(ofRectangle rect) {
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
-
-    //ofBeginSaveScreenAsPDF("screenshot-"+ofGetTimestampString()+".pdf", false);
-    //ofEndSaveScreenAsPDF();
-    
-    if(hasRendered) {
-        return;
-    }
-    
-    fbo.begin();
-    ofClear(255,255,255, 0);
-    
-    //image.rotate90(1);
-    
-    if(DRAW_IMAGE){
-        image.draw(0,0);
-    }
-    //image.rotate90(-1);
-    
-    
-    ofEnableBlendMode(BLEND_MODE);
-    
-    
-    int rWidth = HEIGHT;
-    int rHeight = HEIGHT;
-
-    //todo: might need to get from window in case we scale image
-    //should this be a float?
-    int w = image.getWidth();
-    int h = image.getHeight();
-    
-    for(int i = 0; i < h;) {
-        for(int k = 0; k < w;) {
-            
-            if(RANDOM_WIDTH) {
-                
-                int rW = MAX_WIDTH;
-                if(INFLUENCE_WIDTH) {
-                    //this generates width. if random number is 0, then max width with be 2 x min width
-                    rW = (MAX_WIDTH *  ((float(k) / float(w)))) + (MIN_WIDTH * 2); // subtract ratio from 1 to reverse side
-                }
-                    
-                rWidth = int(ofRandom(
-                                      MIN_WIDTH,
-                                      rW
-                                      ));
-            }
-            
-            //make sure the width / rect doesnt go out of bounds
-            if(rWidth + k > w) {
-                int tmp = (rWidth + k) - w;
-                rWidth -= tmp;
-            }
-            
-            ofRectangle rect = ofRectangle::ofRectangle(k, i, rWidth, rHeight);
-            ofSetColor(getColorForSubsection(rect));
-             
-            ofFill();
-
-            if(DRAW_RECT_ROUNDED) {
-                ofDrawRectRounded(k, i, rWidth, rHeight,5);
-            } else {
-                ofDrawRectangle(k, i, rWidth, rHeight);
-            }
-            
-            k += rWidth;
-            
-        }
-        i += rHeight;
-        
-    }
-    
-    fbo.end();
-    
-    hasRendered = !ANIMATE;
-}
-
-//--------------------------------------------------------------
-void ofApp::draw(){
-    fbo.draw(0,0);
-}
-
-//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 's'){
-        ofImage img;
-        
-        fbo.readToPixels(img.getPixels());
-        
-        cout << "Screenshot Saved" << endl;
-        
+
         string n = "screenshot_" + ofGetTimestampString() + ".png";
-        img.save(n);
+        ofSaveScreen(n);
+        cout << "Screenshot Saved" << endl;
     }
 }
 
@@ -176,15 +220,6 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
-    //can move this to a util meshIsInsideWindow
-	if (x < 0 || x > ofGetWindowWidth() ||
-		y < 0 || y > ofGetWindowHeight()) {
-		return;
-	}
-
-	xMouse = x;
-	yMouse = y;
 
 }
 
@@ -200,7 +235,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-    hasRendered = false;
+
 }
 
 //--------------------------------------------------------------
