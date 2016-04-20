@@ -1,24 +1,27 @@
 #include "ofApp.h"
-#include "Mover.h"
 #include "Follower.h"
+#include "MeshUtils.h"
 
-bool const HEIGHT = 640;
-bool const WIDTH = 640;
-bool const DEPTH = 640;
+int const ITERATIONS = 1000;
+int const ALPHA = 0.1 * 255;
 
-float const ALPHA = 0.1 * 255;
-float const INTERPOLATION = 1.0;
+Mover mover;
+Follower follower;
+Follower follower2;
+Follower follower3;
+Follower follower4;
+
+MeshUtils utils;
 
 ofVboMesh mesh;
-Mover mover;
-Mover mover2;
 ofImage image;
-
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+    utils.enableScreenShot("Follow");
     
-    bool imageLoaded = image.load("../../../images/water_color.jpg");
+    bool imageLoaded = image.load("../../../images/hawaii.jpg");
     
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;
@@ -27,23 +30,34 @@ void ofApp::setup(){
     
     image.resize(640,640);
     
-    mesh.setMode(OF_PRIMITIVE_LINES);
     mesh.enableColors();
+    mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    
+    ofBackground(ofColor::white);
+    
+    ofSetBackgroundAuto(false);
+    
+    init();
+}
+
+void ofApp::init(){
+    
+    ofClear(0, 255);
+    mesh.clear();
     
     mover.setBounds(ofGetWindowRect());
     mover.setToRandomLocation();
-    mover.setToRandomVelocity(1.0);
+    mover.setToRandomVelocity(5.0);
     
-    mover2.setBounds(ofGetWindowRect());
-    mover2.setToRandomLocation();
-    mover2.setToRandomVelocity(1.0);
+    follower.setToRandomLocation();
+    follower2.setToRandomLocation();
+    follower3.setToRandomLocation();
+    follower4.setToRandomLocation();
     
-    mesh.setMode(OF_PRIMITIVE_LINES);
-    
-    ofBackground(ofColor::white);;
-    
-    ofSetBackgroundAuto(false);
-    ofEnableSmoothing();
+    follower.setTarget(&mover);
+    follower2.setTarget(&follower);
+    follower3.setTarget(&follower2);
+    follower4.setTarget(&follower3);
 }
 
 //--------------------------------------------------------------
@@ -51,32 +65,43 @@ void ofApp::update(){
     
     mesh.clear();
     
-    for(int i = 0; i < 1; i++) {
     
+    for(int i = 0; i < ITERATIONS; i++) {
         mover.update();
-        mover2.update();
         
-        mesh.addVertex(mover.location);
-        mesh.addColor(ofColor(image.getColor(mover.location.x, mover.location.y), ALPHA));
+        //probably should store this in mouse move
+        follower.update();
+        mesh.addVertex(follower.location);
+        mesh.addColor(ofColor(image.getColor(follower.location.x, follower.location.y), ALPHA));
         
-        ofVec3f t = mover.location.getInterpolated(mover2.location, INTERPOLATION);
         
-        mesh.addVertex(t);
-        mesh.addColor(ofColor(image.getColor(t.x, t.y), ALPHA));
+        follower2.update();
+        mesh.addVertex(follower2.location);
+        mesh.addColor(ofColor(image.getColor(follower2.location.x, follower2.location.y), ALPHA));
+        
+        follower3.update();
+        mesh.addVertex(follower3.location);
+        mesh.addColor(ofColor(image.getColor(follower3.location.x, follower3.location.y), ALPHA));
+        
+        follower4.update();
+        mesh.addVertex(follower4.location);
+        mesh.addColor(ofColor(image.getColor(follower4.location.x, follower4.location.y), ALPHA));
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    //ofDrawCircle(follower.location, 5.0);
+    
     mesh.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 's') {
-        string n = "../../../screenshots/Persistence/screenshot_" + ofGetTimestampString() + ".png";
-        ofSaveScreen(n);
-        cout << "Screenshot Saved" << endl;
+    if(key == 'x') {
+        utils.disableScreenShot();
+    } else if (key == 'r') {
+        init();
     }
 }
 
@@ -102,8 +127,6 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-    mover.setToRandomVelocity(5.0);
-    mover2.setToRandomVelocity(5.0);
 
 }
 

@@ -11,17 +11,23 @@
 Mover::Mover() {
     velocity = ofVec3f(0.0, 0.0, 0.0);
     location = ofVec3f(0.0, 0.0, 0.0);
+    acceleration = ofVec3f(0.0, 0.0, 0.0);
+    
+    acceleration.limit(1.0);
 }
 
 void Mover::update() {
+    velocity += acceleration;
     location += velocity;
     
     if(location.x < bounds2d.x || location.x > bounds2d.width) {
         velocity.x *= -1;
+        acceleration.x *= -1;
     }
     
     if(location.y < bounds2d.y || location.y > bounds2d.height) {
         velocity.y *= -1;
+        acceleration.y *= -1;
     }
 }
 
