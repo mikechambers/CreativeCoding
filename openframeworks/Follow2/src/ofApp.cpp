@@ -1,9 +1,12 @@
 #include "ofApp.h"
 #include "Follower.h"
 #include "MeshUtils.h"
+#include "ImageLoader.h"
 
 int const ITERATIONS = 1000;
 int const ALPHA = 0.1 * 255;
+int const HEIGHT = 640;
+int const WIDTH = 640;
 
 Mover mover;
 Follower follower;
@@ -14,26 +17,26 @@ Follower follower4;
 MeshUtils utils;
 
 ofVboMesh mesh;
-ofImage image;
+
+ImageLoader imageLoader;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    utils.enableScreenShot("Follow");
+    utils.enableScreenShot("follow2");
     
-    bool imageLoaded = image.load("../../../images/rain.jpg");
+    bool imageLoaded = imageLoader.load("../../../images/gradient_4.jpg", "../../../images/masks/cc.gif");
     
     if(!imageLoaded) {
-        cout << "Error: Could not load image. Exiting app." << endl;
+        cout << "Exiting app." << endl;
         ofExit();
     }
     
-    image.resize(640,640);
+    imageLoader.resize(WIDTH,HEIGHT);
+    imageLoader.setAlpha(ALPHA);
     
     mesh.enableColors();
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-    
-    ofBackground(ofColor::white);
     
     ofSetBackgroundAuto(false);
     
@@ -43,6 +46,7 @@ void ofApp::setup(){
 void ofApp::init(){
     
     ofClear(0, 255);
+    ofBackground(ofColor::white);
     mesh.clear();
     
     mover.setBounds(ofGetWindowRect());
@@ -65,34 +69,30 @@ void ofApp::update(){
     
     mesh.clear();
     
-    
     for(int i = 0; i < ITERATIONS; i++) {
         mover.update();
         
-        //probably should store this in mouse move
         follower.update();
         mesh.addVertex(follower.location);
-        mesh.addColor(ofColor(image.getColor(follower.location.x, follower.location.y), ALPHA));
         
+        mesh.addColor(imageLoader.getColor(follower.location));
         
         follower2.update();
         mesh.addVertex(follower2.location);
-        mesh.addColor(ofColor(image.getColor(follower2.location.x, follower2.location.y), ALPHA));
+        mesh.addColor(imageLoader.getColor(follower2.location));
         
         follower3.update();
         mesh.addVertex(follower3.location);
-        mesh.addColor(ofColor(image.getColor(follower3.location.x, follower3.location.y), ALPHA));
+        mesh.addColor(imageLoader.getColor(follower3.location));
         
         follower4.update();
         mesh.addVertex(follower4.location);
-        mesh.addColor(ofColor(image.getColor(follower4.location.x, follower4.location.y), ALPHA));
+        mesh.addColor(imageLoader.getColor(follower4.location));
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    //ofDrawCircle(follower.location, 5.0);
-    
     mesh.draw();
 }
 

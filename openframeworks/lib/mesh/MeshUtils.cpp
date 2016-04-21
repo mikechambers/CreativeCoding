@@ -1,12 +1,6 @@
 
 #include "MeshUtils.h"
 
-/*
-void * meshEnabledScreenShot(int key) {
-    ofAddListener(ofEvents.keyReleased, this, &meshSaveScreenShot);
-}
- */
-
 void MeshUtils::enableScreenShot(string dirName) {
     _dirName = dirName;
     
@@ -28,7 +22,7 @@ void MeshUtils::disableScreenShot() {
 void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
     
     if(eventArgs.key == _screenshotKey)  {
-        string n = "../../../screenshots/" + _dirName + "/screenshot_" + ofGetTimestampString() + ".png";
+        string n = "../../../screenshots/" + _dirName + "_" + ofGetTimestampString() + ".png";
         ofSaveScreen(n);
         cout << "Screenshot Saved : '" + n  + "'"<< endl;
     }
