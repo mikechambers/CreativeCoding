@@ -1,9 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Balloon.h"
-#include "ImageLoader.h"
-#include "MeshUtils.h"
 #include "ofxSyphon.h"
 
 class ofApp : public ofBaseApp{
@@ -19,14 +16,15 @@ class ofApp : public ofBaseApp{
 		void mouseDragged(int x, int y, int button);
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    
-        Balloon createBalloon(int x, int y);
-    
-        ofxSyphonServer syphon;
-        ofxSyphonClient mClient;
+
+        void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
+        void serverUpdated(ofxSyphonServerDirectoryEventArgs &args);
+        void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);
+
+        ofxSyphonServerDirectory dir;
+        ofxSyphonClient client;
+        int dirIdx;
 };

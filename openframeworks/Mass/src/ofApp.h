@@ -1,10 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Balloon.h"
-#include "ImageLoader.h"
-#include "MeshUtils.h"
-#include "ofxSyphon.h"
+#include "Mover.h"
 
 class ofApp : public ofBaseApp{
 
@@ -12,6 +9,8 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+    
+        void checkRepel(Mover * mover);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -24,9 +23,5 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    
-        Balloon createBalloon(int x, int y);
-    
-        ofxSyphonServer syphon;
-        ofxSyphonClient mClient;
+		
 };

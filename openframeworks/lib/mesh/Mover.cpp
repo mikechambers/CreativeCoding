@@ -13,11 +13,15 @@ Mover::Mover() {
     location = ofVec3f(0.0, 0.0, 0.0);
     acceleration = ofVec3f(0.0, 0.0, 0.0);
     
+    mass = 1.0;
+    
+    
+    //do we need to set this?
     acceleration.limit(1.0);
 }
 
 void Mover::applyForce(ofVec3f force) {
-    acceleration += force;
+    acceleration += (force / mass);
 }
 
 void Mover::update() {
@@ -25,6 +29,8 @@ void Mover::update() {
     location += velocity;
     acceleration.set(0.0, 0.0, 0.0);
     
+    //should this be its own function? checkBounds?
+    //it would make it easier to override the checkBounds in a subclass?
     if(location.x < bounds2d.x || location.x > bounds2d.width) {
         velocity.x *= -1;
         //acceleration.x *= -1;

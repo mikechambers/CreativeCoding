@@ -25,6 +25,7 @@
 		2E6EA7041603AA7A00B7ADF3 /* of3dGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E6EA7031603AA7A00B7ADF3 /* of3dGraphics.cpp */; };
 		2E6EA7061603AABD00B7ADF3 /* of3dPrimitives.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E6EA7051603AABD00B7ADF3 /* of3dPrimitives.h */; };
 		2E6EA7081603AAD600B7ADF3 /* of3dPrimitives.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E6EA7071603AAD600B7ADF3 /* of3dPrimitives.cpp */; };
+		47BDEE5B1CCA8BEF001FDB2F /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47BDEE5A1CCA8BEF001FDB2F /* Syphon.framework */; };
 		53EEEF4B130766EF0027C199 /* ofMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EEEF49130766EF0027C199 /* ofMesh.h */; };
 		53EEEF4C130766EF0027C199 /* ofMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53EEEF4A130766EF0027C199 /* ofMesh.cpp */; };
 		6678E96C19FEAE1900C00581 /* ofBaseSoundStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6678E96B19FEAE1900C00581 /* ofBaseSoundStream.cpp */; };
@@ -179,6 +180,7 @@
 		2E6EA7031603AA7A00B7ADF3 /* of3dGraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = of3dGraphics.cpp; sourceTree = "<group>"; };
 		2E6EA7051603AABD00B7ADF3 /* of3dPrimitives.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = of3dPrimitives.h; sourceTree = "<group>"; };
 		2E6EA7071603AAD600B7ADF3 /* of3dPrimitives.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = of3dPrimitives.cpp; sourceTree = "<group>"; };
+		47BDEE5A1CCA8BEF001FDB2F /* Syphon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Syphon.framework; path = ../../../../addons/ofxSyphon/libs/Syphon/lib/osx/Syphon.framework; sourceTree = "<group>"; };
 		53EEEF49130766EF0027C199 /* ofMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofMesh.h; sourceTree = "<group>"; };
 		53EEEF4A130766EF0027C199 /* ofMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofMesh.cpp; sourceTree = "<group>"; };
 		6678E96B19FEAE1900C00581 /* ofBaseSoundStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofBaseSoundStream.cpp; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47BDEE5B1CCA8BEF001FDB2F /* Syphon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +469,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				47BDEE5A1CCA8BEF001FDB2F /* Syphon.framework */,
 				E432815E138ABFDD0047C5CB /* Shared.xcconfig */,
 				E4EB6916138AFC8500A09F29 /* CoreOF.xcconfig */,
 				E432815F138AC0470047C5CB /* Debug.xcconfig */,
@@ -851,6 +855,7 @@
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../lib/osx/";
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "\"$(OF_PATH)/libs/openFrameworks/addons/ofxSyphon/lib/osx\"";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

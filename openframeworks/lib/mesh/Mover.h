@@ -17,6 +17,7 @@ class Mover {
         ofVec3f location;
         ofVec3f velocity;
         ofVec3f acceleration;
+        float mass;
     
         //should this be a rectangle or ofBoxPrimitive?
         //maybe create a 3d mover and a 3d mover, both which use ofVec3f

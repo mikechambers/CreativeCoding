@@ -21,6 +21,9 @@ bool started = false;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    syphon.setName("Force");
+    
     mover.setBounds(ofGetWindowRect());
     mover.setToRandomLocation();
     mover.setToRandomVelocity(5.0);
@@ -104,6 +107,8 @@ void ofApp::draw(){
     }
     
     mesh.draw();
+    
+    syphon.publishScreen();
 }
 
 //--------------------------------------------------------------
