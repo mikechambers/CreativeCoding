@@ -29,6 +29,8 @@ class Mover {
         void setToRandomLocation();
         void setToRandomVelocity(float max);
     
+        void applyForce(ofVec3f force);
+    
         Mover();
         Mover(ofRectangle bounds);
     

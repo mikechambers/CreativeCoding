@@ -1,107 +1,115 @@
 #include "ofApp.h"
-#include "Follower.h"
-#include "MeshUtils.h"
-#include "ImageLoader.h"
 
-int const ITERATIONS = 1000;
-int const ALPHA = 0.1 * 255;
-int const HEIGHT = 640;
-int const WIDTH = 640;
 
-Mover mover;
-Follower follower;
-Follower follower2;
-Follower follower3;
-Follower follower4;
+vector<Balloon> balloons;
+ofVec3f wind;
+ofVec3f bounce;
+ofVec3f gravity;
+int const RADIUS = 1;
+int const ITERATIONS = 2;
+int const ALPHA = 0.2 * 255;
+float counter = .5;
 
 MeshUtils utils;
+ImageLoader loader;
+
+Mover mover;
 
 ofVboMesh mesh;
 
-ImageLoader imageLoader;
+bool started = false;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-    utils.enableScreenShot("follow2");
+    mover.setBounds(ofGetWindowRect());
+    mover.setToRandomLocation();
+    mover.setToRandomVelocity(5.0);
     
-    bool imageLoaded = imageLoader.load("../../../images/shoes.jpg", "../../../images/masks/cc.gif");
+    utils.enableScreenShot("Force");
+    bool imageLoaded = loader.load("../../../images/gradient_4.jpg", "../../../images/masks/cc.gif");
     
     if(!imageLoaded) {
         cout << "Exiting app." << endl;
         ofExit();
     }
     
-    imageLoader.resize(WIDTH,HEIGHT);
-    imageLoader.setAlpha(ALPHA);
+    loader.resize(640, 640);
+    loader.setAlpha(ALPHA);
+    loader.useMask(true);
+    
+    wind = ofVec3f(0.0, 0.0, 0.0);
+    bounce = ofVec3f(0.0, 0.05, 0.0);
+    gravity = ofVec3f(0.0, 0.05, 0.0);
+    ofBackground(ofColor::white);
     
     mesh.enableColors();
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    mesh.drawWireframe();
     
     ofSetBackgroundAuto(false);
-    
-    init();
 }
 
-void ofApp::init(){
-    
-    ofClear(0, 255);
-    ofBackground(ofColor::white);
-    mesh.clear();
-    
-    mover.setBounds(ofGetWindowRect());
-    mover.setToRandomLocation();
-    mover.setToRandomVelocity(5.0);
-    
-    follower.setToRandomLocation();
-    follower2.setToRandomLocation();
-    follower3.setToRandomLocation();
-    follower4.setToRandomLocation();
-    
-    follower.setTarget(&mover);
-    follower2.setTarget(&follower);
-    follower3.setTarget(&follower2);
-    follower4.setTarget(&follower3);
+Balloon ofApp::createBalloon(int x, int y) {
+    Balloon b = Balloon();
+    b.setBounds(ofGetWindowRect());
+    b.location.set(x, y, 0.0);
+    balloons.push_back(b);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    mesh.clear();
+    if(!started) {
+        return;
+    }
     
     for(int i = 0; i < ITERATIONS; i++) {
+        
         mover.update();
+        createBalloon(mover.location.x, mover.location.y);
         
-        follower.update();
-        mesh.addVertex(follower.location);
+        int bSize = balloons.size();
         
-        mesh.addColor(imageLoader.getColor(follower.location));
+        if(bSize == 0) {
+            return;
+        }
         
-        follower2.update();
-        mesh.addVertex(follower2.location);
-        mesh.addColor(imageLoader.getColor(follower2.location));
+        mesh.clear();
         
-        follower3.update();
-        mesh.addVertex(follower3.location);
-        mesh.addColor(imageLoader.getColor(follower3.location));
+        float n = ofMap(ofNoise(counter), 0.0, 1.0, -0.01, 0.01);
         
-        follower4.update();
-        mesh.addVertex(follower4.location);
-        mesh.addColor(imageLoader.getColor(follower4.location));
+        wind.x += n;
+        counter += 0.1;
+        
+        vector<Balloon>::iterator it = balloons.begin();
+        
+        for(; it != balloons.end(); ++it) {
+            Balloon &b = *it;
+            b.applyForce(gravity);
+            b.applyForce(wind);
+            
+            b.update();
+            
+            mesh.addColor(loader.getColor(b.location));
+            mesh.addVertex(b.location);
+        }
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    if(!started) {
+        return;
+    }
+    
     mesh.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 'x') {
-        utils.disableScreenShot();
-    } else if (key == 'r') {
-        init();
+    if(key == ' ') {
+        started = !started;
     }
 }
 
@@ -122,7 +130,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    createBalloon(x, y);
 }
 
 //--------------------------------------------------------------

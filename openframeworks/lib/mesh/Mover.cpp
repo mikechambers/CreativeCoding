@@ -16,18 +16,23 @@ Mover::Mover() {
     acceleration.limit(1.0);
 }
 
+void Mover::applyForce(ofVec3f force) {
+    acceleration += force;
+}
+
 void Mover::update() {
     velocity += acceleration;
     location += velocity;
+    acceleration.set(0.0, 0.0, 0.0);
     
     if(location.x < bounds2d.x || location.x > bounds2d.width) {
         velocity.x *= -1;
-        acceleration.x *= -1;
+        //acceleration.x *= -1;
     }
     
     if(location.y < bounds2d.y || location.y > bounds2d.height) {
         velocity.y *= -1;
-        acceleration.y *= -1;
+        //acceleration.y *= -1;
     }
 }
 

@@ -58,10 +58,13 @@ ofColor ImageLoader::getColor(int x, int y){
        y < 0 || y > _image.getHeight()) {
         return ofColor(ofColor::white, 0);
     }
-    ofColor _mc = _maskImage.getColor(x, y);
     
-    if(_mc != MASK_COLOR) {
-        return _nonMaskColor;
+    if(_maskImage.isAllocated()) {
+        ofColor _mc = _maskImage.getColor(x, y);
+        
+        if(_mc != MASK_COLOR) {
+            return _nonMaskColor;
+        }
     }
     
     return ofColor(_image.getColor(x, y), _alpha);
