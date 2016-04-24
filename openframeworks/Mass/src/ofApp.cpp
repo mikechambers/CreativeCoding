@@ -1,16 +1,32 @@
 #include "ofApp.h"
 #include "Mover.h"
+#include "ForceInfluencer.h"
+#include "ImageLoader.h"
+#include "MeshUtils.h"
 
-int const MOVER_COUNT = 20;
-float const INFLUENCE_RADIUS = 140;
-float const MAX_VELOCITY = 2.0;
-float const MAX_MASS = 20.0;
-float const REPEL = false;
+int const MOVER_COUNT = 1000;
+float const INFLUENCE_RADIUS = 100;
+float const MAX_VELOCITY = 1.0;
+float const MIN_MASS = 2.0;
+float const MAX_MASS = 10.0;
+float const REPEL = true;
 
+
+float const FRICTION_COEFFICIENT = 0.0;
+float const NORMAL = 1.0;
+int const ALPHA = 0.1 * 255;
+
+MeshUtils utils;
 
 ofVec3f wind(0.0, 0.0, 0.0);
-ofVec3f gravity(0.0, 0.001, 0.0);
-ofVec3f repelPoint;
+ofVec3f gravity(0.0, 0.0, 0.0);
+
+ForceInfluencer influencer;
+
+ImageLoader image;
+
+ofVboMesh mesh;
+
 
 vector<Mover> movers;
 
@@ -18,7 +34,18 @@ vector<Mover> movers;
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    repelPoint = ofVec3f(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
+    syphon.setName("Mass");
+    
+    utils.enableScreenShot("Mass");
+    //image.load("../../../images/crates.jpg");
+    image.load("/Users/mesh/tmp/color-gradient-wallpaper-3.jpg");
+    
+    image.resize(640, 640);
+    
+    influencer.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
+    influencer.setBounds(ofGetWindowRect());
+    influencer.influenceRadius = INFLUENCE_RADIUS;
+    influencer.setToRandomVelocity(2.0);
     
     for(int i = 0; i < MOVER_COUNT; i++) {
         
@@ -26,66 +53,83 @@ void ofApp::setup(){
         mover.setBounds(ofGetWindowRect());//maybe default this in the class?
         mover.setToRandomLocation();
         mover.setToRandomVelocity(MAX_VELOCITY);
-        mover.mass = ofRandom(0.0, MAX_MASS);
+        mover.mass = ofRandom(MIN_MASS, MAX_MASS);
         
         movers.push_back(mover);
     }
     
-}
-
-void ofApp::checkRepel(Mover * mover) {
-
-    float distance = mover->location.distance(repelPoint);
+    mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    mesh.enableColors();
     
-    if(distance > INFLUENCE_RADIUS) {
-        return;
-    }
+    //ofSetBackgroundColorHex(0x222222);
+    ofSetBackgroundColor(ofColor::white);
+    ofSetBackgroundAuto(false);
     
-    ofVec3f f = repelPoint - mover->location;
-    f.normalize();
-    f *= (ofMap(distance, 0, INFLUENCE_RADIUS, 0.01, 0.5));
-    
-    if(REPEL) {
-        f *= -1;
-    }
-    
-    mover->applyForce(f);
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    vector<Mover>::iterator it = movers.begin();
+    mesh.clear();
     
+    influencer.update();
+    
+    vector<Mover>::iterator it = movers.begin();
+
     for(; it != movers.end(); ++it){
         Mover &m = *it;
-        m.applyForce(gravity + wind);
         
-        checkRepel(&m);
+        ofVec3f iF = influencer.influence(m);
+        
+        //check friction
+        ofVec3f friction = m.velocity * -1;
+        friction.normalize();
+        friction *= FRICTION_COEFFICIENT;
+        
+        m.applyForce((gravity * m.mass) + wind + iF + friction);//this works as long as only y has a value
+        
+        friction.set(0.0,0.0,0.0);
+        
+        //friction
+        
+        //checkRepel(&m);
         
         m.update();
+        
+        
+        mesh.addColor(ofColor(image.getColor(m.location), ALPHA));
+        mesh.addVertex(m.location);
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    ofSetColor(ofColor::white);
+    mesh.draw();
+    syphon.publishScreen();
+    
+    
+    /*
+    ofSetColor(ofColor(ofColor::white, ALPHA));
     ofFill();
     
     vector<Mover>::iterator it = movers.begin();
     
     for(; it != movers.end(); ++it){
-        Mover &m = *it;        
-        ofDrawCircle(m.location, m.mass);
+        Mover &m = *it;
+    
+        //see if we can figure out how to add this to Mover
+        ofDrawCircle(m.location, 1);
     }
     
     
-    ofDrawCircle(repelPoint.x, repelPoint.y, 2);
+    ofDrawCircle(influencer.location, 2);
+    */
     
-    ofNoFill();
-    ofDrawCircle(repelPoint.x, repelPoint.y, INFLUENCE_RADIUS);
+    //ofNoFill();
+    //ofSetColor(ofColor(ofColor::white, ALPHA));
+    //ofDrawCircle(influencer.location, influencer.influenceRadius);
     
 }
 

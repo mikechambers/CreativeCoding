@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47610BB21CCBF1550099A8EC /* ForceInfluencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47610BB01CCBF1550099A8EC /* ForceInfluencer.cpp */; };
+		47610BB31CCBF1550099A8EC /* ForceInfluencer.h in Sources */ = {isa = PBXBuildFile; fileRef = 47610BB11CCBF1550099A8EC /* ForceInfluencer.h */; };
+		47610BB61CCC74250099A8EC /* ImageLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47610BB41CCC74250099A8EC /* ImageLoader.cpp */; };
+		47610BB71CCC74250099A8EC /* ImageLoader.h in Sources */ = {isa = PBXBuildFile; fileRef = 47610BB51CCC74250099A8EC /* ImageLoader.h */; };
+		47610BBB1CCC7A740099A8EC /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47610BB91CCC7A740099A8EC /* MeshUtils.cpp */; };
+		47610BBC1CCC7A740099A8EC /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 47610BBA1CCC7A740099A8EC /* MeshUtils.h */; };
 		47BDEEAF1CCAAF3F001FDB2F /* Follower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47BDEEAB1CCAAF3F001FDB2F /* Follower.cpp */; };
 		47BDEEB01CCAAF3F001FDB2F /* Follower.h in Sources */ = {isa = PBXBuildFile; fileRef = 47BDEEAC1CCAAF3F001FDB2F /* Follower.h */; };
 		47BDEEB11CCAAF3F001FDB2F /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47BDEEAD1CCAAF3F001FDB2F /* Mover.cpp */; };
@@ -56,6 +62,12 @@
 		01D58C97EF7F0D600052A7A2 /* ofxSyphonServerDirectory.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonServerDirectory.h; path = ../lib/of_v0.9.3_osx_release/addons/ofxSyphon/src/ofxSyphonServerDirectory.h; sourceTree = SOURCE_ROOT; };
 		1D188A5020E7BB6F82836093 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonServerDirectory.mm; path = ../lib/of_v0.9.3_osx_release/addons/ofxSyphon/src/ofxSyphonServerDirectory.mm; sourceTree = SOURCE_ROOT; };
 		3D7973CD526F90A377753D74 /* ofxSyphonClient.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonClient.mm; path = ../lib/of_v0.9.3_osx_release/addons/ofxSyphon/src/ofxSyphonClient.mm; sourceTree = SOURCE_ROOT; };
+		47610BB01CCBF1550099A8EC /* ForceInfluencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ForceInfluencer.cpp; path = ../../lib/mesh/ForceInfluencer.cpp; sourceTree = "<group>"; };
+		47610BB11CCBF1550099A8EC /* ForceInfluencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ForceInfluencer.h; path = ../../lib/mesh/ForceInfluencer.h; sourceTree = "<group>"; };
+		47610BB41CCC74250099A8EC /* ImageLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImageLoader.cpp; path = ../../lib/mesh/ImageLoader.cpp; sourceTree = "<group>"; };
+		47610BB51CCC74250099A8EC /* ImageLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageLoader.h; path = ../../lib/mesh/ImageLoader.h; sourceTree = "<group>"; };
+		47610BB91CCC7A740099A8EC /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
+		47610BBA1CCC7A740099A8EC /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
 		47BDEEAB1CCAAF3F001FDB2F /* Follower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Follower.cpp; path = ../../lib/mesh/Follower.cpp; sourceTree = "<group>"; };
 		47BDEEAC1CCAAF3F001FDB2F /* Follower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Follower.h; path = ../../lib/mesh/Follower.h; sourceTree = "<group>"; };
 		47BDEEAD1CCAAF3F001FDB2F /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../../lib/mesh/Mover.cpp; sourceTree = "<group>"; };
@@ -194,6 +206,12 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				47610BB91CCC7A740099A8EC /* MeshUtils.cpp */,
+				47610BBA1CCC7A740099A8EC /* MeshUtils.h */,
+				47610BB41CCC74250099A8EC /* ImageLoader.cpp */,
+				47610BB51CCC74250099A8EC /* ImageLoader.h */,
+				47610BB01CCBF1550099A8EC /* ForceInfluencer.cpp */,
+				47610BB11CCBF1550099A8EC /* ForceInfluencer.h */,
 				47BDEEAB1CCAAF3F001FDB2F /* Follower.cpp */,
 				47BDEEAC1CCAAF3F001FDB2F /* Follower.h */,
 				47BDEEAD1CCAAF3F001FDB2F /* Mover.cpp */,
@@ -301,6 +319,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47610BBB1CCC7A740099A8EC /* MeshUtils.cpp in Sources */,
+				47610BBC1CCC7A740099A8EC /* MeshUtils.h in Sources */,
+				47610BB61CCC74250099A8EC /* ImageLoader.cpp in Sources */,
+				47610BB71CCC74250099A8EC /* ImageLoader.h in Sources */,
+				47610BB21CCBF1550099A8EC /* ForceInfluencer.cpp in Sources */,
+				47610BB31CCBF1550099A8EC /* ForceInfluencer.h in Sources */,
 				47BDEEAF1CCAAF3F001FDB2F /* Follower.cpp in Sources */,
 				47BDEEB01CCAAF3F001FDB2F /* Follower.h in Sources */,
 				47BDEEB11CCAAF3F001FDB2F /* Mover.cpp in Sources */,
