@@ -4,7 +4,7 @@
 #include "ImageLoader.h"
 #include "MeshUtils.h"
 
-int const MOVER_COUNT = 1000;
+int const MOVER_COUNT = 50;
 float const INFLUENCE_RADIUS = 100;
 float const MAX_VELOCITY = 1.0;
 float const MIN_MASS = 2.0;
@@ -27,6 +27,8 @@ ImageLoader image;
 
 ofVboMesh mesh;
 
+bool paused = true;
+
 
 vector<Mover> movers;
 
@@ -34,11 +36,12 @@ vector<Mover> movers;
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    ofSetFrameRate(60);
     syphon.setName("Mass");
     
     utils.enableScreenShot("Mass");
-    //image.load("../../../images/crates.jpg");
-    image.load("/Users/mesh/tmp/color-gradient-wallpaper-3.jpg");
+    image.load("../../../images/building_3.jpg");
+    //image.load("/Users/mesh/tmp/color-gradient-wallpaper-3.jpg");
     
     image.resize(640, 640);
     
@@ -51,7 +54,8 @@ void ofApp::setup(){
         
         Mover mover;
         mover.setBounds(ofGetWindowRect());//maybe default this in the class?
-        mover.setToRandomLocation();
+        //mover.setToRandomLocation();
+        mover.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
         mover.setToRandomVelocity(MAX_VELOCITY);
         mover.mass = ofRandom(MIN_MASS, MAX_MASS);
         
@@ -70,6 +74,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    if(paused) {
+        return;
+    }
     
     mesh.clear();
     
@@ -106,6 +114,11 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+    if(paused) {
+        syphon.publishScreen();
+        return;
+    }
+    
     mesh.draw();
     syphon.publishScreen();
     
@@ -135,7 +148,9 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if(key == ' ') {
+        paused = !paused;
+    }
 }
 
 //--------------------------------------------------------------
