@@ -8,11 +8,11 @@ class MeshUtils {
     
 private:
     char _screenshotKey = 's';
-    string _dirName;
+    string _name;
     
 public:
-    void enableScreenShot(string dirName);
-    void enableScreenShot(string dirName, char key);
+    void enableScreenShot(string name);
+    void enableScreenShot(string name, char key);
     
     void onKeyPressed(ofKeyEventArgs& eventArgs);
     void disableScreenShot();

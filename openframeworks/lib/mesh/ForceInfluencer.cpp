@@ -27,11 +27,11 @@ ofVec3f ForceInfluencer::influence(Mover mover) {
     //how much force is applied
     out *= (ofMap(distance, 0, influenceRadius, minForce, maxForce));
     
-    /*
-    if(REPEL) {
-        f *= -1;
+    
+    if(forceType == ForceType::REPEL) {
+        out *= -1;
     }
-     */
+    
     
     /*
     ofVec3f friction = mover.velocity * -1;

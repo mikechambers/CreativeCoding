@@ -13,9 +13,13 @@
 #include "ofMain.h"
 #include "Mover.h"
 
+
+enum ForceType { ATTRACT, REPEL };
+
 class ForceInfluencer : public Mover {
 public:
     
+    ForceType forceType = ForceType::ATTRACT;
     float influenceRadius = 20.0;
     float minForce = 0.1;
     float maxForce = 0.9;
