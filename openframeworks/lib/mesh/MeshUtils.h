@@ -16,6 +16,12 @@ public:
     
     void onKeyPressed(ofKeyEventArgs& eventArgs);
     void disableScreenShot();
+
+    static ofVec3f getRandomPointInBounds(const ofRectangle & bounds);
+    static ofRectangle getBoundsWithPadding(const ofRectangle & bounds, float padding);
+    static vector<ofVec3f> getRandomPointsInBounds(const ofRectangle & bounds, uint number);
 };
+
+
 
 #endif /* Follower_hpp */
