@@ -4,7 +4,7 @@
 MeshUtils utils;
 
 float const BOUNDS_PADDING = 100.0;
-float const POINT_COUNT = 50;
+float const POINT_COUNT = 100000;
 
 
 ofRectangle bounds;
@@ -15,16 +15,9 @@ vector<ofVec3f>points;
 void ofApp::setup(){
     utils.enableScreenShot("Network_2");
     
-    /*
-    ofRectangle _b = ofGetWindowRect();
-    float _x = _b.x + BOUNDS_PADDING;
-    float _width = _b.width - (BOUNDS_PADDING * 2);
-    float _y = _b.y + BOUNDS_PADDING;
-    float _height = _b.height - (BOUNDS_PADDING * 2);
-     */
+    ofSetBackgroundColor(ofColor::white);
 
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    
     points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
 }
 
@@ -45,7 +38,7 @@ void ofApp::draw(){
     ofSetColor(ofColor::black);
     ofFill();
     for(int i = 0; i < POINT_COUNT; i++) {
-        ofDrawCircle(points[i], 2.0);
+        ofDrawCircle(points[i], 1.0);
     }
     
 }
