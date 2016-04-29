@@ -27,7 +27,7 @@ void ofApp::setup(){
     cam.setDistance(600.0);
     
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT, 400.0);
+    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
 
     bool imageLoaded = image.load("../../../images/tycho_awake.png");
     //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
@@ -38,6 +38,9 @@ void ofApp::setup(){
     }
     
     image.resize(640,640);
+    
+    bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
+    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
     
     mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     mesh.enableColors();
@@ -113,7 +116,7 @@ void ofApp::draw(){
     
     ofPushMatrix();
     ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
-    mesh.draw();
+    //mesh.draw();
 
     
     

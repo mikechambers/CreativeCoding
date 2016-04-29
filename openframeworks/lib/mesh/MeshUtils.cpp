@@ -28,26 +28,41 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
     }
 }
 
-ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds) {
-    
-    float x = ofRandom(bounds.x, bounds.x + bounds.width);
-    float y = ofRandom(bounds.y, bounds.y + bounds.height);
+/*******************             *******************/
 
-    return ofVec3f(x, y, ofRandom(-200.00, 200));
+ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds) {
+    return MeshUtils::getRandomPointInBounds(bounds, 0.0);
 }
 
-vector<ofVec3f> MeshUtils::getRandomPointsInBounds(const ofRectangle & bounds, uint number) {
+ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds, float depth) {
+    float x = ofRandom(bounds.x, bounds.x + bounds.width);
+    float y = ofRandom(bounds.y, bounds.y + bounds.height);
     
+    
+    float z = (depth == 0.0)? 0.0 : ofRandom(-depth / 2, depth / 2);
+    
+    return ofVec3f(x, y, z);
+}
+
+
+/*******************             *******************/
+
+vector<ofVec3f> MeshUtils::getRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth) {
     vector<ofVec3f>points;
     
     for(int i = 0; i < number; i++) {
-        points.push_back(MeshUtils::getRandomPointInBounds(bounds));
+        points.push_back(MeshUtils::getRandomPointInBounds(bounds, depth));
     }
     
     return points;
 }
 
-//note, could pass in a vector to popular, so larger vectors dont have to be copied
+
+vector<ofVec3f> MeshUtils::getRandomPointsInBounds(const ofRectangle & bounds, uint number) {
+    return MeshUtils::getRandomPointsInBounds(bounds, number, 0.0);
+}
+
+//note, could pass in a vector to populate, so larger vectors dont have to be copied
 ofRectangle MeshUtils::getBoundsWithPadding(const ofRectangle & bounds, float padding) {
     float _x = bounds.x + padding;
     float _width = bounds.width - (padding * 2);
