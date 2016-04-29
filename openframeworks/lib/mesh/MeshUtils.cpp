@@ -32,8 +32,8 @@ ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds) {
     
     float x = ofRandom(bounds.x, bounds.x + bounds.width);
     float y = ofRandom(bounds.y, bounds.y + bounds.height);
-    
-    return ofVec3f(x, y, 0.0);
+
+    return ofVec3f(x, y, ofRandom(-200.00, 200));
 }
 
 vector<ofVec3f> MeshUtils::getRandomPointsInBounds(const ofRectangle & bounds, uint number) {

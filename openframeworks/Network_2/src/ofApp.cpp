@@ -1,42 +1,36 @@
 #include "ofApp.h"
 #include "MeshUtils.h"
-<<<<<<< HEAD
-
-MeshUtils utils;
-
-float const BOUNDS_PADDING = 100.0;
-float const POINT_COUNT = 100000;
-
-=======
 #include "ImageLoader.h"
+#include "ofxSyphonClient.h"
 
 MeshUtils utils;
 
-float const BOUNDS_PADDING = 50.0;
+float const BOUNDS_PADDING = 500.0;
 float const POINT_COUNT = 500;
-int const ALPHA = 0.5 * 255;
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
+int const ALPHA = 0.9 * 255;
 
 ofRectangle bounds;
 vector<ofVec3f>points;
 
-<<<<<<< HEAD
-=======
 ofVboMesh mesh;
 ImageLoader image;
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
+
+ofxSyphonServer syphon;
+
+ofEasyCam cam;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     utils.enableScreenShot("Network_2");
+    syphon.setName("Network_2");
     
-<<<<<<< HEAD
-    ofSetBackgroundColor(ofColor::white);
-
+    cam.setDistance(600.0);
+    
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
     points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
-=======
-    bool imageLoaded = image.load("../../../images/hawaii.jpg");
+
+    bool imageLoaded = image.load("../../../images/tycho_awake.png");
+    //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
     
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;
@@ -48,94 +42,97 @@ void ofApp::setup(){
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
     points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
     
-    mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     mesh.enableColors();
     
+    ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
-<<<<<<< HEAD
-=======
+    
     mesh.clear();
     
     for(int i = 0 ; i < POINT_COUNT; i++) {
-        ofVec3f p = points[i];//is this copying or passing by reference?
-        
-        vector<ofVec3f> closePoints;
+        ofVec3f p = points[i]; //is this copying or passing by reference?
     
+        vector<ofVec3f> _closest;
+        
         for(int k = 0; k < POINT_COUNT; k++) {
-            
-            ofVec3f p2 = points[k];
-            
             if(k == i) {
                 continue;
             }
             
-            for(int j = 0; j < 2; j++) {
-                
-                if(closePoints.size() < 1) {
-                    closePoints.push_back(p2);
-                    continue;
+            ofVec3f p2 = points[k];
+            
+            if(_closest.size() == 0) {
+                _closest.push_back(p2);
+                continue;
+            } else if (_closest.size() == 1) {
+                if(p.distance(p2) < p.distance(_closest[0])) {
+                    _closest.insert(_closest.begin(), p2);
+                } else {
+                    _closest.push_back(p2);
                 }
                 
-                if(p.distance(p2) < p.distance(closePoints[0])) {
-                    
-                    if(closePoints.size() < 2) {
-                        closePoints.push_back(closePoints[0]);
-                    }
-                    closePoints[0] = p2;
+                continue;
+            }
+            
+            int s = _closest.size();
+            for(int m = 0; m < s; m++) {
+                if(p.distance(p2) < p.distance(_closest[m])) {
+                    _closest.insert(_closest.begin() + m, p2);
+                    break;
                 }
             }
             
+            if(_closest.size() > 2) {
+                _closest.pop_back();
+            }
         }
         
         mesh.addColor(ofColor(image.getColor(p), ALPHA));
         mesh.addVertex(p);
         
-        mesh.addColor(ofColor(image.getColor(closePoints[0]), ALPHA));
-        mesh.addVertex(closePoints[0]);
+        mesh.addColor(ofColor(image.getColor(_closest[0]), ALPHA));
+        mesh.addVertex(_closest[0]);
         
-        mesh.addColor(ofColor(image.getColor(closePoints[1]), ALPHA));
-        mesh.addVertex(closePoints[1]);
+        mesh.addColor(ofColor(image.getColor(_closest[1]), ALPHA));
+        mesh.addVertex(_closest[1]);
+        
+        _closest.clear();
     }
-    
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-<<<<<<< HEAD
+    cam.begin();
     
-=======
-    mesh.draw();
+    ofPushMatrix();
+    //ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
+    ofRotate(ofGetFrameNum() * .75, .75, .75, 0);
     
-    /*
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
-    ofSetColor(ofColor::white);
-    ofFill();
-    ofDrawRectangle(bounds);
+    ofPushMatrix();
+    ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
+    //mesh.draw();
+
     
-<<<<<<< HEAD
     
-    ofSetColor(ofColor::black);
-=======
-    */
-    ofSetColor(ofColor(ofColor::white, ALPHA));
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
+    ofSetColor(ofColor(ofColor::black, ALPHA));
     ofFill();
     for(int i = 0; i < POINT_COUNT; i++) {
-        ofDrawCircle(points[i], 1.0);
+        ofSetColor(ofColor(image.getColor(points[i]), ALPHA));
+        ofDrawCircle(points[i], 2.0);
     }
-<<<<<<< HEAD
-=======
-     
->>>>>>> 89bbbf19abcd54cb8c7a31d1e6d67916a6d04788
+    ofPopMatrix();
     
+    ofPopMatrix();
+    
+    cam.end();
+    
+    syphon.publishScreen();
 }
 
 //--------------------------------------------------------------
