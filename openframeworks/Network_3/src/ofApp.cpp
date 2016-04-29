@@ -5,9 +5,10 @@
 
 MeshUtils utils;
 
-float const BOUNDS_PADDING = 500.0;
-float const POINT_COUNT = 500;
-int const ALPHA = 0.9 * 255;
+float const BOUNDS_PADDING = 520.0;
+float const POINT_COUNT = 100;
+int const ALPHA = 0.5 * 255;
+int const DISTANCE_THRESHOLD = 100;
 
 ofRectangle bounds;
 vector<ofVec3f>points;
@@ -27,9 +28,9 @@ void ofApp::setup(){
     cam.setDistance(600.0);
     
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
+    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT, 400.0);
 
-    bool imageLoaded = image.load("../../../images/tycho_awake.png");
+    bool imageLoaded = image.load("../../../images/mike.png");
     //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
     
     if(!imageLoaded) {
@@ -39,14 +40,11 @@ void ofApp::setup(){
     
     image.resize(640,640);
     
-    bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT);
-    
-    mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    mesh.setMode(OF_PRIMITIVE_LINES);
     mesh.enableColors();
     
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::white);
+    ofSetBackgroundColor(ofColor::black);
 }
 
 //--------------------------------------------------------------
@@ -56,8 +54,6 @@ void ofApp::update(){
     
     for(int i = 0 ; i < POINT_COUNT; i++) {
         ofVec3f p = points[i]; //is this copying or passing by reference?
-    
-        vector<ofVec3f> _closest;
         
         for(int k = 0; k < POINT_COUNT; k++) {
             if(k == i) {
@@ -65,43 +61,17 @@ void ofApp::update(){
             }
             
             ofVec3f p2 = points[k];
-            
-            if(_closest.size() == 0) {
-                _closest.push_back(p2);
-                continue;
-            } else if (_closest.size() == 1) {
-                if(p.distance(p2) < p.distance(_closest[0])) {
-                    _closest.insert(_closest.begin(), p2);
-                } else {
-                    _closest.push_back(p2);
-                }
+           
+            if(p.distance(p2) < DISTANCE_THRESHOLD) {
+                mesh.addColor(ofColor(ofColor::white, ALPHA));
+                //mesh.addColor(ofColor(image.getColor(p), ALPHA));
+                mesh.addVertex(p);
                 
-                continue;
-            }
-            
-            int s = _closest.size();
-            for(int m = 0; m < s; m++) {
-                if(p.distance(p2) < p.distance(_closest[m])) {
-                    _closest.insert(_closest.begin() + m, p2);
-                    break;
-                }
-            }
-            
-            if(_closest.size() > 2) {
-                _closest.pop_back();
+                mesh.addColor(ofColor(ofColor::white, ALPHA));
+                //mesh.addColor(ofColor(image.getColor(p2), ALPHA));
+                mesh.addVertex(p2);
             }
         }
-        
-        mesh.addColor(ofColor(image.getColor(p), ALPHA));
-        mesh.addVertex(p);
-        
-        mesh.addColor(ofColor(image.getColor(_closest[0]), ALPHA));
-        mesh.addVertex(_closest[0]);
-        
-        mesh.addColor(ofColor(image.getColor(_closest[1]), ALPHA));
-        mesh.addVertex(_closest[1]);
-        
-        _closest.clear();
     }
 }
 
@@ -116,7 +86,7 @@ void ofApp::draw(){
     
     ofPushMatrix();
     ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
-    //mesh.draw();
+    mesh.draw();
 
     
     
@@ -124,7 +94,8 @@ void ofApp::draw(){
     ofFill();
     for(int i = 0; i < POINT_COUNT; i++) {
         ofSetColor(ofColor(image.getColor(points[i]), ALPHA));
-        ofDrawCircle(points[i], 2.0);
+        //ofDrawCircle(points[i], 2.0);
+        ofDrawSphere(points[i], 2.0);
     }
     ofPopMatrix();
     
