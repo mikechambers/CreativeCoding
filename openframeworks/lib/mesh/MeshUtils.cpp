@@ -30,6 +30,25 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 
 /*******************             *******************/
 
+
+ofVec3f MeshUtils::getRandomPointInSphere(ofVec3f center, float radius) {
+    float x = ofRandomf() * radius;
+    float y = ofRandomf() * radius;
+    float z = ofRandomf() * radius;
+    
+    return ofVec3f(x, y, z) + center;
+}
+
+vector<ofVec3f> MeshUtils::getRandomPointsInSphere(ofVec3f center, float radius, int number) {
+    vector<ofVec3f>points;
+    
+    for(int i = 0; i < number; i++) {
+        points.push_back(MeshUtils::getRandomPointInSphere(center, radius));
+    }
+    
+    return points;
+}
+
 ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds) {
     return MeshUtils::getRandomPointInBounds(bounds, 0.0);
 }
