@@ -42,6 +42,8 @@ ofColor ImageLoader::getColor(ofVec3f p){
 
 void ImageLoader::setAlpha(int alpha) {
     _alpha = alpha;
+    
+    //not sure if we should set this here
     _nonMaskColor = ofColor(ofColor::white, _alpha);
 }
 

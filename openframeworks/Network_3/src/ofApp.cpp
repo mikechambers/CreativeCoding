@@ -7,7 +7,7 @@ MeshUtils utils;
 
 float const BOUNDS_PADDING = 520.0;
 float const POINT_COUNT = 100;
-int const ALPHA = 0.5 * 255;
+int const ALPHA = 0.9 * 255;
 int const DISTANCE_THRESHOLD = 100;
 
 ofRectangle bounds;
@@ -22,29 +22,31 @@ ofEasyCam cam;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenShot("Network_2");
-    syphon.setName("Network_2");
+    utils.enableScreenShot("Network_3");
+    syphon.setName("Network_3");
     
     cam.setDistance(600.0);
     
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
     points = MeshUtils::getRandomPointsInBounds(bounds, POINT_COUNT, 400.0);
 
-    bool imageLoaded = image.load("../../../images/mike.png");
+    bool imageLoaded = image.load("../../../images/tycho_awake.png", "../../../images/masks/mike.gif");
     //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
     
+
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;
         ofExit();
     }
     
+    image.setAlpha(ALPHA);
     image.resize(640,640);
     
     mesh.setMode(OF_PRIMITIVE_LINES);
     mesh.enableColors();
     
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::black);
+    ofSetBackgroundColor(ofColor::white);
 }
 
 //--------------------------------------------------------------
@@ -63,12 +65,15 @@ void ofApp::update(){
             ofVec3f p2 = points[k];
            
             if(p.distance(p2) < DISTANCE_THRESHOLD) {
-                mesh.addColor(ofColor(ofColor::white, ALPHA));
-                //mesh.addColor(ofColor(image.getColor(p), ALPHA));
+                
+                ofColor _c = image.getColor(p);
+                
+                //mesh.addColor(ofColor(ofColor::white, ALPHA));
+                mesh.addColor(image.getColor(p));
                 mesh.addVertex(p);
                 
-                mesh.addColor(ofColor(ofColor::white, ALPHA));
-                //mesh.addColor(ofColor(image.getColor(p2), ALPHA));
+                //mesh.addColor(ofColor(ofColor::white, ALPHA));
+                mesh.addColor(image.getColor(p2));
                 mesh.addVertex(p2);
             }
         }
@@ -90,10 +95,10 @@ void ofApp::draw(){
 
     
     
-    ofSetColor(ofColor(ofColor::black, ALPHA));
-    ofFill();
+    //ofSetColor(ofColor(ofColor::black, ALPHA));
+    //ofFill();
     for(int i = 0; i < POINT_COUNT; i++) {
-        ofSetColor(ofColor(image.getColor(points[i]), ALPHA));
+        ofSetColor(image.getColor(points[i]));
         //ofDrawCircle(points[i], 2.0);
         ofDrawSphere(points[i], 2.0);
     }
