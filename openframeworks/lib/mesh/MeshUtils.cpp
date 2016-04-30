@@ -31,12 +31,37 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 /*******************             *******************/
 
 
-ofVec3f MeshUtils::getRandomPointInSphere(ofVec3f center, float radius) {
-    float x = ofRandomf() * radius;
-    float y = ofRandomf() * radius;
-    float z = ofRandomf() * radius;
+ofVec3f MeshUtils::getRandomPointOnSphere(ofVec3f center, float radius) {
+    float u = ofRandomf();
+    float v = ofRandomf();
+    float theta = 2 * PI * u;
+    float phi = acos(2 * v - 1);
+    float x = center.x + (radius * sin(phi) * cos(theta));
+    float y = center.y + (radius * sin(phi) * sin(theta));
+    float z = center.z + (radius * cos(phi));
     
-    return ofVec3f(x, y, z) + center;
+    return ofVec3f(x, y, z);
+}
+
+vector<ofVec3f> MeshUtils::getRandomPointsOnSphere(ofVec3f center, float radius, int number) {
+    vector<ofVec3f>points;
+    
+    for(int i = 0; i < number; i++) {
+        points.push_back(MeshUtils::getRandomPointOnSphere(center, radius));
+    }
+    
+    return points;
+}
+
+ofVec3f MeshUtils::getRandomPointInSphere(ofVec3f center, float radius) {
+
+    ofVec3f out = getRandomPointOnSphere(center, radius);
+    
+    ofVec3f dir = center - out;
+    dir *= ofRandomf();
+    
+    
+    return center + dir;
 }
 
 vector<ofVec3f> MeshUtils::getRandomPointsInSphere(ofVec3f center, float radius, int number) {

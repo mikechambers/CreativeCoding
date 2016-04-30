@@ -29,6 +29,10 @@ public:
     static ofVec3f getRandomPointInSphere(ofVec3f center, float radius);
     static vector<ofVec3f> getRandomPointsInSphere(ofVec3f center, float radius, int number);
 
+    
+    static ofVec3f getRandomPointOnSphere(ofVec3f center, float radius);
+    static vector<ofVec3f> getRandomPointsOnSphere(ofVec3f center, float radius, int number);
+    
 };
 
 #endif /* Follower_hpp */

@@ -5,10 +5,10 @@
 
 MeshUtils utils;
 
-float const BOUNDS_PADDING = 10.0;
-float const POINT_COUNT = 2000000;
-int const ALPHA = 0.3 * 255;
-int const DISTANCE_THRESHOLD = 25;
+float const BOUNDS_PADDING = 100.0;
+float const POINT_COUNT = 100000;
+int const ALPHA = 1.0 * 255;
+int const DISTANCE_THRESHOLD = 1;
 
 ofRectangle bounds;
 vector<ofVec3f>points;
@@ -32,10 +32,10 @@ void ofApp::setup(){
     center.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
     
     bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    points = MeshUtils::getRandomPointsInSphere(center, 300.0, POINT_COUNT);
+    points = MeshUtils::getRandomPointsInSphere(center, 100.0, POINT_COUNT);
     //points = MeshUtils::getRandomPointsInBounds(bounds, 100.0, POINT_COUNT);
     
-    bool imageLoaded = image.load("../../../images/landscape.jpg");
+    bool imageLoaded = image.load("../../../images/gradient_4.jpg");
     //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
     
 
@@ -89,7 +89,7 @@ void ofApp::draw(){
     
     ofPushMatrix();
     //ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
-    ofRotate(ofGetFrameNum() * .75, 0, 0, 0);
+    ofRotate(ofGetFrameNum() * .75, .75, 0, .75);
     
     ofPushMatrix();
     ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
