@@ -6,14 +6,17 @@
 MeshUtils utils;
 
 float const BOUNDS_PADDING = 0.0;
-float const POINT_COUNT = 1000000;
-int const ALPHA = 0.01 * 255;
-int const DISTANCE_THRESHOLD = 15;
+float const POINT_COUNT = 1000;
+int const ALPHA = 1.0 * 255;
+int const RADIUS = 100;
 
 ofRectangle bounds;
 vector<ofVec3f>points;
+vector<ofVec3f>outsidePoints;
 
 ofVboMesh mesh;
+ofVboMesh outsideMesh;
+
 ImageLoader image;
 
 ofVec3f center;
@@ -24,19 +27,17 @@ ofEasyCam cam;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenShot("Network_4");
-    syphon.setName("Network_4");
+    utils.enableScreenShot("Network_5");
+    syphon.setName("Network_5");
     
     cam.setDistance(600.0);
     
     center.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
     
-    bounds = MeshUtils::getBoundsWithPadding(ofGetWindowRect(), BOUNDS_PADDING);
-    points = MeshUtils::getRandomPointsOnSphere(center, 200, POINT_COUNT);
-    //points = MeshUtils::getRandomPointsInBounds(bounds, 100.0, POINT_COUNT);
+    points = MeshUtils::getRandomPointsOnSphere(center, RADIUS, POINT_COUNT);
+    outsidePoints = MeshUtils::getRandomPointsOnSphere(center, RADIUS * 2, POINT_COUNT);
     
-    bool imageLoaded = image.load("../../../images/gradient_4.jpg");
-    //bool imageLoaded = image.load("/Users/mesh/tmp/f2nbsPJ.jpg");
+    bool imageLoaded = image.load("../../../images/building.jpg");
     
 
     if(!imageLoaded) {
@@ -50,9 +51,48 @@ void ofApp::setup(){
     mesh.setMode(OF_PRIMITIVE_LINES);
     mesh.enableColors();
     
+    outsideMesh.setMode(OF_PRIMITIVE_LINES);
+    outsideMesh.enableColors();
+    
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
 }
+
+void ofApp::createSphere(vector<ofVec3f> & _points, ofVboMesh & _mesh) {
+    
+    for(int i = 0 ; i < POINT_COUNT; i++) {
+        ofVec3f p = _points[i]; //is this copying or passing by reference?
+        
+        //value so we can figure out if the vector has been initialized
+        int initValue = -10000000;
+        ofVec3f closest(initValue, initValue, initValue);
+        
+        for(int k = 0; k < POINT_COUNT; k++) {
+            
+            if(i == k) {
+                continue;
+            }
+            
+            ofVec3f p2 = _points[k];
+            
+            if(closest.x == initValue) {
+                closest = p2;
+                continue;
+            }
+            
+            if(p.distance(p2) < p.distance(closest)) {
+                closest = p2;
+            }
+        }
+        
+        _mesh.addColor(image.getColor(p));
+        _mesh.addVertex(p);
+        
+        _mesh.addColor(image.getColor(closest));
+        _mesh.addVertex(closest);
+    }
+}
+
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -62,24 +102,13 @@ void ofApp::update(){
     }
     
     mesh.clear();
+    outsideMesh.clear();
     
-    for(int i = 0 ; i < POINT_COUNT; i++) {
-        ofVec3f p = points[i]; //is this copying or passing by reference?
-        
-        ofVec3f dir = p - center;
-        dir.normalize();
-        
-        ofVec3f p2 = p + (dir * ofRandom(10.0, DISTANCE_THRESHOLD));
-        
-        
-        mesh.addColor(image.getColor(p));
-        mesh.addVertex(p);
-        
-        mesh.addColor(ofColor(ofColor::white, 0.0));
-        //mesh.addColor(image.getColor(p));
-        mesh.addVertex(p2);
-        
-    }
+    createSphere(points, mesh);
+    createSphere(outsidePoints, outsideMesh);
+
+    
+    cout << "created" << endl;
 }
 
 //--------------------------------------------------------------
@@ -88,19 +117,25 @@ void ofApp::draw(){
     cam.begin();
     
     ofPushMatrix();
-    //ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
-    ofRotate(ofGetFrameNum() * .75, .75, 0, .75);
+        ofRotate(ofGetFrameNum() * .75, .75, 0, .75);
+    
+        ofPushMatrix();
+            ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
+            mesh.draw();
+    
+        ofPopMatrix();
+
+    ofPopMatrix();
+    
     
     ofPushMatrix();
-    ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
-    mesh.draw();
-
-    /*
-    ofSetColor(ofColor(image.getColor(center), 0.8 * 255));
-    float radius = ofMap(sin(ofGetFrameNum() * 0.03), -1, 1, 2, 3);
-    ofDrawSphere(center, radius);
-    */
-    ofPopMatrix();
+        ofRotate(ofGetFrameNum() * -.75, .75, 0, .75);
+    
+        ofPushMatrix();
+            ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
+            outsideMesh.draw();
+    
+        ofPopMatrix();
     
     ofPopMatrix();
     
