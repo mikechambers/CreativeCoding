@@ -44,7 +44,7 @@ ofVec3f ForceInfluencer::influence(Mover mover) {
     //mover->applyForce(f + friction);
     
     
-    //this is really efficent. tons of copying, especially when we
+    //this is really inefficent. tons of copying, especially when we
     //dont change anything
     return out;
 }

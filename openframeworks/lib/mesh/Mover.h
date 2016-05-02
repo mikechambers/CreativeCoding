@@ -27,6 +27,9 @@ class Mover {
         virtual void update();
     
         void setBounds(ofRectangle b);
+        void checkBounds();
+        void checkBounds(ofRectangle _bounds);
+    
         void setToRandomLocation();
         void setToRandomVelocity(float max);
     

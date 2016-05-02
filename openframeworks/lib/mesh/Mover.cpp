@@ -8,6 +8,15 @@
 
 #include "Mover.h"
 
+
+//todo
+/*
+ - move bounds check to seperate function (check bounds?) and out of update
+ -add apis to calculating gravity, friction, etc... perhaps in util class
+*/
+
+
+
 Mover::Mover() {
     velocity = ofVec3f(0.0, 0.0, 0.0);
     location = ofVec3f(0.0, 0.0, 0.0);
@@ -17,7 +26,7 @@ Mover::Mover() {
     
     
     //do we need to set this?
-    acceleration.limit(1.0);
+    //acceleration.limit(1.0);
 }
 
 void Mover::applyForce(ofVec3f force) {
@@ -28,18 +37,20 @@ void Mover::update() {
     velocity += acceleration;
     location += velocity;
     acceleration.set(0.0, 0.0, 0.0);
-    
-    //should this be its own function? checkBounds?
-    //it would make it easier to override the checkBounds in a subclass?
+}
+
+void Mover::checkBounds(ofRectangle _bounds) {
     if(location.x < bounds2d.x || location.x > bounds2d.width) {
         velocity.x *= -1;
-        //acceleration.x *= -1;
     }
     
     if(location.y < bounds2d.y || location.y > bounds2d.height) {
         velocity.y *= -1;
-        //acceleration.y *= -1;
     }
+}
+
+void Mover::checkBounds() {
+    checkBounds(bounds2d);
 }
 
 void Mover::setBounds(ofRectangle bounds) {
