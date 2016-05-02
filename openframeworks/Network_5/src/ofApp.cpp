@@ -107,8 +107,6 @@ void ofApp::update(){
     createSphere(points, mesh);
     createSphere(outsidePoints, outsideMesh);
 
-    
-    cout << "created" << endl;
 }
 
 //--------------------------------------------------------------
@@ -122,7 +120,6 @@ void ofApp::draw(){
         ofPushMatrix();
             ofTranslate(-ofGetWidth()/2,-ofGetHeight()/2);
             mesh.draw();
-            outsideMesh.draw();
     
         ofPopMatrix();
 
