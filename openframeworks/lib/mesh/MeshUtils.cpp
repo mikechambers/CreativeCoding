@@ -1,7 +1,7 @@
 
 #include "MeshUtils.h"
 
-void MeshUtils::enableScreenShot(string name) {
+void MeshUtils::enableScreenshot(string name) {
     _name = name;
     
     //register for event here
@@ -9,13 +9,13 @@ void MeshUtils::enableScreenShot(string name) {
     ofAddListener(ofEvents().keyPressed, this, &MeshUtils::onKeyPressed);
 }
 
-void MeshUtils::enableScreenShot(string name, char key) {
+void MeshUtils::enableScreenshot(string name, char key) {
     _screenshotKey = key;
     
-    enableScreenShot(name);
+    enableScreenshot(name);
 }
 
-void MeshUtils::disableScreenShot() {
+void MeshUtils::disableScreenshot() {
     ofRemoveListener(ofEvents().keyPressed, this, &MeshUtils::onKeyPressed);
 }
 

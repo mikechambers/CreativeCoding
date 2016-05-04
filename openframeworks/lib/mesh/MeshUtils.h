@@ -11,11 +11,11 @@ private:
     string _name;
     
 public:
-    void enableScreenShot(string name);
-    void enableScreenShot(string name, char key);
+    void enableScreenshot(string name);
+    void enableScreenshot(string name, char key);
     
     void onKeyPressed(ofKeyEventArgs& eventArgs);
-    void disableScreenShot();
+    void disableScreenshot();
 };
 
 ofRectangle meshGetBoundsWithPadding(const ofRectangle & bounds, float padding);

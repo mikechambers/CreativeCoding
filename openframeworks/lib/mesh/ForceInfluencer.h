@@ -20,9 +20,6 @@ class ForceInfluencer : public Mover {
 public:
     
     ForceType forceType = ATTRACT;
-    float influenceRadius = 20.0;
-    float minForce = 0.1;
-    float maxForce = 0.9;
     
     ofVec3f influence(Mover mover);
     
