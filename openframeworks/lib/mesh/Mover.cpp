@@ -37,7 +37,14 @@ void Mover::applyForce(ofVec3f force) {
 void Mover::update() {
     velocity += acceleration;
     location += velocity;
+    
     acceleration.set(0.0, 0.0, 0.0);
+    
+    updateAngle();
+}
+
+void Mover::updateAngle() {
+    angle = ofRadToDeg(atan2(velocity.y, velocity.x));
 }
 
 ofVec3f Mover::repel(Mover mover) {

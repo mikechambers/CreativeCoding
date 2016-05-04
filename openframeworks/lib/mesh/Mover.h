@@ -19,6 +19,9 @@ class Mover {
         ofVec3f acceleration;
         float mass;
     
+        //in degrees
+        float angle;
+    
         float minGravityInfluence = 5.0;
         float maxGravityInfluence = 25.0;
         float gravity_coefficient = 0.4;
@@ -43,6 +46,9 @@ class Mover {
     
         Mover();
         Mover(ofRectangle bounds);
+    
+    protected:
+        void updateAngle();
     
     private:
         ofRectangle bounds2d;

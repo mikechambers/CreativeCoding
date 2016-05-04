@@ -20,6 +20,8 @@ void Follower::update() {
 }
 
 void Follower::update(ofVec3f t) {
+    
+    //do we need this limit?
     velocity.limit(5);
     ofVec3f dir = t - location;
     dir.normalize();
@@ -27,4 +29,6 @@ void Follower::update(ofVec3f t) {
     acceleration = dir;
     velocity += acceleration;
     location += velocity;
+    
+    updateAngle();
 }
