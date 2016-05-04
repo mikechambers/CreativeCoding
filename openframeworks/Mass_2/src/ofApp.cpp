@@ -75,17 +75,12 @@ void ofApp::update(){
         return;
     }
     
-    //mesh.clear();
-    
-    //influencer.update();
-    //influencer.checkBounds();
-    
     vector<Mover>::iterator it = movers.begin();
 
     for(; it != movers.end(); ++it){
         Mover &m = *it;
         
-        ofVec3f iF = influencer.repel(m);
+        ofVec3f iF = influencer.attract(m);
         
         //check friction
         ofVec3f friction = m.velocity * -1;
@@ -123,11 +118,12 @@ void ofApp::draw(){
     
         //see if we can figure out how to add this to Mover
         ofDrawCircle(m.location, m.mass);
+        ofDrawLine(influencer.location, m.location);
     }
     
     
-    ofFill();
-    ofDrawCircle(influencer.location, influencer.mass);
+    //ofNoFill();
+    //ofDrawCircle(influencer.location, influencer.mass);
 
     
 }
