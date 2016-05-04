@@ -46,7 +46,7 @@ ofVec3f Mover::repel(Mover mover) {
 
 ofVec3f Mover::attract(Mover mover) {
     ofVec3f force = location - mover.location;
-    float distance = MeshUtils::constrain(force.length(), minGravityInfluence, maxGravityInfluence);
+    float distance = meshConstrain(force.length(), minGravityInfluence, maxGravityInfluence);
     
     force.normalize();
     

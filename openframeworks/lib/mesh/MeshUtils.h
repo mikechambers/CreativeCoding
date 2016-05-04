@@ -16,24 +16,24 @@ public:
     
     void onKeyPressed(ofKeyEventArgs& eventArgs);
     void disableScreenShot();
-
-    
-    static ofRectangle getBoundsWithPadding(const ofRectangle & bounds, float padding);
-    
-    static ofVec3f getRandomPointInBounds(const ofRectangle & bounds);
-    static ofVec3f getRandomPointInBounds(const ofRectangle & bounds, float depth);
-    
-    static vector<ofVec3f> getRandomPointsInBounds(const ofRectangle & bounds, uint number);
-    static vector<ofVec3f> getRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth);
-    
-    static ofVec3f getRandomPointInSphere(ofVec3f center, float radius);
-    static vector<ofVec3f> getRandomPointsInSphere(ofVec3f center, float radius, int number);
-
-    
-    static ofVec3f getRandomPointOnSphere(ofVec3f center, float radius);
-    static vector<ofVec3f> getRandomPointsOnSphere(ofVec3f center, float radius, int number);
-    
-    static float constrain(float amt, float low, float high);
 };
+
+ofRectangle meshGetBoundsWithPadding(const ofRectangle & bounds, float padding);
+ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds);
+ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds, float depth);
+vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number);
+vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth);
+ofVec3f meshGetRandomPointInSphere(ofVec3f center, float radius);
+vector<ofVec3f> meshGetRandomPointsInSphere(ofVec3f center, float radius, int number);
+ofVec3f meshGetRandomPointOnSphere(ofVec3f center, float radius);
+vector<ofVec3f> meshGetRandomPointsOnSphere(ofVec3f center, float radius, int number);
+
+float meshConstrain(float amt, float low, float high);
+
+
+ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angle);
+ofVec3f meshGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance);
+ofVec3f meshGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2);
+float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2);
 
 #endif /* Follower_hpp */

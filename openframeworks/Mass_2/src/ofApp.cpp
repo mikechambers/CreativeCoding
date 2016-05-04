@@ -11,7 +11,7 @@ float const MAX_MASS = 10.0;
 
 float const FRICTION_COEFFICIENT = 0.0;
 float const NORMAL = 1.0;
-int const ALPHA = 0.9 * 255;
+int const ALPHA = 0.8 * 255;
 
 MeshUtils utils;
 
@@ -34,8 +34,9 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     syphon.setName("Mass");
     
-    utils.enableScreenShot("Mass");
-    image.load("../../../images/building_3.jpg");
+    utils.enableScreenShot("Mass_2");
+    image.load("../../../images/water_color.jpg");
+    image.setAlpha(ALPHA);
     //image.load("/Users/mesh/tmp/color-gradient-wallpaper-3.jpg");
     
     image.resize(640, 640);
@@ -61,8 +62,8 @@ void ofApp::setup(){
     //mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
     //mesh.enableColors();
     
-    //ofSetBackgroundColorHex(0x222222);
-    ofSetBackgroundColor(ofColor::black);
+    ofSetBackgroundColorHex(0x111111);
+    //ofSetBackgroundColor(ofColor::black);
     ofSetBackgroundAuto(true);
     
 }
@@ -105,22 +106,27 @@ void ofApp::draw(){
     }
     
     //mesh.draw();
-    syphon.publishScreen();
+    
     
 
     ofSetColor(ofColor(ofColor::white, ALPHA));
-    ofNoFill();
+    ofFill();
     
     vector<Mover>::iterator it = movers.begin();
     
     for(; it != movers.end(); ++it){
         Mover &m = *it;
     
+        ofSetColor(image.getColor(m.location));
+        
         //see if we can figure out how to add this to Mover
         ofDrawCircle(m.location, m.mass);
-        ofDrawLine(influencer.location, m.location);
+        ofVec3f p = meshGetPointOnCircleAlongLing(m.location, m.mass, influencer.location);
+        
+        ofDrawLine(influencer.location, p);
     }
     
+    syphon.publishScreen();
     
     //ofNoFill();
     //ofDrawCircle(influencer.location, influencer.mass);
