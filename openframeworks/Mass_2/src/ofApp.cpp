@@ -1,32 +1,28 @@
 #include "ofApp.h"
 #include "Mover.h"
-#include "ForceInfluencer.h"
 #include "ImageLoader.h"
 #include "MeshUtils.h"
 
 int const MOVER_COUNT = 50;
-float const INFLUENCE_RADIUS = 100;
-float const MAX_VELOCITY = 1.0;
+//float const INFLUENCE_RADIUS = 100;
+float const MAX_VELOCITY = 2.0;
 float const MIN_MASS = 2.0;
 float const MAX_MASS = 10.0;
 
-
 float const FRICTION_COEFFICIENT = 0.0;
 float const NORMAL = 1.0;
-int const ALPHA = 0.1 * 255;
+int const ALPHA = 0.9 * 255;
 
 MeshUtils utils;
 
 ofVec3f wind(0.0, 0.0, 0.0);
 ofVec3f gravity(0.0, 0.0, 0.0);
 
-ForceInfluencer influencer;
+Mover influencer;
 
 ImageLoader image;
 
-ofVboMesh mesh;
-
-bool paused = true;
+bool paused = false;
 
 
 vector<Mover> movers;
@@ -46,27 +42,28 @@ void ofApp::setup(){
     
     influencer.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
     influencer.setBounds(ofGetWindowRect());
-    influencer.influenceRadius = INFLUENCE_RADIUS;
-    influencer.setToRandomVelocity(2.0);
+    //influencer.influenceRadius = INFLUENCE_RADIUS;
+    //influencer.setToRandomVelocity(2.0);
+    influencer.mass = 50.0;
     
     for(int i = 0; i < MOVER_COUNT; i++) {
         
         Mover mover;
         mover.setBounds(ofGetWindowRect());//maybe default this in the class?
-        //mover.setToRandomLocation();
-        mover.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
+        mover.setToRandomLocation();
+        //mover.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
         mover.setToRandomVelocity(MAX_VELOCITY);
         mover.mass = ofRandom(MIN_MASS, MAX_MASS);
         
         movers.push_back(mover);
     }
     
-    mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-    mesh.enableColors();
+    //mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    //mesh.enableColors();
     
     //ofSetBackgroundColorHex(0x222222);
-    ofSetBackgroundColor(ofColor::white);
-    ofSetBackgroundAuto(false);
+    ofSetBackgroundColor(ofColor::black);
+    ofSetBackgroundAuto(true);
     
 }
 
@@ -78,16 +75,17 @@ void ofApp::update(){
         return;
     }
     
-    mesh.clear();
+    //mesh.clear();
     
-    influencer.update();
+    //influencer.update();
+    //influencer.checkBounds();
     
     vector<Mover>::iterator it = movers.begin();
 
     for(; it != movers.end(); ++it){
         Mover &m = *it;
         
-        ofVec3f iF = influencer.influence(m);
+        ofVec3f iF = influencer.repel(m);
         
         //check friction
         ofVec3f friction = m.velocity * -1;
@@ -97,17 +95,9 @@ void ofApp::update(){
         m.applyForce((gravity * m.mass) + wind + iF + friction);//this works as long as only y has a value
         
         friction.set(0.0,0.0,0.0);
-        
-        //friction
-        
-        //checkRepel(&m);
-        
+
         m.update();
         m.checkBounds();
-        
-        
-        mesh.addColor(ofColor(image.getColor(m.location), ALPHA));
-        mesh.addVertex(m.location);
     }
 }
 
@@ -119,13 +109,12 @@ void ofApp::draw(){
         return;
     }
     
-    mesh.draw();
+    //mesh.draw();
     syphon.publishScreen();
     
-    
-    /*
+
     ofSetColor(ofColor(ofColor::white, ALPHA));
-    ofFill();
+    ofNoFill();
     
     vector<Mover>::iterator it = movers.begin();
     
@@ -133,16 +122,13 @@ void ofApp::draw(){
         Mover &m = *it;
     
         //see if we can figure out how to add this to Mover
-        ofDrawCircle(m.location, 1);
+        ofDrawCircle(m.location, m.mass);
     }
     
     
-    ofDrawCircle(influencer.location, 2);
-    */
-    
-    //ofNoFill();
-    //ofSetColor(ofColor(ofColor::white, ALPHA));
-    //ofDrawCircle(influencer.location, influencer.influenceRadius);
+    ofFill();
+    ofDrawCircle(influencer.location, influencer.mass);
+
     
 }
 

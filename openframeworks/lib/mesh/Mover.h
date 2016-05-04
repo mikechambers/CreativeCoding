@@ -19,6 +19,10 @@ class Mover {
         ofVec3f acceleration;
         float mass;
     
+        float minGravityInfluence = 5.0;
+        float maxGravityInfluence = 25.0;
+        float gravity_coefficient = 0.4;
+    
         //should this be a rectangle or ofBoxPrimitive?
         //maybe create a 3d mover and a 3d mover, both which use ofVec3f
         //maybe mnover defaults to 2d, and then there is a 3d mover
@@ -34,6 +38,8 @@ class Mover {
         void setToRandomVelocity(float max);
     
         void applyForce(ofVec3f force);
+        ofVec3f attract(Mover mover);
+        ofVec3f repel(Mover mover);
     
         Mover();
         Mover(ofRectangle bounds);

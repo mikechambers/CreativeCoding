@@ -19,7 +19,7 @@ enum ForceType { ATTRACT, REPEL };
 class ForceInfluencer : public Mover {
 public:
     
-    ForceType forceType = ForceType::ATTRACT;
+    ForceType forceType = ATTRACT;
     float influenceRadius = 20.0;
     float minForce = 0.1;
     float maxForce = 0.9;

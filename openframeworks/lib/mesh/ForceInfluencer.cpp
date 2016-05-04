@@ -15,6 +15,8 @@ ofVec3f ForceInfluencer::influence(Mover mover) {
     
     float distance = mover.location.distance(location);
     
+    //should we limit distance?
+    //both min and max?
     
     ofVec3f out;
     if(distance > influenceRadius) {
@@ -28,21 +30,9 @@ ofVec3f ForceInfluencer::influence(Mover mover) {
     out *= (ofMap(distance, 0, influenceRadius, minForce, maxForce));
     
     
-    if(forceType == ForceType::REPEL) {
+    if(forceType == REPEL) {
         out *= -1;
     }
-    
-    
-    /*
-    ofVec3f friction = mover.velocity * -1;
-    friction.normalize();
-    friction *= FRICTION_COEFFICIENT;
-    
-    friction.set(0.0,0.0,0.0);
-    */
-     
-    //mover->applyForce(f + friction);
-    
     
     //this is really inefficent. tons of copying, especially when we
     //dont change anything

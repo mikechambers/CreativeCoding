@@ -89,6 +89,11 @@ ofVec3f MeshUtils::getRandomPointInBounds(const ofRectangle & bounds, float dept
 }
 
 
+//https://forum.openframeworks.cc/t/more-utils/1413/2
+float MeshUtils::constrain(float amt, float low, float high) {
+    return (amt < low) ? low : ((amt > high) ? high : amt);
+}
+
 /*******************             *******************/
 
 vector<ofVec3f> MeshUtils::getRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth) {

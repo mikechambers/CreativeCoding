@@ -33,6 +33,7 @@ public:
     static ofVec3f getRandomPointOnSphere(ofVec3f center, float radius);
     static vector<ofVec3f> getRandomPointsOnSphere(ofVec3f center, float radius, int number);
     
+    static float constrain(float amt, float low, float high);
 };
 
 #endif /* Follower_hpp */

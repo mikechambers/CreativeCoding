@@ -7,6 +7,7 @@
 //
 
 #include "Mover.h"
+#include "MeshUtils.h"
 
 
 //todo
@@ -37,6 +38,22 @@ void Mover::update() {
     velocity += acceleration;
     location += velocity;
     acceleration.set(0.0, 0.0, 0.0);
+}
+
+ofVec3f Mover::repel(Mover mover) {
+    return (attract(mover) *= -1);
+}
+
+ofVec3f Mover::attract(Mover mover) {
+    ofVec3f force = location - mover.location;
+    float distance = MeshUtils::constrain(force.length(), minGravityInfluence, maxGravityInfluence);
+    
+    force.normalize();
+    
+    float strength = (gravity_coefficient * mass * mover.mass) / (distance * distance);
+    force *= strength;
+    
+    return force;
 }
 
 void Mover::checkBounds(ofRectangle _bounds) {
