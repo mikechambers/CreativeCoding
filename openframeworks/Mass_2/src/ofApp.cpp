@@ -3,11 +3,11 @@
 #include "ImageLoader.h"
 #include "MeshUtils.h"
 
-int const MOVER_COUNT = 50;
+int const MOVER_COUNT = 100;
 //float const INFLUENCE_RADIUS = 100;
 float const MAX_VELOCITY = 2.0;
-float const MIN_MASS = 2.0;
-float const MAX_MASS = 10.0;
+float const MIN_MASS = 1.0;
+float const MAX_MASS = 3.0;
 
 float const FRICTION_COEFFICIENT = 0.0;
 float const NORMAL = 1.0;
@@ -22,8 +22,9 @@ Mover influencer;
 
 ImageLoader image;
 
-bool paused = false;
+bool paused = true;
 
+ofVboMesh mesh;
 
 vector<Mover> movers;
 
@@ -35,7 +36,7 @@ void ofApp::setup(){
     syphon.setName("Mass");
     
     utils.enableScreenShot("Mass_2");
-    image.load("../../../images/water_color.jpg");
+    image.load("../../../images/mosaic.jpg");
     image.setAlpha(ALPHA);
     //image.load("/Users/mesh/tmp/color-gradient-wallpaper-3.jpg");
     
@@ -44,8 +45,10 @@ void ofApp::setup(){
     influencer.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
     influencer.setBounds(ofGetWindowRect());
     //influencer.influenceRadius = INFLUENCE_RADIUS;
-    //influencer.setToRandomVelocity(2.0);
-    influencer.mass = 50.0;
+    influencer.setToRandomVelocity(5.0);
+    influencer.mass = 100.0;
+    influencer.gravity_coefficient = 1.5;
+
     
     for(int i = 0; i < MOVER_COUNT; i++) {
         
@@ -54,13 +57,15 @@ void ofApp::setup(){
         mover.setToRandomLocation();
         //mover.location.set(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
         mover.setToRandomVelocity(MAX_VELOCITY);
-        mover.mass = ofRandom(MIN_MASS, MAX_MASS);
+        //mover.mass = ofRandom(MIN_MASS, MAX_MASS);
+        mover.mass = 1.0;
+        
         
         movers.push_back(mover);
     }
     
-    //mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-    //mesh.enableColors();
+    mesh.setMode(OF_PRIMITIVE_LINES);
+    mesh.enableColors();
     
     ofSetBackgroundColorHex(0x111111);
     //ofSetBackgroundColor(ofColor::black);
@@ -75,6 +80,11 @@ void ofApp::update(){
     if(paused) {
         return;
     }
+    
+    mesh.clear();
+    
+    influencer.update();
+    influencer.checkBounds();
     
     vector<Mover>::iterator it = movers.begin();
 
@@ -94,6 +104,12 @@ void ofApp::update(){
 
         m.update();
         m.checkBounds();
+        
+        mesh.addColor(ofColor(ofColor::white, 0.0));
+        mesh.addVertex(influencer.location.interpolate(m.location, 0.0));
+                      
+        mesh.addColor(ofColor(image.getColor(m.location), ALPHA));
+        mesh.addVertex(m.location);
     }
 }
 
@@ -105,10 +121,10 @@ void ofApp::draw(){
         return;
     }
     
-    //mesh.draw();
+    mesh.draw();
     
     
-
+/*
     ofSetColor(ofColor(ofColor::white, ALPHA));
     ofFill();
     
@@ -120,12 +136,13 @@ void ofApp::draw(){
         ofSetColor(image.getColor(m.location));
         
         //see if we can figure out how to add this to Mover
-        ofDrawCircle(m.location, m.mass);
+        //ofDrawCircle(m.location, m.mass);
         ofVec3f p = meshGetPointOnCircleAlongLing(m.location, m.mass, influencer.location);
         
         ofDrawLine(influencer.location, p);
     }
     
+ */
     syphon.publishScreen();
     
     //ofNoFill();
