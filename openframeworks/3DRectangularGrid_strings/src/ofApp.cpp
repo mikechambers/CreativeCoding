@@ -23,7 +23,7 @@ ofEasyCam cam;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    bool imageLoaded = image.load("../../../images/2014-04-15_1397597153.jpg");
+    bool imageLoaded = image.load("../../../images/hawaii.jpg");
     
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;

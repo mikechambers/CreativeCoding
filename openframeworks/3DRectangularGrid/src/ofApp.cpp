@@ -1,10 +1,11 @@
 #include "ofApp.h"
+#include "ofxSyphonClient.h"
 
 
 ofBlendMode BLEND_MODE = OF_BLENDMODE_DISABLED;
-int const MIN_WIDTH = 10;
-int const MAX_WIDTH = 250;
-int const HEIGHT = 10; // this also becomes width if RANDOM_WIDTH is false
+int const MIN_WIDTH = 5;
+int const MAX_WIDTH = 25;
+int const HEIGHT = 5; // this also becomes width if RANDOM_WIDTH is false
 bool const RANDOM_WIDTH = true;
 bool const INFLUENCE_WIDTH = FALSE; //whether the width is adjust pased on position
 bool const DRAW_RECT_ROUNDED = FALSE;
@@ -17,13 +18,17 @@ bool hasRendered = false;
 ofImage image;
 ofVboMesh mesh;
 
+ofxSyphonServer syphon;
+
 ofEasyCam cam;
 
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    bool imageLoaded = image.load("../../../images/test.jpg");
+    bool imageLoaded = image.load("../../../images/sierras_2.jpg");
+    
+    syphon.setName("3DRectangularGrid");
     
     if(!imageLoaded) {
         cout << "Error: Could not load image. Exiting app." << endl;
@@ -38,6 +43,7 @@ void ofApp::setup(){
     mesh.enableColors();
     mesh.enableIndices();
     
+    cam.setDistance(500.0);
     cam.enableOrtho();
 }
 
@@ -95,7 +101,7 @@ void ofApp::update(){
                 rWidth -= tmp;
             }
             
-            ofRectangle rect = ofRectangle::ofRectangle(k, i, rWidth, rHeight);
+            ofRectangle rect = ofRectangle(k, i, rWidth, rHeight);
             
             ofColor color = getColorForSubsection(rect);
             
@@ -116,16 +122,16 @@ void ofApp::update(){
             
             int index = mesh.getNumVertices();
             
-            mesh.addVertex(tLeft);
+            mesh.addVertex(tLeft);//0
             mesh.addColor(color);
             
-            mesh.addVertex(bLeft);
+            mesh.addVertex(bLeft);//1
             mesh.addColor(color);
             
-            mesh.addVertex(tRight);
+            mesh.addVertex(tRight);//2
             mesh.addColor(color);
             
-            mesh.addVertex(bRight);
+            mesh.addVertex(bRight);//3
             mesh.addColor(color);
             
             mesh.addIndex(index);
@@ -151,15 +157,20 @@ void ofApp::update(){
 void ofApp::draw(){
     
     
+    ofBackground(ofColor::white);
     
     cam.begin();
     
-    ofPushMatrix();
-    ofTranslate(ofGetWidth() / -2, ofGetHeight() / -2);
-    ofBackground(0, 0, 0);
-    //image.draw(0, 0, 0);
-    //ofEnableSmoothing();
+    //this is to work around of bug
+    //https://forum.openframeworks.cc/t/offbo-ofeasycam-flipping-issues/8627/4
+    ofScale (1,-1,1);
     
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / -2, ofGetHeight() / -2, 0.0);
+    
+    ofRotate(ofGetFrameNum() * 1.0, 1.0, 1.0, 0.0);
+    ofPushMatrix();
+
     
     if(DRAW_IMAGE){
         image.draw(0,0);
@@ -169,7 +180,11 @@ void ofApp::draw(){
     
     ofPopMatrix();
     
+    ofPopMatrix();
+    
     cam.end();
+    
+    syphon.publishScreen();
     
 }
 
