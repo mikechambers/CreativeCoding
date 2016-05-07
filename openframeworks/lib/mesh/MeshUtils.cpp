@@ -128,11 +128,12 @@ float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2) {
     return atan2(dy,dx);
 }
 
-ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angle) {
+//angle is in radians
+ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angleInRadians) {
     
     ofVec3f out;
-    out.x = (cos(angle) * radius) + center.x;
-    out.y = (sin(angle) * radius) + center.y;
+    out.x = (cos(angleInRadians) * radius) + center.x;
+    out.y = (sin(angleInRadians) * radius) + center.y;
     
     return out;
 }

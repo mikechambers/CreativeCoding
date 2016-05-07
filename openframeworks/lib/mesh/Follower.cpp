@@ -8,9 +8,6 @@
 
 #include "Follower.h"
 
-Follower::Follower() {
-}
-
 void Follower::setTarget(Mover * _target) {
     target = _target;
 }
@@ -22,13 +19,17 @@ void Follower::update() {
 void Follower::update(ofVec3f t) {
     
     //do we need this limit?
-    velocity.limit(5);
+    //velocity.limit(5);
     ofVec3f dir = t - location;
     dir.normalize();
-    dir *= 0.5;
-    acceleration = dir;
+    dir *= attractionCoefficient;
+    
+    //this used to be =, which would reset acceleration, ignoring
+    //any changes through apply force
+    acceleration += dir;
     velocity += acceleration;
     location += velocity;
     
     updateAngle();
+    acceleration *= 0;
 }

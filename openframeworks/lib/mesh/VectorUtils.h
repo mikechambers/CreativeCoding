@@ -13,10 +13,10 @@
 #include "ofMain.h"
 #include "Mover.h"
 
-class VectorUtils {
-public:
-    static ofVec3f calculateDrag(Mover mover, float dragCoefficient);
-    
-};
+
+ofVec3f calculateDrag(Mover mover, float dragCoefficient);
+ofVec3f meshGetCenterPoint(ofRectangle bounds);
+ofVec3f meshGetCenterPoint();
+
 
 #endif /*VectorUtills_hpp */

@@ -17,10 +17,11 @@ class Follower : public Mover {
 
 public:
     Mover * target;
+    float attractionCoefficient = 0.1;
+    
     void setTarget(Mover * _target);
-    virtual void update();
+    void update();
     void update(ofVec3f t);
-    Follower();
 };
 
 

@@ -23,7 +23,7 @@ ImageLoader imageLoader;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    utils.enableScreenShot("follow2");
+    utils.enableScreenshot("follow2");
     
     bool imageLoaded = imageLoader.load("../../../images/shoes.jpg", "../../../images/masks/cc.gif");
     
@@ -99,7 +99,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 'x') {
-        utils.disableScreenShot();
+        utils.disableScreenshot();
     } else if (key == 'r') {
         init();
     }

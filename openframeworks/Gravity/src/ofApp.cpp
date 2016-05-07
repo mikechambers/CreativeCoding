@@ -23,7 +23,7 @@ void ofApp::setup(){
             ForceInfluencer inf;
             inf.location.y = ((ofGetHeight() / rows) * r) + ofGetWidth() / count;
             inf.location.x = ((ofGetWidth() / cols) * c) + ofGetHeight() / count;
-            inf.mass = ofRandom(2.0, 100.0);
+            inf.mass = ofRandom(10.0, 100.0);
             
             if(ofRandomf() > 0.2) {
                 inf.forceType = ATTRACT;
