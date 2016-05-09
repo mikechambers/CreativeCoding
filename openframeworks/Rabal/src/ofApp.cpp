@@ -75,6 +75,11 @@ void ofApp::update(){
     bool doMouseInfluence = (mouse.location.x > 0 && mouse.location.x < ofGetHeight() &&
                                         mouse.location.y > 0 && mouse.location.y < ofGetWidth());
     
+    if(doMouseInfluence) {
+        core.applyForce(mouse.repel(core));
+    }
+    core.update();
+    
     vector<Follower>::iterator it = points.begin();
     
     for(; it != points.end(); ++it){
