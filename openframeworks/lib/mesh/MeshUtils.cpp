@@ -124,7 +124,7 @@ float meshConstrain(float amt, float low, float high) {
 float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2) {
     float dy = p2.y - p1.y;
     float dx = p2.x - p1.x;
-        
+    
     return atan2(dy,dx);
 }
 
