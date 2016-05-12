@@ -9,6 +9,7 @@ ofxSyphonServer syphon;
 
 const string APP_NAME = "GiftWrap";
 const int ALPHA = 1.0 * 255;
+const int POINT_COUNT = 100;
 
 bool paused = false;
 
@@ -30,8 +31,11 @@ void ofApp::setup(){
 
 void ofApp::init() {
     
-    bounds = mGetBoundsWithPadding(ofGetWindowRect(), 100);
-    points = mGetRandomPointsInBounds(bounds, 100);
+    //bounds = mGetBoundsWithPadding(ofGetWindowRect(), 100);
+    //points = mGetRandomPointsInBounds(bounds, 100);
+    points = mGetRandomPointsInCircle(mGetWindowCenterPoint(), 200, POINT_COUNT);
+    
+
 }
 
 
@@ -69,13 +73,13 @@ void ofApp::draw(){
         return;
     }
     
-    ofSetColor(ofColor::black);
+    ofSetColor(ofColor(ofColor::black, 25));
     ofFill();
     
     vector<ofVec3f>::iterator it = points.begin();
     
     for(; it != points.end(); ++it){
-        ofDrawCircle((*it), 2.0);
+        ofDrawCircle((*it), 1.0);
     }
     
     path.draw();

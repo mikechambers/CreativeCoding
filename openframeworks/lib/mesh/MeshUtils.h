@@ -31,6 +31,11 @@ vector<ofVec3f> mGetRandomPointsInSphere(ofVec3f center, float radius, int numbe
 ofVec3f mGetRandomPointOnSphere(ofVec3f center, float radius);
 vector<ofVec3f> mGetRandomPointsOnSphere(ofVec3f center, float radius, int number);
 
+vector<ofVec3f> mGetRandomPointsInCircle(const ofVec3f & center, float radius, uint number);
+ofVec3f mGetRandomPointInCircle(const ofVec3f & center, float radius);
+
+ofVec3f mGetWindowCenterPoint();
+
 float mConstrain(float amt, float low, float high);
 
 

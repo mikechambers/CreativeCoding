@@ -30,8 +30,38 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 
 /*******************  General Util APIs        *******************/
 
+ofVec3f mGetWindowCenterPoint() {
+    return ofVec3f(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
+}
+
+ofVec3f mGetRandomPointInCircle(const ofVec3f & center, float radius) {
+    
+    float t = 2 * PI * ofRandomuf();
+    float u = ofRandomuf() + ofRandomuf();
+    float r = (u > 1)? 2.0 - u: u;
+    r *= radius;
+    
+    float x = center.x + r * cos(t);
+    float y = center.y + r * sin(t);
+
+    
+    return ofVec3f(x, y, 0.0);
+}
+
+vector<ofVec3f> mGetRandomPointsInCircle(const ofVec3f & center, float radius, uint number) {
+    vector<ofVec3f> points;
+    
+    for(int i = 0; i < number; i++) {
+        points.push_back(mGetRandomPointInCircle(center, radius));
+    }
+    
+    return points;
+}
+
 
 ofVec3f mGetRandomPointOnSphere(ofVec3f center, float radius) {
+    
+    //note: if we get hanfs / Nan this should be ofRandomuf
     float u = ofRandomf();
     float v = ofRandomf();
     float theta = 2 * PI * u;
@@ -43,7 +73,7 @@ ofVec3f mGetRandomPointOnSphere(ofVec3f center, float radius) {
     return ofVec3f(x, y, z);
 }
 
-vector<ofVec3f> mGetRandomPointsOnSphere(ofVec3f center, float radius, int number) {
+vector<ofVec3f> mGetRandomPointsOnSphere(ofVec3f center, float radius, uint number) {
     vector<ofVec3f>points;
     
     for(int i = 0; i < number; i++) {
