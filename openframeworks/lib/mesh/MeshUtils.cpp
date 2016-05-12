@@ -150,4 +150,81 @@ ofVec3f meshGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f cen
     return meshGetPointOnLine(center1, center2, radius);
 }
 
+mSign sign(float n) {
+    if (n < 0) {
+        return M_NEGATIVE;
+    } else if (n > 0) {
+        return M_POSITIVE;
+    }
+    
+    return M_ZERO;
+}
+
+//It is 0 on the line, and +1 on one side, -1 on the other side.
+//http://stackoverflow.com/a/3461533
+mPosition mGetOrientationOfPointToLine(const ofVec3f & v1, const ofVec3f & v2, const ofVec3f & p) {
+    float position = ((v2.x - v1.x) * (p.y - v1.y) - (v2.y - v1.y) * (p.x - v1.x));
+    
+    mSign s = sign(position);
+    
+    if(s == M_POSITIVE) {
+        return M_LEFT;
+    } else if (s == M_NEGATIVE) {
+        return M_RIGHT;
+    }
+    
+    return M_CENTER;
+}
+
+int mFindLeftMostPointIndex(const vector<ofVec3f> & points) {
+    ofVec3f leftMost = points[0];
+    int leftMostIndex = 0;
+    
+    int size = points.size();
+    
+    for(int i = 1; i < size; i++){
+        
+        ofVec3f p = points[i];
+        if(p.x < leftMost.x) {
+            leftMost = p;
+            leftMostIndex = i;
+        }
+    }
+    
+    return leftMostIndex;
+}
+
+
+//note, we could pass in out vector by reference for performance with large sets
+vector<ofVec3f> mFindConvexHull(const vector<ofVec3f> & points) {
+    //check points length;
+    ofVec3f leftMost = points[mFindLeftMostPointIndex(points)];
+    
+    ofVec3f endPoint;
+    vector<ofVec3f>pointsOnHull;
+    
+    ofVec3f pointOnHull = leftMost;
+    
+    int size = points.size();
+    
+    do {
+        pointsOnHull.push_back(pointOnHull);
+        endPoint = points[0];
+        
+        for(int j = 1; j < size; j++){
+            
+            if((endPoint == pointOnHull) ||
+               mGetOrientationOfPointToLine(pointOnHull, endPoint, points[j]) == M_LEFT
+               ){
+                
+                endPoint = points[j];
+            }
+        }
+        //i++;
+        pointOnHull = endPoint;
+        
+    } while(!(endPoint == pointsOnHull[0]));
+    
+    return pointsOnHull;
+}
 
