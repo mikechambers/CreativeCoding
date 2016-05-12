@@ -31,7 +31,7 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 /*******************  General Util APIs        *******************/
 
 
-ofVec3f meshGetRandomPointOnSphere(ofVec3f center, float radius) {
+ofVec3f mGetRandomPointOnSphere(ofVec3f center, float radius) {
     float u = ofRandomf();
     float v = ofRandomf();
     float theta = 2 * PI * u;
@@ -43,19 +43,19 @@ ofVec3f meshGetRandomPointOnSphere(ofVec3f center, float radius) {
     return ofVec3f(x, y, z);
 }
 
-vector<ofVec3f> meshGetRandomPointsOnSphere(ofVec3f center, float radius, int number) {
+vector<ofVec3f> mGetRandomPointsOnSphere(ofVec3f center, float radius, int number) {
     vector<ofVec3f>points;
     
     for(int i = 0; i < number; i++) {
-        points.push_back(meshGetRandomPointOnSphere(center, radius));
+        points.push_back(mGetRandomPointOnSphere(center, radius));
     }
     
     return points;
 }
 
-ofVec3f meshGetRandomPointInSphere(ofVec3f center, float radius) {
+ofVec3f mGetRandomPointInSphere(ofVec3f center, float radius) {
 
-    ofVec3f out = meshGetRandomPointOnSphere(center, radius);
+    ofVec3f out = mGetRandomPointOnSphere(center, radius);
     
     ofVec3f dir = center - out;
     dir *= ofRandomf();
@@ -64,21 +64,21 @@ ofVec3f meshGetRandomPointInSphere(ofVec3f center, float radius) {
     return center + dir;
 }
 
-vector<ofVec3f> meshGetRandomPointsInSphere(ofVec3f center, float radius, int number) {
+vector<ofVec3f> mGetRandomPointsInSphere(ofVec3f center, float radius, int number) {
     vector<ofVec3f>points;
     
     for(int i = 0; i < number; i++) {
-        points.push_back(meshGetRandomPointInSphere(center, radius));
+        points.push_back(mGetRandomPointInSphere(center, radius));
     }
     
     return points;
 }
 
-ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds) {
-    return meshGetRandomPointInBounds(bounds, 0.0);
+ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds) {
+    return mGetRandomPointInBounds(bounds, 0.0);
 }
 
-ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds, float depth) {
+ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds, float depth) {
     float x = ofRandom(bounds.x, bounds.x + bounds.width);
     float y = ofRandom(bounds.y, bounds.y + bounds.height);
     
@@ -89,23 +89,23 @@ ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds, float depth) {
 }
 
 
-vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth) {
+vector<ofVec3f> mGetRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth) {
     vector<ofVec3f>points;
     
     for(int i = 0; i < number; i++) {
-        points.push_back(meshGetRandomPointInBounds(bounds, depth));
+        points.push_back(mGetRandomPointInBounds(bounds, depth));
     }
     
     return points;
 }
 
 
-vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number) {
-    return meshGetRandomPointsInBounds(bounds, number, 0.0);
+vector<ofVec3f> mGetRandomPointsInBounds(const ofRectangle & bounds, uint number) {
+    return mGetRandomPointsInBounds(bounds, number, 0.0);
 }
 
 //note, could pass in a vector to populate, so larger vectors dont have to be copied
-ofRectangle meshGetBoundsWithPadding(const ofRectangle & bounds, float padding) {
+ofRectangle mGetBoundsWithPadding(const ofRectangle & bounds, float padding) {
     float _x = bounds.x + padding;
     float _width = bounds.width - (padding * 2);
     float _y = bounds.y + padding;
@@ -116,12 +116,12 @@ ofRectangle meshGetBoundsWithPadding(const ofRectangle & bounds, float padding) 
 
 
 //https://forum.openframeworks.cc/t/more-utils/1413/2
-float meshConstrain(float amt, float low, float high) {
+float mConstrain(float amt, float low, float high) {
     return (amt < low) ? low : ((amt > high) ? high : amt);
 }
 
 
-float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2) {
+float mGetAngleOfLine(ofVec3f p1, ofVec3f p2) {
     float dy = p2.y - p1.y;
     float dx = p2.x - p1.x;
     
@@ -129,7 +129,7 @@ float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2) {
 }
 
 //angle is in radians
-ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angleInRadians) {
+ofVec3f mGetPointOnCircle(ofVec3f center, float radius, float angleInRadians) {
     
     ofVec3f out;
     out.x = (cos(angleInRadians) * radius) + center.x;
@@ -138,16 +138,16 @@ ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angleInRadians)
     return out;
 }
 
-ofVec3f meshGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance) {
+ofVec3f mGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance) {
     //float angle = p1.angleRad(p2);
     
-    float angle = meshGetAngleOfLine(p1, p2);
+    float angle = mGetAngleOfLine(p1, p2);
     
-    return meshGetPointOnCircle(p1, distance, angle);
+    return mGetPointOnCircle(p1, distance, angle);
 }
 
-ofVec3f meshGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2) {
-    return meshGetPointOnLine(center1, center2, radius);
+ofVec3f mGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2) {
+    return mGetPointOnLine(center1, center2, radius);
 }
 
 mSign sign(float n) {

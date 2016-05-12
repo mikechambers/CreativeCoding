@@ -30,8 +30,8 @@ void ofApp::setup(){
 
 void ofApp::init() {
     
-    bounds = meshGetBoundsWithPadding(ofGetWindowRect(), 100);
-    points = meshGetRandomPointsInBounds(bounds, 100);
+    bounds = mGetBoundsWithPadding(ofGetWindowRect(), 100);
+    points = mGetRandomPointsInBounds(bounds, 100);
 }
 
 

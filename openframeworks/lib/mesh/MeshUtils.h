@@ -21,23 +21,23 @@ public:
     void disableScreenshot();
 };
 
-ofRectangle meshGetBoundsWithPadding(const ofRectangle & bounds, float padding);
-ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds);
-ofVec3f meshGetRandomPointInBounds(const ofRectangle & bounds, float depth);
-vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number);
-vector<ofVec3f> meshGetRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth);
-ofVec3f meshGetRandomPointInSphere(ofVec3f center, float radius);
-vector<ofVec3f> meshGetRandomPointsInSphere(ofVec3f center, float radius, int number);
-ofVec3f meshGetRandomPointOnSphere(ofVec3f center, float radius);
-vector<ofVec3f> meshGetRandomPointsOnSphere(ofVec3f center, float radius, int number);
+ofRectangle mGetBoundsWithPadding(const ofRectangle & bounds, float padding);
+ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds);
+ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds, float depth);
+vector<ofVec3f> mGetRandomPointsInBounds(const ofRectangle & bounds, uint number);
+vector<ofVec3f> mGetRandomPointsInBounds(const ofRectangle & bounds, uint number, float depth);
+ofVec3f mGetRandomPointInSphere(ofVec3f center, float radius);
+vector<ofVec3f> mGetRandomPointsInSphere(ofVec3f center, float radius, int number);
+ofVec3f mGetRandomPointOnSphere(ofVec3f center, float radius);
+vector<ofVec3f> mGetRandomPointsOnSphere(ofVec3f center, float radius, int number);
 
-float meshConstrain(float amt, float low, float high);
+float mConstrain(float amt, float low, float high);
 
 
-ofVec3f meshGetPointOnCircle(ofVec3f center, float radius, float angle);
-ofVec3f meshGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance);
-ofVec3f meshGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2);
-float meshGetAngleOfLine(ofVec3f p1, ofVec3f p2);
+ofVec3f mGetPointOnCircle(ofVec3f center, float radius, float angle);
+ofVec3f mGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance);
+ofVec3f mGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2);
+float mGetAngleOfLine(ofVec3f p1, ofVec3f p2);
 
 int mFindLeftMostPointIndex(const vector<ofVec3f> & points);
 
