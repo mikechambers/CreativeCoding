@@ -2,14 +2,24 @@
 
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
+#include "Mover.h"
+#include "Follower.h"
 
 
 MeshUtils utils;
 ofxSyphonServer syphon;
 
-const string APP_NAME = "APP_NAME";
+const string APP_NAME = "Blob";
+const int FOLLOWER_COUNT = 1000;
+const int RADIUS = 50;
+const int ALPHA = 1.0 * 255;
 
-bool paused = false;
+bool paused = true;
+
+vector<Follower> followers;
+Mover centerMover;
+
+ofPath path;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -17,13 +27,29 @@ void ofApp::setup(){
     syphon.setName(APP_NAME);
     
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::white);
+    ofSetBackgroundColor(ofColor::black);
     
     init();
 }
 
 void ofApp::init() {
     
+    ofRectangle bounds = ofGetWindowRect();
+    ofVec3f center = mGetWindowCenterPoint();
+    
+    centerMover.setBounds(bounds);
+    centerMover.location.set(center);
+    centerMover.setToRandomVelocity(1.5);
+    
+    for(int i = 0; i < FOLLOWER_COUNT; i++) {
+        Follower f;
+        f.setBounds(bounds);
+        f.setTarget(&centerMover);
+        f.location.set(mGetRandomPointInCircle(center, RADIUS));
+        //f.attractionCoefficient = 0.05;
+        
+        followers.push_back(f);
+    }
 }
 
 //--------------------------------------------------------------
@@ -31,6 +57,37 @@ void ofApp::update(){
     if(paused) {
         return;
     }
+    
+    path.clear();
+    
+    centerMover.update();
+    centerMover.checkBounds();
+    
+    vector<ofVec3f>ps;
+    
+    for(int i = 0; i < FOLLOWER_COUNT; i++) {
+        followers[i].update();
+        followers[i].checkBounds();
+        ps.push_back(followers[i].location);
+    }
+    
+    vector<ofVec3f>hullPoints = mFindConvexHull(ps);
+    
+    
+    int size = hullPoints.size();
+    for(int i = 0; i < size; i++) {
+        if(i == 0) {
+            path.moveTo(hullPoints[i]);
+        } else {
+            path.lineTo(hullPoints[i]);
+        }
+    }
+    
+    path.close();
+    path.setStrokeColor(ofColor(ofColor::white, ALPHA));
+    path.setFillColor(ofColor(ofColor::white, ALPHA));
+    path.setFilled(true);
+    path.setStrokeWidth(2.0);
     
 }
 
@@ -41,6 +98,7 @@ void ofApp::draw(){
         return;
     }
     
+    path.draw();
     
     syphon.publishScreen();
 }
