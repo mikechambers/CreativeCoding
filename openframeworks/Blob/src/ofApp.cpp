@@ -10,8 +10,8 @@ MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "Blob";
-const int FOLLOWER_COUNT = 1000;
-const int RADIUS = 50;
+const int FOLLOWER_COUNT = 10000;
+const int RADIUS = 25;
 const int ALPHA = 1.0 * 255;
 
 bool paused = true;
