@@ -43,20 +43,20 @@
     //config.BACKGROUND_COLOR = "#eee";
     
     
-    config.BOUNDS_PADDING = 0;
-    config.BASE_SIZE = 24;
+    config.BOUNDS_PADDING = 2;
+    config.BASE_SIZE = 12;
     //config.ROTATION_RANGE = 90;
     config.CORNER_RADIUS = 3;
     config.STROKE_COLOR = null;
-    config.FILL_OPACITY = "0.1";
-    config.TILE_COUNT = 15000;
+    config.FILL_OPACITY = "1.0";
+    //config.TILE_COUNT = 15000;
     //config.BLEND_MODE = BlendModes.HARD_LIGHT;
     
     //config.RANDOM_SIZE_MODIFIER = 10;
-    config.RANDOM_POSITION = true;
+    config.RANDOM_POSITION = false;
     //config.RANDOM_SIZE = true;
     
-    config.USE_MOUSE = true;
+    //config.USE_MOUSE = true;
     
     config.TEMPLATE = "../_templates/saltponds.png";
     
