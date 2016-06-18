@@ -25,7 +25,7 @@ void ofApp::setup(){
 
     utils.enableScreenshot("follow2");
     
-    bool imageLoaded = imageLoader.load("../../../images/gradient_6.jpg", "../../../images/masks/tree.gif");
+    bool imageLoaded = imageLoader.load("../../../images/firewatch2.png", "../../../images/masks/firewatch.gif");
     
     if(!imageLoaded) {
         cout << "Exiting app." << endl;

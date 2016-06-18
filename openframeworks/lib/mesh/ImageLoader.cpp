@@ -56,8 +56,10 @@ ofColor ImageLoader::getColor(int x, int y){
     //if pixel is outside bounds, we return a completely transparent color
     //note, we only check image, and not mask (for performace). We assume they
     //have been resized or are same size
-    if(x < 0 || x > _image.getWidth() ||
-       y < 0 || y > _image.getHeight()) {
+    //note, we dont all request for pixel at image.width / height as this causes a crash
+    //sometimes
+    if(x < 0 || x >= _image.getWidth() ||
+       y < 0 || y >= _image.getHeight()) {
         return ofColor(ofColor::white, 0);
     }
     
