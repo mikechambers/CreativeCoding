@@ -25,6 +25,7 @@ class Mover {
         float minGravityInfluence = 5.0;
         float maxGravityInfluence = 25.0;
         float gravity_coefficient = 0.4;
+        float limit = 5.0;
     
         //should this be a rectangle or ofBoxPrimitive?
         //maybe create a 3d mover and a 3d mover, both which use ofVec3f

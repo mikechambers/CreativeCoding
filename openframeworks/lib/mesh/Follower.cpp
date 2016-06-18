@@ -19,7 +19,7 @@ void Follower::update() {
 void Follower::update(ofVec3f t) {
     
     //do we need this limit?
-    //velocity.limit(5);
+    velocity.limit(limit);
     ofVec3f dir = t - location;
     dir.normalize();
     dir *= attractionCoefficient;

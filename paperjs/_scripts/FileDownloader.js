@@ -9,7 +9,7 @@
         this.prefix = prefix;
     };
     
-    //we could see if the sting is base 64 encoded, if not, assume its is a string
+    //we could see if the string is base 64 encoded, if not, assume its is a string
     //http://stackoverflow.com/a/5100158
     FileDownloader.prototype.dataURItoBlob = function (dataURI) {
         // convert base64 to raw binary data held in a string

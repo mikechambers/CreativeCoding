@@ -25,7 +25,7 @@ void ofApp::setup(){
 
     utils.enableScreenshot("follow2");
     
-    bool imageLoaded = imageLoader.load("../../../images/shoes.jpg", "../../../images/masks/cc.gif");
+    bool imageLoaded = imageLoader.load("../../../images/gradient_6.jpg", "../../../images/masks/tree.gif");
     
     if(!imageLoaded) {
         cout << "Exiting app." << endl;
@@ -36,7 +36,7 @@ void ofApp::setup(){
     imageLoader.setAlpha(ALPHA);
     
     mesh.enableColors();
-    mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    mesh.setMode(OF_PRIMITIVE_LINES);
     
     ofSetBackgroundAuto(false);
     
@@ -49,9 +49,12 @@ void ofApp::init(){
     ofBackground(ofColor::white);
     mesh.clear();
     
-    mover.setBounds(ofGetWindowRect());
+    ofRectangle bounds = ofGetWindowRect();
+    
+    mover.setBounds(bounds);
     mover.setToRandomLocation();
     mover.setToRandomVelocity(5.0);
+    mover.limit = 100;
     
     follower.setToRandomLocation();
     follower2.setToRandomLocation();
@@ -62,6 +65,11 @@ void ofApp::init(){
     follower2.setTarget(&follower);
     follower3.setTarget(&follower2);
     follower4.setTarget(&follower3);
+    
+    follower.setBounds(bounds);
+    follower2.setBounds(bounds);
+    follower3.setBounds(bounds);
+    follower4.setBounds(bounds);
 }
 
 //--------------------------------------------------------------
@@ -71,21 +79,25 @@ void ofApp::update(){
     
     for(int i = 0; i < ITERATIONS; i++) {
         mover.update();
+        mover.checkBounds();
         
         follower.update();
+        follower.checkBounds();
         mesh.addVertex(follower.location);
-        
         mesh.addColor(imageLoader.getColor(follower.location));
         
         follower2.update();
+        follower2.checkBounds();
         mesh.addVertex(follower2.location);
         mesh.addColor(imageLoader.getColor(follower2.location));
         
         follower3.update();
+        follower3.checkBounds();
         mesh.addVertex(follower3.location);
         mesh.addColor(imageLoader.getColor(follower3.location));
         
         follower4.update();
+        follower4.checkBounds();
         mesh.addVertex(follower4.location);
         mesh.addColor(imageLoader.getColor(follower4.location));
     }

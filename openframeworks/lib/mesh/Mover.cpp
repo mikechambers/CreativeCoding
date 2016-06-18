@@ -35,6 +35,7 @@ void Mover::applyForce(ofVec3f force) {
 }
 
 void Mover::update() {
+    velocity.limit(limit);
     velocity += acceleration;
     location += velocity;
     

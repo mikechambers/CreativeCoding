@@ -54,7 +54,7 @@ void ofApp::init() {
         
         float angle = ofDegToRad(ofMap(i, 0, POINT_COUNT, 0, 360));
         
-        m.location = meshGetPointOnCircle(center, RADIUS, angle);
+        m.location = mGetPointOnCircle(center, RADIUS, angle);
         m.setTarget(&core);
         
         points.push_back(m);
