@@ -3,10 +3,19 @@
 #include "MeshUtils.h"
 #include "ImageLoader.h"
 
+#include "ofxSyphonClient.h"
+
+
+ofxSyphonServer syphon;
+
+const string APP_NAME = "follow2";
+
 int const ITERATIONS = 1000;
 int const ALPHA = 0.1 * 255;
 int const HEIGHT = 640;
 int const WIDTH = 640;
+
+bool paused = true;
 
 Mover mover;
 Follower follower;
@@ -23,9 +32,10 @@ ImageLoader imageLoader;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    utils.enableScreenshot("follow2");
+    utils.enableScreenshot(APP_NAME);
+    syphon.setName(APP_NAME);
     
-    bool imageLoaded = imageLoader.load("../../../images/firewatch2.png", "../../../images/masks/firewatch.gif");
+    bool imageLoaded = imageLoader.load("../../../images/gradient_9.jpg", "../../../images/masks/tree.gif");
     
     if(!imageLoaded) {
         cout << "Exiting app." << endl;
@@ -105,7 +115,14 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    if(paused) {
+        syphon.publishScreen();
+        return;
+    }
+    
     mesh.draw();
+    
+    syphon.publishScreen();
 }
 
 //--------------------------------------------------------------
@@ -114,6 +131,8 @@ void ofApp::keyPressed(int key){
         utils.disableScreenshot();
     } else if (key == 'r') {
         init();
+    } else if (key == ' ') {
+        paused = !paused;
     }
 }
 
