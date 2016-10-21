@@ -11,7 +11,7 @@ ofxSyphonServer syphon;
 const string APP_NAME = "follow2";
 
 int const ITERATIONS = 1000;
-int const ALPHA = 0.1 * 255;
+int const ALPHA = 0.2 * 255;
 int const HEIGHT = 640;
 int const WIDTH = 640;
 
@@ -35,7 +35,7 @@ void ofApp::setup(){
     utils.enableScreenshot(APP_NAME);
     syphon.setName(APP_NAME);
     
-    bool imageLoaded = imageLoader.load("../../../images/gradient_9.jpg", "../../../images/masks/tree.gif");
+    bool imageLoaded = imageLoader.load("../../../images/grid_2.jpg", "../../../images/masks/create_something.gif");
     
     if(!imageLoaded) {
         cout << "Exiting app." << endl;
