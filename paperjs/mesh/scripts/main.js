@@ -267,7 +267,7 @@
     
     var connectAllCircles = function () {
         
-        project.activeLayer = linesLayer;
+        linesLayer.activate();
         
         var key;
         for (key in circleGroups) {
