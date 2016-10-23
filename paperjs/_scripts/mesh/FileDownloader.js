@@ -7,8 +7,9 @@
     var FileDownloader = function (prefix) {
         this.suffix = Date.now();
         this.prefix = prefix;
+        this.download_count = 0;
     };
-    
+
     //we could see if the string is base 64 encoded, if not, assume its is a string
     //http://stackoverflow.com/a/5100158
     FileDownloader.prototype.dataURItoBlob = function (dataURI) {
@@ -36,7 +37,7 @@
     };
     
     FileDownloader.prototype.createName = function (extension) {
-        return this.prefix + "_example_" + this.suffix + "." + extension;
+        return this.prefix + "_example_" + this.suffix + "_" + (++this.download_count) + "." + extension;
     };
     
     FileDownloader.prototype.downloadFile = function (url, fileName) {

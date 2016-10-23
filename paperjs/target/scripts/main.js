@@ -32,34 +32,83 @@
     var t; //paperjs tool reference
 
 
-    var items = [];
+    var items = [];//{"mover", "line"}
 
     var main = function(){
 
+        var bounds = paper.view.bounds;
+
         var m;
         var line;
-        m = new Mover(new Rectangle(new Point(), paper.view.viewSize));
-        m.velocity.set(1, 0);
-        m.location.set(0, paper.view.viewSize.height / 2);
 
-        line = new Path.Line(m.location, m.location);
-        line.strokeColor = "white";
+        var COUNT = 32;
 
-        items.push({"mover":m, "line":line});
+        for(var  i = 0; i < COUNT; i++) {
 
-        m = new Mover(new Rectangle(new Point(), paper.view.viewSize));
-        m.velocity.set(0, 1);
-        m.location.set(paper.view.viewSize.width / 2, 0);
+            var position = new Point();
+            var velocity = new Point();
 
-        line = new Path.Line(m.location, m.location);
-        line.strokeColor = "white";
+            switch(i % 4) {
+                //top
+                case 0:
+                    position.x = (i + 1) * (bounds.width / COUNT);
+                    position.y = bounds.top;
 
-        items.push({"mover":m, "line":line});
+                    velocity.y = 1;
+                    break;
+
+                //right
+                case 1:
+                    position.x = bounds.right;
+                    position.y = (i + 1) * (bounds.height / COUNT);
+
+                    velocity.x = -1;
+                    break;
+
+                //bottom
+                case 2:
+                    position.x = (i + 1) * (bounds.width / COUNT);
+                    position.y = bounds.bottom;
+
+                    velocity.y = -1;
+                    break;
+                //left
+                case 3:
+                    position.x = bounds.left;
+                    position.y = (i + 1) * (bounds.height / COUNT);
+
+                    velocity.x = 1;
+                    break;
+            }
+
+            m = new Mover(bounds);
+            m.velocity = velocity;
+
+            //todo: passing a point isnt working here. need to see if
+            //it is a bug
+            //m.location.set(bounds.leftCenter);
+            m.location = position;
+
+            line = new Path.Line(m.location, m.location);
+            line.strokeColor = "white";
+            //line.strokeWidth = 30;
+            //line.opacity = .75;
+
+            items.push({"mover":m, "line":line});
+        }
 
     };
 
+    var circles = [];
+
     var c;
     var onFrame = function(event) {
+
+        for(var c = 0; c < circles.length; c++) {
+            circles[c].remove();
+        }
+
+        circles.length = 0;
 
         var len = items.length;
 
@@ -67,29 +116,32 @@
             var m = items[i].mover;
             var line = items[i].line;
 
-            m.update();
-            m.checkBounds();
+            m.updateAndCheckBounds();
 
             line.segments[line.segments.length - 1].point = m.location;
-        }
 
-        var intersections = items[0].line.getIntersections(items[1].line);
+            for(var k = 0; k < len; k++) {
 
-        if(intersections.length) {
+                var tmp = items[k].line;
 
-            var p = intersections[0].point;
+                if(tmp == line) {
+                    continue;
+                }
 
-            if(!c) {
-                c = new Path.Circle(p, 4);
-                c.fillColor = "white";
-            } else {
-                c.position = p;
+
+                var intersections = line.getIntersections(tmp);
+
+                if(intersections.length) {
+
+                    var p = intersections[0].point;
+                    c = new Path.Circle(p, 3);
+                    c.fillColor = config.CANVAS_BACKGROUND_COLOR;
+                    c.strokeColor = "white";
+
+                    circles.push(c);
+                }
             }
-        } else {
-            if(c) {
-                c.remove();
-                c = null;
-            }
+
         }
 
     };
