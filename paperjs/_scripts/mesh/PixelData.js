@@ -78,6 +78,7 @@
     PixelData.prototype.imageData = null;
 
     PixelData.prototype.getHex = function (point) {
+
         var o = this.getRBGA(point);
 
         return PixelData.rgbToHex(o.r, o.g, o.b);

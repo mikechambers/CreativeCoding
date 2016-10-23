@@ -12,20 +12,27 @@
     var config = {
         APP_NAME: "mesh",
         BACKGROUND_COLOR: "#AAAAAA",
-        CANVAS_BACKGROUND_COLOR: "#111111",
+        CANVAS_BACKGROUND_COLOR: "#FFFFFF",
+        LINE_STROKE_COLOR: "#CCCCCC",
+        CIRCLE_FILL_COLOR: "#FFFFFF", //white (ignored if template is used)
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: true,
-        ALLOW_TEMPLATE_SKEW: false
+        ALLOW_TEMPLATE_SKEW: false,
+        LINE_COUNT: 32, //should be a factor of 4
+        MAX_VELOCITY: 10
     };
     
     /*********** Override Config defaults here ******************/
     
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
+
+    config.TEMPLATE = "../_templates/mass_2016-04-23-21-11-26-405.png";
+    config.ALLOW_TEMPLATE_SKEW = true;
     
     /*************** End Config Override **********************/
   
@@ -34,16 +41,15 @@
 
     var items = [];//{"mover", "line"}
 
+    var bounds;
     var main = function(){
 
-        var bounds = paper.view.bounds;
+        bounds = paper.view.bounds;
 
         var m;
         var line;
 
-        var COUNT = 32;
-
-        for(var  i = 0; i < COUNT; i++) {
+        for(var  i = 0; i < config.LINE_COUNT; i++) {
 
             var position = new Point();
             var velocity = new Point();
@@ -51,33 +57,33 @@
             switch(i % 4) {
                 //top
                 case 0:
-                    position.x = (i + 1) * (bounds.width / COUNT);
+                    position.x = (i + 1) * (bounds.width / config.LINE_COUNT);
                     position.y = bounds.top;
 
-                    velocity.y = 1;
+                    velocity.y = 1 * (Math.random() * config.MAX_VELOCITY);
                     break;
 
                 //right
                 case 1:
                     position.x = bounds.right;
-                    position.y = (i + 1) * (bounds.height / COUNT);
+                    position.y = (i + 1) * (bounds.height / config.LINE_COUNT);
 
-                    velocity.x = -1;
+                    velocity.x = -1 * (Math.random() * config.MAX_VELOCITY);
                     break;
 
                 //bottom
                 case 2:
-                    position.x = (i + 1) * (bounds.width / COUNT);
+                    position.x = (i + 1) * (bounds.width / config.LINE_COUNT);
                     position.y = bounds.bottom;
 
-                    velocity.y = -1;
+                    velocity.y = -1 * (Math.random() * config.MAX_VELOCITY);
                     break;
                 //left
                 case 3:
                     position.x = bounds.left;
-                    position.y = (i + 1) * (bounds.height / COUNT);
+                    position.y = (i + 1) * (bounds.height / config.LINE_COUNT);
 
-                    velocity.x = 1;
+                    velocity.x = 1 * (Math.random() * config.MAX_VELOCITY);
                     break;
             }
 
@@ -90,7 +96,8 @@
             m.location = position;
 
             line = new Path.Line(m.location, m.location);
-            line.strokeColor = "white";
+            //line.strokeColor = config.CANVAS_BACKGROUND_COLOR;
+            line.strokeColor = config.LINE_STROKE_COLOR;
             //line.strokeWidth = 30;
             //line.opacity = .75;
 
@@ -134,9 +141,21 @@
                 if(intersections.length) {
 
                     var p = intersections[0].point;
-                    c = new Path.Circle(p, 3);
-                    c.fillColor = config.CANVAS_BACKGROUND_COLOR;
-                    c.strokeColor = "white";
+
+                    if(p.y >= bounds.right) {
+                        continue;
+                    }
+
+                    c = new Path.Circle(p, 4);
+                    //c.fillColor = config.CANVAS_BACKGROUND_COLOR;
+                    //c.strokeColor = "white";
+
+                    var color = config.CIRCLE_FILL_COLOR;
+                    if(pixelData) {
+                        color = pixelData.getHex(p);;
+                    }
+
+                    c.fillColor = color;
 
                     circles.push(c);
                 }
@@ -183,6 +202,7 @@
         return drawCanvas;
     };
     
+    var pixelData;
     var initTemplate = function(drawCanvas) {
         var w = drawCanvas.width;
         var h = drawCanvas.height;
