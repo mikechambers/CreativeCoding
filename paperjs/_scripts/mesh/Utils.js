@@ -66,6 +66,11 @@
         
         return point;
     };
+
+    Utils.constrain = function(amt, low, high) {
+        return (amt < low) ? low : ((amt > high) ? high : amt);
+    };
+
     
     window.Utils = Utils;
 }());

@@ -88,6 +88,7 @@ void Mover::setToRandomLocation() {
 
 void Mover::setToRandomVelocity(float max) {
     
+    //todo: these vars are not being used
     float s1 = (ofRandom(1) > 0.5)? max : -1;
     float s2 = (ofRandom(1) > 0.5)? max : -1;
     float s3 = (ofRandom(1) > 0.5)? max : -1;

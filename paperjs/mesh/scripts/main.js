@@ -425,4 +425,5 @@
             
         templateImage.src = config.TEMPLATE;
     };
+
 }());
