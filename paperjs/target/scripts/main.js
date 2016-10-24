@@ -9,8 +9,13 @@
     paper.install(window);
     
 
+    var SHAPE_TYPES = {
+        RECTANGLE:"RECTANGLE",
+        CIRCLE:"CIRCLE"
+    };
+
     var config = {
-        APP_NAME: "mesh",
+        APP_NAME: "target",
         BACKGROUND_COLOR: "#AAAAAA",
         CANVAS_BACKGROUND_COLOR: "#FFFFFF",
         LINE_STROKE_COLOR: "#CCCCCC",
@@ -23,7 +28,9 @@
         ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false,
         LINE_COUNT: 32, //should be a factor of 4
-        MAX_VELOCITY: 10
+        MAX_VELOCITY: 10,
+        CIRCLE_RADIUS: 4,
+        SHAPE_TYPE: SHAPE_TYPES.CIRLCE //rectangle, circle, or null
     };
     
     /*********** Override Config defaults here ******************/
@@ -33,6 +40,11 @@
 
     config.TEMPLATE = "../_templates/mass_2016-04-23-21-11-26-405.png";
     config.ALLOW_TEMPLATE_SKEW = true;
+
+    config.LINE_COUNT = 20;
+    config.LINE_STROKE_COLOR = "black";//config.CANVAS_BACKGROUND_COLOR;
+    config.CIRCLE_RADIUS = 5;
+    config.SHAPE_TYPE = SHAPE_TYPES.CIRCLE;
     
     /*************** End Config Override **********************/
   
@@ -81,7 +93,7 @@
                 //left
                 case 3:
                     position.x = bounds.left;
-                    position.y = (i + 1) * (bounds.height / config.LINE_COUNT);
+                    position.y = (i) * (bounds.height / config.LINE_COUNT); // note its i, so we dont end on edge
 
                     velocity.x = 1 * (Math.random() * config.MAX_VELOCITY);
                     break;
@@ -111,8 +123,9 @@
     var c;
     var onFrame = function(event) {
 
-        for(var c = 0; c < circles.length; c++) {
-            circles[c].remove();
+        var cLen = circles.length
+        for(var k = 0; k < cLen; k++) {
+            circles[k].remove();
         }
 
         circles.length = 0;
@@ -146,18 +159,22 @@
                         continue;
                     }
 
-                    c = new Path.Circle(p, 4);
-                    //c.fillColor = config.CANVAS_BACKGROUND_COLOR;
-                    //c.strokeColor = "white";
-
-                    var color = config.CIRCLE_FILL_COLOR;
-                    if(pixelData) {
-                        color = pixelData.getHex(p);;
+                    var c;
+                    if(config.SHAPE_TYPE == SHAPE_TYPES.CIRCLE) {
+                        c = new Path.Circle(p, config.CIRCLE_RADIUS);
+                    } else if (config.SHAPE_TYPE == SHAPE_TYPES.RECTANGLE) {
+                        c = new Path.Rectangle(p.subtract(config.CIRCLE_RADIUS / 2), new Size(config.CIRCLE_RADIUS,config.CIRCLE_RADIUS));
                     }
 
-                    c.fillColor = color;
+                    if(c) {
+                        var color = config.CIRCLE_FILL_COLOR;
+                        if(pixelData) {
+                            color = pixelData.getHex(p);;
+                        }
 
-                    circles.push(c);
+                        c.fillColor = color;
+                        circles.push(c);
+                    }
                 }
             }
 
