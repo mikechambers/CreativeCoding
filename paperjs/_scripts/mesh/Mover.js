@@ -35,7 +35,7 @@
 
     Mover.prototype.updateAndCheckBounds = function(bounds) {
         this.update();
-        this.checkBounds(bounds);
+        return this.checkBounds(bounds);
     }
 
     Mover.prototype.update = function() {
@@ -103,15 +103,20 @@
 
     Mover.prototype.checkBounds = function(bounds) {
 
+        var hitBounds = false;
         var _bounds = (!bounds)?this.bounds:bounds;
 
         if(this.location.x < _bounds.x || this.location.x > _bounds.width) {
             this.velocity.x *= -1;
+            hitBounds = true;
         }
         
         if(this.location.y < _bounds.y || this.location.y > _bounds.height) {
             this.velocity.y *= -1;
+            hitBounds = true;
         }
+
+        return hitBounds;
     }
 
     Mover.prototype.setBounds = function(bounds) {

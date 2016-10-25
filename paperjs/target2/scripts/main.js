@@ -15,7 +15,7 @@
     };
 
     var config = {
-        APP_NAME: "target",
+        APP_NAME: "target2",
         BACKGROUND_COLOR: "#AAAAAA",
         CANVAS_BACKGROUND_COLOR: "#FFFFFF",
         LINE_STROKE_COLOR: "#CCCCCC",
@@ -30,7 +30,8 @@
         LINE_COUNT: 32, //should be a factor of 4
         MAX_VELOCITY: 10,
         CIRCLE_RADIUS: 4,
-        SHAPE_TYPE: SHAPE_TYPES.CIRLCE //rectangle, circle, or null
+        SHAPE_TYPE: SHAPE_TYPES.CIRLCE, //rectangle, circle, or null
+        DEFAULT_VELOCITY: 20
     };
     
     /*********** Override Config defaults here ******************/
@@ -38,20 +39,23 @@
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
 
-    //config.TEMPLATE = "../_templates/mesh_head_color.png";
+    config.TEMPLATE = "../_templates/mass_2016-04-23-21-11-26-405.png";
     config.ALLOW_TEMPLATE_SKEW = true;
 
-    config.LINE_COUNT = 20;
+    config.LINE_COUNT = 320;
     config.LINE_STROKE_COLOR = "black";//config.CANVAS_BACKGROUND_COLOR;
-    config.CIRCLE_RADIUS = 10;
+    config.CIRCLE_RADIUS = 3;
     config.SHAPE_TYPE = SHAPE_TYPES.RECTANGLE;
+    config.DEFAULT_VELOCITY = 20;
     
     /*************** End Config Override **********************/
   
     var t; //paperjs tool reference
 
 
-    var items = [];//{"mover", "line"}
+    var movers = [];//{"mover", "line"}
+    var activeMover;
+    var completedMovers = [];
 
     var bounds;
     var main = function(){
@@ -69,33 +73,38 @@
             switch(i % 4) {
                 //top
                 case 0:
+
                     position.x = (i + 1) * (bounds.width / config.LINE_COUNT);
                     position.y = bounds.top;
 
-                    velocity.y = 1 * (Math.random() * config.MAX_VELOCITY);
+                    //velocity.y = 1 * (Math.random() * config.MAX_VELOCITY);
+                    velocity.y = config.DEFAULT_VELOCITY;
                     break;
 
                 //right
                 case 1:
                     position.x = bounds.right;
-                    position.y = (i + 1) * (bounds.height / config.LINE_COUNT);
+                    position.y = (i) * (bounds.height / config.LINE_COUNT);
 
-                    velocity.x = -1 * (Math.random() * config.MAX_VELOCITY);
+                    //velocity.x = -1 * (Math.random() * config.MAX_VELOCITY);
+                    velocity.x = -config.DEFAULT_VELOCITY;
                     break;
 
                 //bottom
                 case 2:
-                    position.x = (i + 1) * (bounds.width / config.LINE_COUNT);
+                    position.x = (i - 1) * (bounds.width / config.LINE_COUNT);
                     position.y = bounds.bottom;
 
-                    velocity.y = -1 * (Math.random() * config.MAX_VELOCITY);
+                    //velocity.y = -1 * (Math.random() * config.MAX_VELOCITY);
+                    velocity.y = -config.DEFAULT_VELOCITY;
                     break;
                 //left
                 case 3:
                     position.x = bounds.left;
-                    position.y = (i) * (bounds.height / config.LINE_COUNT); // note its i, so we dont end on edge
+                    position.y = (i - 2) * (bounds.height / config.LINE_COUNT); // note its i, so we dont end on edge
 
-                    velocity.x = 1 * (Math.random() * config.MAX_VELOCITY);
+                    //velocity.x = 1 * (Math.random() * config.MAX_VELOCITY);
+                    velocity.x = config.DEFAULT_VELOCITY;
                     break;
             }
 
@@ -113,70 +122,69 @@
             //line.strokeWidth = 30;
             //line.opacity = .75;
 
-            items.push({"mover":m, "line":line});
+            m.line = line;
+
+            movers.push(m);
         }
+
+        movers = Utils.shuffle(movers);
+        activeMover = movers.pop();
 
     };
 
-    var circles = [];
-
-    var c;
     var onFrame = function(event) {
 
-        var cLen = circles.length
-        for(var k = 0; k < cLen; k++) {
-            circles[k].remove();
+        if(!activeMover) {
+            return;
         }
 
-        circles.length = 0;
+        var line = activeMover.line;
 
-        var len = items.length;
+        var hitBounds = activeMover.updateAndCheckBounds();
 
+        if(hitBounds) {
+            completedMovers.push(activeMover);
+            activeMover = movers.pop();
+            return;
+        }
+
+        line.segments[line.segments.length - 1].point = activeMover.location;
+
+        var count = 0;
+        var len = completedMovers.length;
         for(var i = 0; i < len; i++) {
-            var m = items[i].mover;
-            var line = items[i].line;
+            var m = completedMovers[i];
+            var l = m.line;
 
-            m.updateAndCheckBounds();
+            var intersections = line.getIntersections(l);
 
-            line.segments[line.segments.length - 1].point = m.location;
+            if(intersections.length > 1)
+                console.log(intersections.length);
 
-            for(var k = 0; k < len; k++) {
+            if(intersections.length) {
+                //we hit something. stop
 
-                var tmp = items[k].line;
+                count++;
 
-                if(tmp == line) {
+                if(count < Math.ceil(Math.random() * (config.LINE_COUNT / 4))) {
                     continue;
                 }
 
+                var p = intersections[intersections.length - 1].point;
+                line.segments[line.segments.length - 1].point = p;
 
-                var intersections = line.getIntersections(tmp);
+                var c = new Path.Circle(p, config.CIRCLE_RADIUS);
 
-                if(intersections.length) {
-
-                    var p = intersections[0].point;
-
-                    if(p.y >= bounds.right) {
-                        continue;
-                    }
-
-                    var c;
-                    if(config.SHAPE_TYPE == SHAPE_TYPES.CIRCLE) {
-                        c = new Path.Circle(p, config.CIRCLE_RADIUS);
-                    } else if (config.SHAPE_TYPE == SHAPE_TYPES.RECTANGLE) {
-                        c = new Path.Rectangle(p.subtract(config.CIRCLE_RADIUS / 2), new Size(config.CIRCLE_RADIUS,config.CIRCLE_RADIUS));
-                    }
-
-                    if(c) {
-                        var color = config.CIRCLE_FILL_COLOR;
-                        if(pixelData) {
-                            color = pixelData.getHex(p);;
-                        }
-
-                        c.fillColor = color;
-                        c.strokeColor = config.LINE_STROKE_COLOR;
-                        circles.push(c);
-                    }
+                if(p.x < bounds.right && p.y < bounds.bottom && p.y > 0 && p.x > 0) {
+                    c.fillColor = pixelData.getHex(p);
                 }
+
+
+                c.strokeColor = config.LINE_STROKE_COLOR;
+
+                completedMovers.push(activeMover);
+                activeMover = movers.pop();
+                return;
             }
 
         }
