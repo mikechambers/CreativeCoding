@@ -19,7 +19,7 @@ ofImage image;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    utils.enableScreenShot("Follow");
+    //utils.enableScreenShot("Follow");
     
     bool imageLoaded = image.load("../../../images/rain.jpg");
     
@@ -99,7 +99,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 'x') {
-        utils.disableScreenShot();
+        //utils.disableScreenShot();
     } else if (key == 'r') {
         init();
     }
