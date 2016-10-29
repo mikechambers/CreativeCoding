@@ -1,12 +1,9 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global atob, btoa, ArrayBuffer, Uint8Array, Blob, Size, Point */
 
-(function () {
-    "use strict";
+class Utils {
     
-    var Utils = {};
-    
-    Utils.getRandomSize = function (baseSize) {
+    static randomSize(baseSize) {
         
         //todo: need to do something about this -5
         var s = new Size(baseSize - 5, baseSize);
@@ -15,7 +12,7 @@
         return s;
     };
     
-    Utils.getRandomRotationInRange = function (range) {
+    static randomRotationInRange(range) {
         
         if (!range) {
             return;
@@ -27,32 +24,36 @@
         return r;
     };
     
-    Utils.getRandomPointInView = function (view, padding) {
+    static randomPointInView(view, padding) {
+        return Utils.randomPointInBounds(view.bounds, padding);
+    };
+
+    static randomPointInBounds(bounds, padding) {
         
         var point = new Point(
-            Math.floor(Math.random() * view.bounds.width),
-            Math.floor(Math.random() * view.bounds.height)
+            Math.floor(Math.random() * bounds.width),
+            Math.floor(Math.random() * bounds.height)
         );
         
         if (padding) {
             if (point.x < padding) {
                 point.x = padding;
-            } else if (point.x > view.bounds.width - padding) {
-                point.x = view.bounds.width - padding;
+            } else if (point.x > bounds.width - padding) {
+                point.x = bounds.width - padding;
             }
             
             if (point.y < padding) {
                 point.y = padding;
-            } else if (point.y > view.bounds.height - padding) {
-                point.y = view.bounds.height - padding;
+            } else if (point.y > bounds.height - padding) {
+                point.y = bounds.height - padding;
             }
         }
         
         return point;
     };
     
-    Utils.getRandomPointInBoundsForRectangle = function (padding, size, view) {
-        var point = Utils.getRandomPointInView(view, padding);
+    static randomPointInBoundsForRectangle(padding, size, view) {
+        var point = Utils.randomPointInView(view, padding);
         var isValid = false;
         while (!isValid) {
 
@@ -60,20 +61,25 @@
                     (point.y + size.height + padding < view.bounds.height)) {
                 isValid = true;
             } else {
-                point = Utils.getRandomPointInView(view, padding);
+                point = Utils.randomPointInView(view, padding);
             }
         }
         
         return point;
     };
 
-    Utils.constrain = function(amt, low, high) {
+        //note, this assume max is a positive number
+    static randomPoint(max = 1.0) {
+        return Point.random().multiply(max);
+    }
+
+    static constrain(amt, low, high) {
         return (amt < low) ? low : ((amt > high) ? high : amt);
     };
 
     //Fischer Yates shuffle
     //https://bost.ocks.org/mike/shuffle/
-    Utils.shuffle = function(array) {
+    static shuffle(array) {
         var m = array.length, t, i;
 
       // While there remain elements to shuffle…
@@ -91,6 +97,4 @@
         return array;
     }
 
-    
-    window.Utils = Utils;
-}());
+}

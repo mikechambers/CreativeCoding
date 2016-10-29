@@ -1,7 +1,7 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global paper, ColorTheme, Point, view, Shape, Path, atob, btoa, ArrayBuffer,
     Uint8Array, Blob, Size, PixelData, Tool, project, Layer, ObjectPool, BlendModes,
-    FileDownloader, Utils, MathUtils */
+    FileDownloader, Utils, MathUtils, Mover */
 
 (function () {
     "use strict";
@@ -12,16 +12,16 @@
     var config = {
         APP_NAME: "mesh",
         BACKGROUND_COLOR: "#333333",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        CANVAS_BACKGROUND_COLOR: "#111111",
         MASK_COLOR: "#FFFFFF",
-        STROKE_COLOR:"#FFFFFF",
+        STROKE_COLOR: "#FFFFFF",
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
-        RADIUS:2,
+        RADIUS: 2
         //TEMPLATE:"../_templates/mass_2016-04-23-21-11-26-405.png",
         //ALLOW_TEMPLATE_SKEW:true
     };
@@ -40,7 +40,7 @@
 
     var mover;
     var line;
-    var svg
+    var svg;
 
     var pixelData;
 
@@ -71,19 +71,19 @@
 
         //line.pivot = mover.location;
         line.location = mover.location;
-    }
+    };
 
-    var explode = function() {
+    var explode = function () {
         var len = circles.length;
 
 
-        var _onFrame = function() {
+        var _onFrame = function () {
             var m = this.mover;
             m.updateAndCheckBounds();
             this.position = m.location;
-        }
+        };
 
-        for(var i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             var c = circles[i];
             var m = new Mover(bounds);
             m.location = c.position;
