@@ -64,17 +64,17 @@ class Mover {
     };
 
     repel(mover) {
-        return (this.attract(mover) *= -1);
+        return this.attract(mover).multiply(-1);
     };
 
     attract(mover) {
 
-        var force = this.location - mover.location;
+        var force = this.location.subtract(mover.location);
 
         //TODO: need to impliment constrain
-        var distance = Utils.constrain(force.length, minGravityInfluence, maxGravityInfluence);
+        var distance = Utils.constrain(force.length, this.minGravityInfluence, this.maxGravityInfluence);
 
-        var force = force.normalize();
+        force = force.normalize();
 
         var strength = (this.gravityCoefficient * this.mass * mover.mass) / (distance * distance);
 
