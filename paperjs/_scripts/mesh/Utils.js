@@ -28,7 +28,7 @@ class Utils {
         return Utils.randomPointInBounds(view.bounds, padding);
     };
 
-    static randomPointInBounds(bounds, padding) {
+    static randomPointInBounds(bounds, padding = 0) {
         
         var point = new Point(
             Math.floor(Math.random() * bounds.width),
@@ -71,6 +71,21 @@ class Utils {
         //note, this assume max is a positive number
     static randomPoint(max = 1.0) {
         return Point.random().multiply(max);
+    }
+
+    static randomVector(max = 1.0) {
+
+        var p = Utils.randomPoint(max);
+
+        if(Math.random() > .5){
+            p.x *= -1;
+        }
+
+        if(Math.random() > .5){
+            p.y *= -1;
+        }
+
+        return p;
     }
 
     static constrain(amt, low, high) {

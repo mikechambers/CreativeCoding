@@ -34,7 +34,7 @@ class Mover {
     }
 
     applyForce(force){
-        this.acceleration += (force / this.mass);
+        this.acceleration = this.acceleration.add(force.divide(this.mass));
     }
 
     updateAndCheckBounds(bounds) {

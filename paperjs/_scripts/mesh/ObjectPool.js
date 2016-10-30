@@ -1,14 +1,12 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 
-(function () {
-    "use strict";
+class ObjectPool {
 
-    
-    var ObjectPool = function () {
+    constructor() {
         this.pool = [];
     };
     
-    ObjectPool.prototype.getObject = function () {
+    getObject() {
         var out;
 
         if (this.pool.length) {
@@ -20,7 +18,7 @@
         return out;
     };
 
-    ObjectPool.prototype.returnObject = function (obj) {
+    returnObject(obj) {
         //NOTE: The object properties are not cleared
         //for performance reasons
         
@@ -49,5 +47,4 @@
         */
     };
     
-    window.ObjectPool = ObjectPool;
-}());
+}

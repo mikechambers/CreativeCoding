@@ -1,10 +1,10 @@
 /*jslint vars: true, nomen: true, plusplus: true, continue:true, forin:true */
 /*global atob, btoa, ArrayBuffer, Uint8Array, Blob */
 
-(function () {
-    "use strict";
 
-    var FileDownloader = function (prefix) {
+class FileDownloader {
+
+    constructor(prefix) {
         this.suffix = Date.now();
         this.prefix = prefix;
         this.download_count = 0;
@@ -12,7 +12,7 @@
 
     //we could see if the string is base 64 encoded, if not, assume its is a string
     //http://stackoverflow.com/a/5100158
-    FileDownloader.prototype.dataURItoBlob = function (dataURI) {
+    dataURItoBlob(dataURI) {
         // convert base64 to raw binary data held in a string
         // doesn't handle URLEncoded DataURIs
         var byteString = atob(dataURI.split(',')[1]);
@@ -36,11 +36,11 @@
         return bb;
     };
     
-    FileDownloader.prototype.createName = function (extension) {
+    createName(extension) {
         return this.prefix + "_example_" + this.suffix + "_" + (++this.download_count) + "." + extension;
     };
     
-    FileDownloader.prototype.downloadFile = function (url, fileName) {
+    downloadFile(url, fileName) {
 
         var bb = this.dataURItoBlob(url);
         
@@ -54,7 +54,7 @@
         a.click();
     };
         
-    FileDownloader.prototype.downloadImageFromCanvas = function (canvas, format) {
+    downloadImageFromCanvas(canvas, format) {
         var fileName = this.createName("png");
         
         if (!format) {
@@ -66,13 +66,13 @@
         this.downloadFile(url, fileName);
     };
    
-    FileDownloader.prototype.downloadConfig = function (config) {
+    downloadConfig(config) {
         var fileName = this.createName("json");
         var url = "data:application/json;utf8," + btoa(JSON.stringify(config, null, "\t"));
         this.downloadFile(url, fileName);
     };
     
-    FileDownloader.prototype.downloadSVGFromProject = function (project) {
+    downloadSVGFromProject(project) {
 
         var fileName = this.createName("svg");
         
@@ -80,6 +80,5 @@
         var url = "data:image/svg+xml;utf8," + btoa(project.exportSVG({asString: true}));
         this.downloadFile(url, fileName);
     };
-    
-    window.FileDownloader = FileDownloader;
-}());
+
+}

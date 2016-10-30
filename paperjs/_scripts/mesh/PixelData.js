@@ -24,17 +24,14 @@
 	THE SOFTWARE.
 */
 
-
-(function () {
-    "use strict";
-
+class PixelData
     //simple class that exposes an api to make it easy to get
     //data about individual pixels in an ImageData instance
-    function PixelData(imageData) {
+    constructor(imageData) {
         this.imageData = imageData;
     }
 
-    PixelData.initFromImage = function (src, w, h, scale, callback) {
+    static initFromImage(src, w, h, scale, callback) {
         
         if (!src) {
             throw new Error("PixelData.initFrameImage src not specified.");
@@ -75,9 +72,9 @@
         templateImage.src = src;
     };
     
-    PixelData.prototype.imageData = null;
+    
 
-    PixelData.prototype.getHex = function (point) {
+    getHex(point) {
 
         var o = this.getRBGA(point);
 
@@ -86,7 +83,7 @@
 
     //returns an object with r,g,b,a properties with values
     //with color information about the pixel as the specified coordinate.
-    PixelData.prototype.getRBGA = function (point) {
+    getRBGA(point) {
         var xPos = Math.floor(point.x);
         var yPos = Math.floor(point.y);
 
@@ -118,18 +115,17 @@
         return out;
     };
 
-    PixelData._helper = function (c) {
+    static _helper(c) {
         var hex = c.toString(16);
         
         return hex.length === 1 ? "0" + hex : hex;
     };
 
     //http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    PixelData.rgbToHex = function (r, g, b) {
+    static rgbToHex(r, g, b) {
         var helper = PixelData._helper;
 
         return "#" + helper(r) + helper(g) + helper(b);
     };
 
-    window.PixelData = PixelData;
-}());
+}
