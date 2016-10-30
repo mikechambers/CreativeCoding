@@ -20,7 +20,7 @@
         TEMPLATE: null,
         ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false,
-        ITEM_COUNT: 10
+        ITEM_COUNT: 1000
     };
     
     /*********** Override Config defaults here ******************/
@@ -33,19 +33,44 @@
     var t; //paperjs tool reference
 
 
+    var centerCircle;
     var centerMover;
     var bounds;
 
+    var wind;
+    var gravity;
+
     var main = function(){
+
+        wind = new Point(0, 0);
+        gravity = new Point(0, 0);
+
         bounds = view.bounds;
 
         centerMover = new Mover(bounds);
         centerMover.location = bounds.center;
+        centerMover.mass = 100;
+        centerMover.gravityCoefficient = 0.8;
+
+        centerCircle = Path.Circle(centerMover.location, centerMover.mass);
+        centerCircle.strokeColor = config.CANVAS_BACKGROUND_COLOR;
+
 
         var _onFrame = function(event) {
             var force = centerMover.attract(this.mover);
       
-            this.mover.applyForce(force);
+
+            var friction = new Point();
+
+            if(centerMover.location.getDistance(this.mover.location) < centerMover.mass) {
+                var c = 0.01;
+                var friction = this.mover.velocity.clone();
+                friction = friction.multiply(-1);
+                friction = friction.normalize();
+                friction = friction.multiply(c)
+            }
+
+            this.mover.applyForce(force, wind, gravity, friction);
 
             //console.log(this.mover.location);
 
@@ -58,9 +83,9 @@
         for(let i = 0; i < config.ITEM_COUNT; i++) {
             var m = new Mover(bounds);
             m.location = Utils.randomPointInBounds(bounds);
-            m.velocity = Utils.randomVector(3);
+            m.velocity = Utils.randomVector(1);
 
-            var c = new Path.Circle(m.location, 2);
+            var c = new Path.Circle(m.location, 1);
             c.strokeColor = "white";
 
             c.mover = m;

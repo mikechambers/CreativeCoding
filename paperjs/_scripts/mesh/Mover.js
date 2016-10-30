@@ -33,8 +33,12 @@ class Mover {
         this.setBounds(bounds);
     }
 
-    applyForce(force){
-        this.acceleration = this.acceleration.add(force.divide(this.mass));
+    applyForce(...forces){
+
+        //todo: need to check performance of this
+        for (let force of forces) {
+            this.acceleration = this.acceleration.add(force.divide(this.mass));
+        }
     }
 
     updateAndCheckBounds(bounds) {
