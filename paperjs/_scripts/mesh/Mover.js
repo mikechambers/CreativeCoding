@@ -80,6 +80,7 @@ class Mover {
 
         force = force.normalize();
 
+        //formula for gravity
         var strength = (this.gravityCoefficient * this.mass * mover.mass) / (distance * distance);
 
         force = force.multiply(strength);

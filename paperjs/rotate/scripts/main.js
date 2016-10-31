@@ -18,7 +18,7 @@
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
+        ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false
     };
     
@@ -30,9 +30,56 @@
     /*************** End Config Override **********************/
   
     var t; //paperjs tool reference
+
     var bounds;
 
+    var c;
+    var g;
+
     var main = function(){
+
+        bounds = view.bounds;
+
+        var mover = new Mover(bounds);
+        mover.velocity = Utils.randomVector(1);
+        mover.location = Utils.randomPointInBounds(bounds);
+
+
+        c = new Path.Circle(mover.location, 2);
+        c.fillColor = "white";
+        c.mover = mover;
+
+        c.onFrame = function() {
+            this.mover.updateAndCheckBounds();
+            this.position = this.mover.location;
+        }
+
+        var follower = new Follower(mover);
+        follower.location = Utils.randomPointInBounds(bounds);
+        follower.attractionCoefficient = 0.3;
+
+        
+        //note : in order for rotation to work, we need to put it in a grou
+        //and set transformContent = false
+        //https://groups.google.com/forum/#!msg/paperjs/R3O0peJPFc0/A3krjdY70-wJ
+        g = new Group([
+            new Path.Rectangle(new Point(), new Size(12, 6))
+        ]);
+
+        g.strokeColor = "white"
+        g.mover = follower;
+        g.position = follower.location;
+        g.transformContent = false;
+
+        g.onFrame = function(event) {
+            this.mover.update();
+            this.position = this.mover.location;
+            this.rotation = this.mover.angle;
+        }
+
+
+
+
     };
 
     var onFrame = function(event) {
@@ -160,7 +207,6 @@
             view.onFrame = onFrame;
         }
 
-        bounds = view.bounds;
         main();
     };
 
