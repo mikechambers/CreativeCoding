@@ -75,7 +75,6 @@ class Mover {
 
         var force = this.location.subtract(mover.location);
 
-        //TODO: need to impliment constrain
         var distance = Utils.constrain(force.length, this.minGravityInfluence, this.maxGravityInfluence);
 
         force = force.normalize();
