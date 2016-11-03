@@ -68,7 +68,22 @@ class Utils {
         return point;
     };
 
-        //note, this assume max is a positive number
+    static pointOnCircle(center, radius, angleInRadians) {
+    
+        var out = new Point();
+        out.x = (Math.cos(angleInRadians) * radius)+ center.x;
+        out.y = (Math.sin(angleInRadians) * radius)+ center.y;
+
+        return out;
+    }
+
+    static randomPointOnCircle(center, radius) {
+        var angleInRadians = (Math.random() * (Math.PI * 2));
+
+        return Utils.pointOnCircle(center, radius, angleInRadians);
+    }
+
+    //note, this assumes max is a positive number
     static randomPoint(max = 1.0) {
         return Point.random().multiply(max);
     }

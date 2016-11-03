@@ -245,7 +245,7 @@
 
         background.closed = true;
 
-        var svg = project.importSVG("assets/create_something.svg", {
+        project.importSVG("assets/create_something.svg", {
             "expandShapes": true,
             applyMatrix:true,
             onLoad : function(item, rawSVG) {

@@ -13,11 +13,19 @@ class PointFollower extends Follower {
 		this.pointIndex = 0;
 		this.hitRadius = 10;
 		this.randomOrder = false;
+		this.pathJitter = 5;
+		this.currentTarget = null;
 	}
 
 
-	getCurrentPoint () {
-		return this.points[this.pointIndex];
+	getCurrentTarget () {
+		//return this.points[this.pointIndex];
+
+		if(!this.currentTarget) {
+			this.currentTarget = this.points[0];
+		}
+
+		return this.currentTarget;
 	}
 
 	getNextPoint (){
@@ -33,7 +41,13 @@ class PointFollower extends Follower {
 			this.pointIndex = 0;
 		}
 
-		return this.points[this.pointIndex];
+		var p = this.points[this.pointIndex];
+
+		if(this.pathJitter) {
+			p = Utils.randomPointOnCircle(p, Math.random() * this.pathJitter);
+		}
+
+		return p;
 	}
 
 	update() {
@@ -42,12 +56,12 @@ class PointFollower extends Follower {
 			return;
 		}
 
-		var tPoint = this.getCurrentPoint();
+		var tPoint = this.getCurrentTarget();
 
 		if(tPoint.getDistance(this.location) < this.hitRadius) {
 			tPoint = this.getNextPoint();
 
-			console.log("hit");
+			this.currentTarget = tPoint;
 
 			if(this.onPointHit) {
 				//this.onPointHit(oldPoint, newPoint);
