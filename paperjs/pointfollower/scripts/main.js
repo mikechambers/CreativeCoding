@@ -13,13 +13,23 @@
         APP_NAME: "mesh",
         BACKGROUND_COLOR: "#FFFFFF",
         CANVAS_BACKGROUND_COLOR:"#000000",
+        STROKE_COLOR: "#FFFFFF",
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
-        ALLOW_TEMPLATE_SKEW: false
+        ALLOW_TEMPLATE_SKEW: false,
+        USE_RANDOM_POINT_ORDER:false,
+        HIT_RADIUS:50,
+        PATH_OPACITY:0.5,
+        DRAW_POINTS:true,
+        POINT_COUNT:7,
+        BOUNDS_PADDING:150,
+        MAX_PATH_SEGMENTS:30,
+        ATTRACTION_COEFFICIENT:0.6,
+        VELOCITY_LIMIT:5
     };
     
     /*********** Override Config defaults here ******************/
@@ -38,26 +48,28 @@
     var pFollower;
     var main = function(){
 
-        for(var i = 0; i < 4; i++) {
-            var p = Utils.randomPointInBounds(bounds, 150);
+        for(var i = 0; i < config.POINT_COUNT; i++) {
+            var p = Utils.randomPointInBounds(bounds, config.BOUNDS_PADDING);
 
-            var c = new Path.Circle(p, 2);
-            c.strokeColor = "white";
+            if(config.DRAW_POINTS)  {
+                var c = new Path.Circle(p, 2);
+                c.strokeColor = config.STROKE_COLOR;
+            }
 
             points.push(p);
         }
 
         pFollower = new PointFollower(points);
         pFollower.location = points[0];
-        pFollower.attractionCoefficient = 0.6;
-        pFollower.limit = 5;
-        pFollower.randomOrder = true;
-        pFollower.hitRadius = 50;
+        pFollower.attractionCoefficient = config.ATTRACTION_COEFFICIENT;
+        pFollower.limit = config.VELOCITY_LIMIT;
+        pFollower.randomOrder = config.USE_RANDOM_POINT_ORDER;
+        pFollower.hitRadius = config.HIT_RADIUS;
         //pFollower.limit(100);
 
         path = new Path();
-        path.strokeColor = "white";
-        path.opacity = 0.80;
+        path.strokeColor = config.STROKE_COLOR;
+        path.opacity = config.PATH_OPACITY;
 
         path.onFrame = function() {
             pFollower.update();
@@ -65,7 +77,7 @@
             path.add(pFollower.location);
 
             
-            if(path.segments.length > 50) {
+            if(path.segments.length > config.MAX_PATH_SEGMENTS) {
                 path.removeSegment(0);
             }
             
