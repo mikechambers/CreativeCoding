@@ -37,13 +37,15 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.SVG_PATH = "../_templates/svg/m.svg";
-    config.DRAW_POINTS = true;
-    config.HIT_RADIUS = 10;
-    config.ATTRACTION_COEFFICIENT = 5;
+    config.SVG_PATH = "../_templates/svg/mesh.svg";
+    config.DRAW_POINTS = false;
+    config.HIT_RADIUS = 5;
+    config.ATTRACTION_COEFFICIENT = 1;
     config.MAX_PATH_SEGMENTS = 0;
-    config.PATH_OPACITY = 0.2;
-    config.PATH_JITTER = 20;
+    config.PATH_OPACITY = 0.1;
+    config.PATH_JITTER = 8;
+    config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
+    config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
 
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
@@ -57,71 +59,58 @@
 
     var points = [];
     var pFollower;
-    var _svg;
+
+    var pointGroup;
+
     var main2 = function(svg){
 
-        _svg = svg;
+        if(config.DRAW_POINTS) {
+            pointGroup = new Group();
+        }
+
         if(svg) {
             svg.position = bounds.center;
             svg.strokeColor = config.STROKE_COLOR;
             svg.fillColor = config.FILL_COLOR;
             svg.opacity = 1.0;
 
-            var path = svg.children.create.children[0];
+            var paths = svg.children.create.children;
 
-            let len = path.segments.length;
+            for(let path of paths) {
+                var points = [];
 
-            for(var i = 0; i < len; i++) {
-                points.push(path.segments[i].point);
+                var tmpPaths = [];
+                if(path instanceof Path) {
+                    tmpPaths = [path];
+                } else if(path instanceof CompoundPath) {
+
+                    tmpPaths = path.children;
+                }
+
+                for(let _path of tmpPaths) {
+                    
+                    for(let segment of _path.segments) {
+                        points.push(segment.point);
+                    }
+
+                    if(config.DRAW_POINTS)  {
+                        for(let _p of points) {
+                            var c = new Path.Circle(_p, 1);
+                            c.strokeColor = config.POINT_COLOR;
+                        }
+                    }
+
+                    createTracer(points);
+                }
             }
-
         } else {
             for(var i = 0; i < config.POINT_COUNT; i++) {
                 var p = Utils.randomPointInBounds(bounds, config.BOUNDS_PADDING);
 
                 points.push(p);
             }
-        }
 
-        if(config.DRAW_POINTS)  {
-
-            for(let _p of points) {
-                var c = new Path.Circle(_p, 2);
-                c.strokeColor = config.POINT_COLOR;
-            }
-        }
-
-        pFollower = new PointFollower(points);
-        pFollower.location = points[0];
-        pFollower.attractionCoefficient = config.ATTRACTION_COEFFICIENT;
-        pFollower.limit = config.VELOCITY_LIMIT;
-        pFollower.randomOrder = config.USE_RANDOM_POINT_ORDER;
-        pFollower.hitRadius = config.HIT_RADIUS;
-        pFollower.pathJitter = config.PATH_JITTER;
-        //pFollower.limit(100);
-
-        path = new Path();
-        path.strokeColor = config.PATH_COLOR;
-        path.opacity = config.PATH_OPACITY;
-
-        path.onFrame = function() {
-
-            if(_svg.opacity > 0.05) {
-                _svg.opacity -= .0025;
-            }
-
-            pFollower.update();
-
-            path.add(pFollower.location);
-
-            
-            if(config.MAX_PATH_SEGMENTS) {
-                if(path.segments.length > config.MAX_PATH_SEGMENTS) {
-                    path.removeSegment(0);
-                }
-            }
-            
-            //path.smooth(true);
+            createTracer(points);
         }
     };
 
@@ -141,6 +130,48 @@
         });
     }
 
+
+    var createTracer = function(points) {
+        var pFollower = new PointFollower(points);
+        pFollower.location = points[0];
+        pFollower.attractionCoefficient = config.ATTRACTION_COEFFICIENT;
+        pFollower.limit = config.VELOCITY_LIMIT;
+        pFollower.randomOrder = config.USE_RANDOM_POINT_ORDER;
+        pFollower.hitRadius = config.HIT_RADIUS;
+        pFollower.pathJitter = config.PATH_JITTER;
+        //pFollower.limit(100);
+
+        var path = new Path();
+        path.strokeColor = config.PATH_COLOR;
+        path.opacity = config.PATH_OPACITY;
+        path.mover = pFollower;
+
+        path.onFrame = function() {
+
+            this.mover.update();
+
+            path.add(this.mover.location);
+
+            
+            if(config.MAX_PATH_SEGMENTS) {
+                if(this.mover.segments.length > config.MAX_PATH_SEGMENTS) {
+                    path.removeSegment(0);
+                }
+            }
+            
+            //path.smooth(true);
+        }
+
+        if(config.DRAW_POINTS)  {
+
+            for(let _p of points) {
+                var c = new Path.Circle(_p, 2);
+                c.strokeColor = config.POINT_COLOR;
+                pointGroup.addChild(c);
+            }
+        }
+
+    }
 
     /*********************** init code ************************/
 
