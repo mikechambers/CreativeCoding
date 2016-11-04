@@ -37,13 +37,13 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.SVG_PATH = "../_templates/svg/mesh.svg";
+    config.SVG_PATH = "../_templates/svg/create.svg";
     config.DRAW_POINTS = false;
-    config.HIT_RADIUS = 5;
-    config.ATTRACTION_COEFFICIENT = 1;
+    config.HIT_RADIUS = 10;
+    config.ATTRACTION_COEFFICIENT = 5;
     config.MAX_PATH_SEGMENTS = 0;
-    config.PATH_OPACITY = 0.1;
-    config.PATH_JITTER = 8;
+    config.PATH_OPACITY = 0.2;
+    config.PATH_JITTER = 0;
     config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
     config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
 
@@ -158,6 +158,8 @@
                     path.removeSegment(0);
                 }
             }
+
+            //path.simplify();
             
             //path.smooth(true);
         }
