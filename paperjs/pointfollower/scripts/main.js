@@ -17,6 +17,7 @@
         PATH_COLOR:"#333333",
         FILL_COLOR:"#EEEEEE",
         POINT_COLOR:"#BBBBBB",
+        STROKE_WIDTH:1.0,
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
@@ -33,21 +34,23 @@
         ATTRACTION_COEFFICIENT:0.6,
         VELOCITY_LIMIT:5,
         SVG_PATH:null,
-        MAX_LOOPS:0
+        MAX_LOOPS:0 //0 is for no limit
     };
     
     /*********** Override Config defaults here ******************/
     
-    config.SVG_PATH = "../_templates/svg/create.svg";
-    config.DRAW_POINTS = false;
-    config.HIT_RADIUS = 10;
-    config.ATTRACTION_COEFFICIENT = 5;
+    //config.SVG_PATH = "../_templates/svg/create.svg";
+    config.DRAW_POINTS = true;
+    config.HIT_RADIUS = 20;
+    config.ATTRACTION_COEFFICIENT = 0.8;
     config.MAX_PATH_SEGMENTS = 0;
     config.PATH_OPACITY = 0.2;
-    config.PATH_JITTER = 8;
+    config.PATH_JITTER = 20;
     config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
     config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
-    config.MAX_LOOPS = 25;
+    config.MAX_LOOPS = 0;
+    config.USE_RANDOM_POINT_ORDER = false;
+    config.POINT_COUNT = 5;
 
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
@@ -79,7 +82,7 @@
             var paths = svg.children.create.children;
 
             for(let path of paths) {
-                var points = [];
+                points = [];
 
                 var tmpPaths = [];
                 if(path instanceof Path) {
@@ -145,6 +148,7 @@
 
         var path = new Path();
         path.strokeColor = config.PATH_COLOR;
+        path.strokeWidth = config.STROKE_WIDTH;
         path.opacity = config.PATH_OPACITY;
         path.mover = pFollower;
 
