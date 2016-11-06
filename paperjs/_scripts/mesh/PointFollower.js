@@ -15,6 +15,7 @@ class PointFollower extends Follower {
 		this.randomOrder = false;
 		this.pathJitter = 5;
 		this.currentTarget = null;
+		this.loops = 0;
 	}
 
 
@@ -38,6 +39,9 @@ class PointFollower extends Follower {
 
 		this.pointIndex++;
 		if(this.pointIndex == this.points.length) {
+
+			this.loops++;
+
 			this.pointIndex = 0;
 		}
 

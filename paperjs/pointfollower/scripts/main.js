@@ -32,7 +32,8 @@
         MAX_PATH_SEGMENTS:0, //0 is for no limit
         ATTRACTION_COEFFICIENT:0.6,
         VELOCITY_LIMIT:5,
-        SVG_PATH:null
+        SVG_PATH:null,
+        MAX_LOOPS:0
     };
     
     /*********** Override Config defaults here ******************/
@@ -43,9 +44,10 @@
     config.ATTRACTION_COEFFICIENT = 5;
     config.MAX_PATH_SEGMENTS = 0;
     config.PATH_OPACITY = 0.2;
-    config.PATH_JITTER = 0;
+    config.PATH_JITTER = 8;
     config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
     config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
+    config.MAX_LOOPS = 25;
 
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
@@ -159,9 +161,11 @@
                 }
             }
 
-            //path.simplify();
-            
-            //path.smooth(true);
+            if(config.MAX_LOOPS) {
+                if (this.mover.loops >= config.MAX_LOOPS){
+                    this.onFrame = null;
+                }
+            }
         }
 
         if(config.DRAW_POINTS)  {
