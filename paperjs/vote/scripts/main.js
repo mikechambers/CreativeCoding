@@ -11,11 +11,11 @@
 
     var config = {
         APP_NAME: "pointfollower",
-        BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#333333",
-        STROKE_COLOR: "#FFFFFF",
-        PATH_COLOR:"#66cef0",
-        FILL_COLOR:"#EEEEEE",
+        BACKGROUND_COLOR: "#333333",
+        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+        STROKE_COLOR: "#FFFFFF", //color of stroke on svg
+        PATH_COLOR:"#000000", //generated path color
+        FILL_COLOR:"#FFFFFF", //fill color of svg
         POINT_COLOR:"#BBBBBB",
         STROKE_WIDTH:1.0,
         CANVAS_WIDTH: 640,
@@ -42,17 +42,17 @@
     
     config.SVG_PATH = "../_templates/svg/vote.svg";
     config.DRAW_POINTS = false;
-    config.HIT_RADIUS = 20;
-    config.ATTRACTION_COEFFICIENT = 0.8;
+    config.HIT_RADIUS = 15;
+    config.ATTRACTION_COEFFICIENT = 1.8;
     //config.MAX_PATH_SEGMENTS = 50;
-    config.PATH_OPACITY = 1.0;
+    config.PATH_OPACITY = 0.3;
     config.FADE_PATH = true;
-    config.PATH_JITTER = 20;
+    config.PATH_JITTER = 15;
     //config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
     //config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
-    config.MAX_LOOPS = 10;
+    config.MAX_LOOPS = 25;
     config.USE_RANDOM_POINT_ORDER = false;
-    config.POINT_COUNT = 10;
+    //config.POINT_COUNT = 10;
 
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
@@ -68,8 +68,11 @@
     var pFollower;
 
     var pointGroup;
+    var colorTheme;
 
     var main2 = function(svg){
+        colorTheme = new ColorTheme(["#FF0000", "#FFFFFF", "#0000FF"]);
+
 
         if(config.DRAW_POINTS) {
             pointGroup = new Group();
@@ -156,9 +159,21 @@
 
         path.onFrame = function() {
 
+            if(!this.mover.loops) {
+                this.mover.lastLoop = this.mover.loops;
+            }
+
             this.mover.update();
 
             path.add(this.mover.location);
+
+
+            if(this.mover.loops != this.mover.lastLoop) {
+                //completed a loop
+                this.mover.lastLoop = this.mover.loops;
+
+                this.strokeColor = colorTheme.getRandomColor();
+            }
 
             
             if(config.MAX_PATH_SEGMENTS) {
