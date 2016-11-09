@@ -71,8 +71,8 @@ class Utils {
     static pointOnCircle(center, radius, angleInRadians) {
     
         var out = new Point();
-        out.x = (Math.cos(angleInRadians) * radius)+ center.x;
-        out.y = (Math.sin(angleInRadians) * radius)+ center.y;
+        out.x = (Math.cos(angleInRadians) * radius) + center.x;
+        out.y = (Math.sin(angleInRadians) * radius) + center.y;
 
         return out;
     }

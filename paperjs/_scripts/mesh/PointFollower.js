@@ -31,21 +31,21 @@ class PointFollower extends Follower {
 
 	getNextPoint (){
 
+		var p;
 		if(this.randomOrder) {
 			var index = Math.floor(Math.random() * this.points.length);
 			this.pointIndex = index;
-			return this.points[index];
+			p = this.points[index];
+		} else {
+			this.pointIndex++;
+			if(this.pointIndex == this.points.length) {
+
+				this.loops++;
+				this.pointIndex = 0;
+			}
+
+			p = this.points[this.pointIndex];
 		}
-
-		this.pointIndex++;
-		if(this.pointIndex == this.points.length) {
-
-			this.loops++;
-
-			this.pointIndex = 0;
-		}
-
-		var p = this.points[this.pointIndex];
 
 		if(this.pathJitter) {
 			p = Utils.randomPointOnCircle(p, Math.random() * this.pathJitter);
@@ -72,9 +72,11 @@ class PointFollower extends Follower {
 			}
 		}
 
+		super.update(tPoint);
 		//can call super right here
 
     	//todo
+    	/*
     	this.velocity = this.velocity.normalize(this.limit);
 
     	var dir = tPoint.subtract(this.location);
@@ -90,5 +92,6 @@ class PointFollower extends Follower {
 	    
 	    this.updateAngle();
 	    this.acceleration.set(0,0);
+	    */
     }
 }

@@ -40,22 +40,23 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.SVG_PATH = "../_templates/svg/vote.svg";
+    config.SVG_PATH = "../_templates/svg/abc.svg";
     config.DRAW_POINTS = false;
     config.HIT_RADIUS = 15;
     config.ATTRACTION_COEFFICIENT = 1.8;
-    //config.MAX_PATH_SEGMENTS = 50;
-    config.PATH_OPACITY = 0.3;
+    config.MAX_PATH_SEGMENTS = 15000;
+    config.PATH_OPACITY = 0.2;
     config.FADE_PATH = true;
-    config.PATH_JITTER = 15;
+    config.PATH_JITTER = 5;
     //config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
     //config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
-    config.MAX_LOOPS = 25;
+    config.MAX_LOOPS = 2;
     config.USE_RANDOM_POINT_ORDER = false;
+    //config.STROKE_WIDTH = 2.0;
     //config.POINT_COUNT = 10;
-
-    //config.CANVAS_WIDTH = 1280;
-    //config.CANVAS_HEIGHT = 1280;
+    config.USE_RANDOM_POINT_ORDER = true;
+    config.CANVAS_WIDTH = 1280;
+    config.CANVAS_HEIGHT = 1280;
     
     /*************** End Config Override **********************/
   
@@ -70,8 +71,11 @@
     var pointGroup;
     var colorTheme;
 
+    var completed = 0;
+
     var main2 = function(svg){
-        colorTheme = new ColorTheme(["#FF0000", "#FFFFFF", "#0000FF"]);
+        //colorTheme = new ColorTheme(["#FF0000", "#FFFFFF", "#0000FF"]);
+        colorTheme = new ColorTheme(["#000000"]);
 
 
         if(config.DRAW_POINTS) {
@@ -110,8 +114,18 @@
                         }
                     }
 
+                    if(!config.USE_RANDOM_POINT_ORDER) {
+                        createTracer(points);
+                        points = [];
+                    }
+                }
+
+
+                if(config.USE_RANDOM_POINT_ORDER) {
                     createTracer(points);
                 }
+
+                
             }
         } else {
             for(var i = 0; i < config.POINT_COUNT; i++) {
@@ -159,6 +173,11 @@
 
         path.onFrame = function() {
 
+            if(!(this.segments.length % 1000)) {
+                console.log(this.segments.length);
+                this.reduce();
+            }
+
             if(!this.mover.loops) {
                 this.mover.lastLoop = this.mover.loops;
             }
@@ -178,6 +197,7 @@
             
             if(config.MAX_PATH_SEGMENTS) {
                 if(this.segments.length > config.MAX_PATH_SEGMENTS) {
+                    console.log(completed++);
                     path.removeSegment(0);
                 }
             }
@@ -196,10 +216,10 @@
 
             if(config.MAX_LOOPS) {
                 if (this.mover.loops >= config.MAX_LOOPS){
+
                     this.onFrame = null;
                 }
             }
-
         }
 
         if(config.DRAW_POINTS)  {

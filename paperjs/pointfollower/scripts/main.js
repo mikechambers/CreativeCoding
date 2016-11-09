@@ -40,7 +40,7 @@
     
     /*********** Override Config defaults here ******************/
     
-    config.SVG_PATH = "../_templates/svg/vote.svg";
+    config.SVG_PATH = "../_templates/svg/abc.svg";
     config.DRAW_POINTS = false;
     config.HIT_RADIUS = 20;
     config.ATTRACTION_COEFFICIENT = 0.8;
@@ -54,8 +54,8 @@
     config.USE_RANDOM_POINT_ORDER = false;
     config.POINT_COUNT = 10;
 
-    //config.CANVAS_WIDTH = 1280;
-    //config.CANVAS_HEIGHT = 1280;
+    config.CANVAS_WIDTH = 1280;
+    config.CANVAS_HEIGHT = 1280;
     
     /*************** End Config Override **********************/
   
@@ -108,6 +108,7 @@
                     }
 
                     createTracer(points);
+                    points = [];
                 }
             }
         } else {
