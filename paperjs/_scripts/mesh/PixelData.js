@@ -24,7 +24,7 @@
 	THE SOFTWARE.
 */
 
-class PixelData
+class PixelData {
     //simple class that exposes an api to make it easy to get
     //data about individual pixels in an ImageData instance
     constructor(imageData) {
