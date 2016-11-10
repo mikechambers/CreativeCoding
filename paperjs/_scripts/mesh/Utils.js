@@ -29,26 +29,11 @@ class Utils {
     };
 
     static randomPointInBounds(bounds, padding = 0) {
-        
+
         var point = new Point(
-            Math.floor(Math.random() * bounds.width),
-            Math.floor(Math.random() * bounds.height)
+            Math.random() * ((bounds.right - padding) - (bounds.left + padding)) + (bounds.left + padding),
+            Math.random() * ((bounds.bottom - padding) - (bounds.top + padding)) + (bounds.top + padding)
         );
-        
-        if (padding) {
-            if (point.x < padding) {
-                point.x = padding;
-            } else if (point.x > bounds.width - padding) {
-                point.x = bounds.width - padding;
-            }
-            
-            if (point.y < padding) {
-                point.y = padding;
-            } else if (point.y > bounds.height - padding) {
-                point.y = bounds.height - padding;
-            }
-        }
-        
         return point;
     };
     
