@@ -68,6 +68,34 @@ class Utils {
         return Utils.pointOnCircle(center, radius, angleInRadians);
     }
 
+    static randomPointInCircle(center, radius) {
+    
+        var t = 2 * Math.PI * Math.random();
+        var u = Math.random() + Math.random();
+        var r = (u > 1)? 2.0 - u: u;
+        r *= radius;
+        
+        var x = center.x + r * Math.cos(t);
+        var y = center.y + r * Math.sin(t);
+    
+        return new Point(x, y);
+    }
+
+    static randomPointsInCircle(center, radius, count) {
+        let points = [];
+        
+        for(let i = 0; i < count; i++) {
+            points.push(Utils.randomPointInCircle(center, radius));
+        }
+        
+        return points;
+    }
+
+    static circumference(radius) {
+        return 2 * Math.PI * radius;
+    }
+
+
     //note, this assumes max is a positive number
     static randomPoint(max = 1.0) {
         return Point.random().multiply(max);
@@ -112,4 +140,82 @@ class Utils {
         return array;
     }
 
+    //It is 0 on the line, and +1 on one side, -1 on the other side.
+    //http://stackoverflow.com/a/3461533
+    static orientationOfPointToLine(v1, v2, p) {
+        var position = ((v2.x - v1.x) * (p.y - v1.y) - (v2.y - v1.y) * (p.x - v1.x));
+        
+        var s = Math.sign(position);
+
+        if(s == Utils.Sign.POSITIVE) {
+            return Utils.Orientation.LEFT;
+        } else if (s == Utils.Sign.NEGATIVE) {
+            return Utils.Orientation.RIGHT;
+        }
+        
+        return Utils.Orientation.CENTER;
+    }
+
+    static findLeftMostPointIndex(points) {
+        var leftMost = points[0];
+        var leftMostIndex = 0;
+        
+        let len = points.length;
+
+        for(let i = 1; i < len; i++){
+            
+            var p = points[i];
+
+            if(p.x < leftMost.x) {
+                leftMost = p;
+                leftMostIndex = i;
+            }
+        }
+
+        return leftMostIndex;
+    }
+
+    static findConvexHull(points) {
+
+        //check points length;
+        var leftMost = points[Utils.findLeftMostPointIndex(points)];
+
+        var endPoint;
+        var pointsOnHull = [];
+        
+        var pointOnHull = leftMost;
+        
+        var len = points.length;
+
+        do {
+            pointsOnHull.push(pointOnHull);
+            endPoint = points[0];
+            
+            for(var j = 1; j < len; j++){
+                
+                if((endPoint == pointOnHull) ||
+                   Utils.orientationOfPointToLine(pointOnHull, endPoint, points[j]) == Utils.Orientation.LEFT){
+                    endPoint = points[j];
+                }
+            }
+
+            pointOnHull = endPoint;
+            
+        } while(!(endPoint == pointsOnHull[0]));
+        
+        return pointsOnHull;
+    }
 }
+
+Utils.Sign = {
+    POSITIVE:1,
+    NEGATIVE:-1,
+    ZERO:0
+}
+
+Utils.Orientation = {
+    LEFT:-1,
+    RIGHT:1,
+    CENTER:0
+}
+

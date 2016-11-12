@@ -10,20 +10,38 @@
     
 
     var config = {
-        APP_NAME: window.location.pathname.replace(/\//gi, ""),,
-        BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
-
+        APP_NAME: "blob",
+        BACKGROUND_COLOR: "#111111",
+        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        ALLOW_TEMPLATE_SKEW: false
+        ANIMATE: true,
+        ALLOW_TEMPLATE_SKEW: false,
+        POINT_COUNT:100,
+        BOUNDS_PADDING:200,
+        MAX_PATHS:150,
+        MAX_RADIUS:200,
+        MIN_RADIUS:1,
+        USE_FILL:false,
+        MAX_OPACITY:1,
+        SHAPE_OUTLINE: false
     };
     
     /*********** Override Config defaults here ******************/
     
+
+    config.TEMPLATE = "../_templates/gradients/gradient_12.png";
+    config.MAX_PATHS = 46;
+    config.MAX_RADIUS = 236;
+    config.MIN_RADIUS = 150;
+    config.POINT_COUNT = 5
+    config.USE_FILL = true;
+    config.MAX_OPACITY = .25;
+    config.POINT_COUNT = 10;
+    config.SHAPE_OUTLINE = true;
+
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
     
@@ -33,16 +51,74 @@
     var bounds;
     var pixelData;
 
+    var points;
+
+    var paths = [];
+
     var main = function(){
-        
 
-
-        
-        view.onFrame = onFrame;
     };
 
+    var radius  = config.MAX_RADIUS;
+    var dir = 1;
     var onFrame = function(event) {
 
+        if(!pixelData) {
+            return;
+        }
+
+
+        points = [];
+
+        radius += (dir * 1);
+
+        if(radius > config.MAX_RADIUS || radius < config.MIN_RADIUS) {
+            dir *= -1;
+        }
+
+        var points = Utils.randomPointsInCircle(bounds.center, radius, config.POINT_COUNT);
+
+        var polygonPoints = Utils.findConvexHull(points);
+
+
+        var path = new Path({
+            segments: [...polygonPoints],
+            closed:true,
+        });
+
+        path.strokeColor = pixelData.getHex(new Point(bounds.center.x, bounds.center.y - radius));
+
+        if(config.USE_FILL) {
+            path.fillColor = path.strokeColor;
+        }
+
+        if(config.SHAPE_OUTLINE) {
+            path.strokeColor = "black";
+        }
+
+        paths.unshift(path);
+
+        var len = paths.length;
+
+        for(let k = 0; k < len; k++) {
+            var _path = paths[k];
+
+            var o = (config.MAX_OPACITY - (k / config.MAX_PATHS));
+
+            if(o <= 0 ) {
+                o = 0;
+                _path.remove();
+            }
+
+            _path.opacity = o;
+
+        }
+
+        if(paths.length > config.MAX_PATHS ) {
+            paths.length = config.MAX_PATHS ;
+        }
+
+        path.smooth();
     };
 
     /*********************** init code ************************/
@@ -118,7 +194,6 @@
 
             view.update();
 
-            main();
         };
 
         templateImage.src = config.TEMPLATE;
@@ -144,7 +219,11 @@
                 );
         
         rect.fillColor = config.CANVAS_BACKGROUND_COLOR;
-    
+      
+        if(config.TEMPLATE) {
+            initTemplate(drawCanvas);
+        }
+
         t = new Tool();
 
         //Listen for SHIFT-p to save content as SVG file.
@@ -159,13 +238,12 @@
             }
         };
 
-        bounds = view.bounds;
-
-        if(config.TEMPLATE) {
-            initTemplate(drawCanvas);
-        } else {
-            main();
+        if(config.ANIMATE) {
+            view.onFrame = onFrame;
         }
+
+        bounds = view.bounds;
+        main();
     };
 
 }());

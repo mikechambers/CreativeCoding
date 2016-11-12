@@ -10,20 +10,48 @@
     
 
     var config = {
-        APP_NAME: window.location.pathname.replace(/\//gi, ""),,
+        APP_NAME: "pond",
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
-
+        CANVAS_BACKGROUND_COLOR:"#333333",
+        STROKE_COLOR: "#FFFFFF",
+        PATH_COLOR:"#66cef0",
+        FILL_COLOR:"#EEEEEE",
+        POINT_COLOR:"#BBBBBB",
+        STROKE_WIDTH:1.0,
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
-        ALLOW_TEMPLATE_SKEW: false
+        ALLOW_TEMPLATE_SKEW: false,
+        USE_RANDOM_POINT_ORDER:false,
+        HIT_RADIUS:50,
+        PATH_OPACITY:0.5,
+        DRAW_POINTS:true,
+        POINT_COUNT:7,
+        BOUNDS_PADDING:150,
+        MAX_PATH_SEGMENTS:0, //0 is for no limit
+        ATTRACTION_COEFFICIENT:0.6,
+        VELOCITY_LIMIT:5,
+        SVG_PATH:null,
+        MAX_LOOPS:0 //0 is for no limit
     };
     
     /*********** Override Config defaults here ******************/
     
+    //config.SVG_PATH = "../_templates/svg/create.svg";
+    config.DRAW_POINTS = true;
+    config.HIT_RADIUS = 20;
+    config.ATTRACTION_COEFFICIENT = 0.8;
+    config.MAX_PATH_SEGMENTS = 0;
+    config.PATH_OPACITY = 0.5;
+    config.PATH_JITTER = 20;
+    config.FILL_COLOR = config.CANVAS_BACKGROUND_COLOR;
+    config.STROKE_COLOR = config.CANVAS_BACKGROUND_COLOR;
+    config.MAX_LOOPS = 0;
+    config.USE_RANDOM_POINT_ORDER = false;
+    config.POINT_COUNT = 10;
+
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
     
@@ -31,19 +59,130 @@
   
     var t; //paperjs tool reference
     var bounds;
-    var pixelData;
+    var path;
+
+
+    var points = [];
+    var pFollower;
+
+    var pointGroup;
+
+    var main2 = function(svg){
+
+        if(config.DRAW_POINTS) {
+            pointGroup = new Group();
+        }
+
+        if(svg) {
+            svg.position = bounds.center;
+            svg.strokeColor = config.STROKE_COLOR;
+            svg.fillColor = config.FILL_COLOR;
+            svg.opacity = 1.0;
+
+            var paths = svg.children.create.children;
+
+            for(let path of paths) {
+                points = [];
+
+                var tmpPaths = [];
+                if(path instanceof Path) {
+                    tmpPaths = [path];
+                } else if(path instanceof CompoundPath) {
+
+                    tmpPaths = path.children;
+                }
+
+                for(let _path of tmpPaths) {
+                    
+                    for(let segment of _path.segments) {
+                        points.push(segment.point);
+                    }
+
+                    if(config.DRAW_POINTS)  {
+                        for(let _p of points) {
+                            var c = new Path.Circle(_p, 1);
+                            c.strokeColor = config.POINT_COLOR;
+                        }
+                    }
+
+                    createTracer(points);
+                }
+            }
+        } else {
+            for(var i = 0; i < config.POINT_COUNT; i++) {
+                var p = Utils.randomPointInBounds(bounds, config.BOUNDS_PADDING);
+
+                points.push(p);
+            }
+
+            createTracer(points);
+        }
+    };
 
     var main = function(){
-        
+
+        if(!config.SVG_PATH) {
+            main2();
+            return;
+        }
+
+        project.importSVG(config.SVG_PATH, {
+            "expandShapes": true,
+            applyMatrix:true,
+            onLoad : function(svg, rawSVG) {
+                main2(svg);
+            }
+        });
+    }
 
 
-        
-        view.onFrame = onFrame;
-    };
+    var createTracer = function(points) {
+        var pFollower = new PointFollower(points);
+        pFollower.location = points[0];
+        pFollower.attractionCoefficient = config.ATTRACTION_COEFFICIENT;
+        pFollower.limit = config.VELOCITY_LIMIT;
+        pFollower.randomOrder = config.USE_RANDOM_POINT_ORDER;
+        pFollower.hitRadius = config.HIT_RADIUS;
+        pFollower.pathJitter = config.PATH_JITTER;
+        //pFollower.limit(100);
 
-    var onFrame = function(event) {
+        var path = new Path();
+        path.strokeColor = config.PATH_COLOR;
+        path.strokeWidth = config.STROKE_WIDTH;
+        path.opacity = config.PATH_OPACITY;
+        path.mover = pFollower;
 
-    };
+        path.onFrame = function() {
+
+            this.mover.update();
+
+            path.add(this.mover.location);
+
+            
+            if(config.MAX_PATH_SEGMENTS) {
+                if(this.mover.segments.length > config.MAX_PATH_SEGMENTS) {
+                    path.removeSegment(0);
+                }
+            }
+
+            if(config.MAX_LOOPS) {
+                if (this.mover.loops >= config.MAX_LOOPS){
+                    this.onFrame = null;
+                }
+            }
+
+        }
+
+        if(config.DRAW_POINTS)  {
+
+            for(let _p of points) {
+                var c = new Path.Circle(_p, 2);
+                c.strokeColor = config.POINT_COLOR;
+                pointGroup.addChild(c);
+            }
+        }
+
+    }
 
     /*********************** init code ************************/
 
@@ -118,7 +257,6 @@
 
             view.update();
 
-            main();
         };
 
         templateImage.src = config.TEMPLATE;
@@ -144,7 +282,11 @@
                 );
         
         rect.fillColor = config.CANVAS_BACKGROUND_COLOR;
-    
+      
+        if(config.TEMPLATE) {
+            initTemplate(drawCanvas);
+        }
+
         t = new Tool();
 
         //Listen for SHIFT-p to save content as SVG file.
@@ -159,13 +301,12 @@
             }
         };
 
-        bounds = view.bounds;
-
-        if(config.TEMPLATE) {
-            initTemplate(drawCanvas);
-        } else {
-            main();
+        if(config.ANIMATE) {
+            view.onFrame = onFrame;
         }
+
+        bounds = view.bounds;
+        main();
     };
 
 }());

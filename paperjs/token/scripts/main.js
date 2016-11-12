@@ -10,9 +10,9 @@
     
 
     var config = {
-        APP_NAME: window.location.pathname.replace(/\//gi, ""),,
+        APP_NAME: "mesh",
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        CANVAS_BACKGROUND_COLOR:"#000000",
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
@@ -22,6 +22,8 @@
         ALLOW_TEMPLATE_SKEW: false
     };
     
+    config.TEMPLATE = "../_templates/gradients/gradient_8.jpg";
+
     /*********** Override Config defaults here ******************/
     
     //config.CANVAS_WIDTH = 1280;
@@ -34,16 +36,51 @@
     var pixelData;
 
     var main = function(){
-        
 
+        for(let i = 0; i < 1000; i++) {
+            var p = Utils.randomPointInBounds(bounds);
+            createToken(p);
+        }
 
-        
-        view.onFrame = onFrame;
     };
 
     var onFrame = function(event) {
 
     };
+
+    var createToken = function (point) {
+        new Path.Circle({
+            center:point,
+            radius:40,
+            strokeColor:"black",
+            fillColor:"white",
+            strokeWidth:3
+        });
+
+        new Path.Circle({
+            center:point,
+            radius:30,
+            strokeColor:"black",
+            fillColor:"white",
+            strokeWidth:3
+        });
+
+        new Path.Circle({
+            center:point,
+            radius:20,
+            strokeColor:"black",
+            fillColor:"white",
+            strokeWidth:3
+        });
+
+        new Path.Circle({
+            center:point,
+            radius:10,
+            strokeColor:"black",
+            fillColor:"white",
+            strokeWidth:3
+        });
+    }
 
     /*********************** init code ************************/
 
@@ -117,8 +154,6 @@
             pixelData.imageData = imageData;
 
             view.update();
-
-            main();
         };
 
         templateImage.src = config.TEMPLATE;
@@ -144,7 +179,11 @@
                 );
         
         rect.fillColor = config.CANVAS_BACKGROUND_COLOR;
-    
+      
+        if(config.TEMPLATE) {
+            initTemplate(drawCanvas);
+        }
+
         t = new Tool();
 
         //Listen for SHIFT-p to save content as SVG file.
@@ -159,13 +198,12 @@
             }
         };
 
-        bounds = view.bounds;
-
-        if(config.TEMPLATE) {
-            initTemplate(drawCanvas);
-        } else {
-            main();
+        if(config.ANIMATE) {
+            view.onFrame = onFrame;
         }
+
+        bounds = view.bounds;
+        main();
     };
 
 }());
