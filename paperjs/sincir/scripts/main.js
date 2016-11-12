@@ -10,37 +10,20 @@
     
 
     var config = {
-        APP_NAME: "blob",
-        BACKGROUND_COLOR: "#111111",
-        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+        APP_NAME: window.location.pathname.replace(/\//gi, ""),
+        BACKGROUND_COLOR: "#FFFFFF",
+        CANVAS_BACKGROUND_COLOR:"#111111",
+
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: true,
-        ALLOW_TEMPLATE_SKEW: false,
-        POINT_COUNT:100,
-        BOUNDS_PADDING:200,
-        MAX_PATHS:150,
-        MAX_RADIUS:200,
-        MIN_RADIUS:1,
-        USE_FILL:false,
-        MAX_OPACITY:1,
-        SHAPE_OUTLINE: false
+        ANIMATE: false,
+        ALLOW_TEMPLATE_SKEW: false
     };
     
     /*********** Override Config defaults here ******************/
     
-    config.TEMPLATE = "../_templates/gradients/gradient_12.png";
-    config.MAX_PATHS = 46;
-    config.MAX_RADIUS = 236;
-    config.MIN_RADIUS = 150;
-    config.POINT_COUNT = 5
-    config.USE_FILL = true;
-    config.MAX_OPACITY = .25;
-    config.POINT_COUNT = 10;
-    config.SHAPE_OUTLINE = true;
-
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
     
@@ -49,76 +32,65 @@
     var t; //paperjs tool reference
     var bounds;
     var pixelData;
+    var colorTheme;
 
-    var points;
-
-    var paths = [];
+    function compoundSin(num) {
+        return (Math.sin(num) + Math.sin((2.2 * num)+ 5.52) + Math.sin((2.9 * num)+0.93) + Math.sin((4.6*num)+8.94)) / 4;
+    }
 
     var main = function(){
+        colorTheme = new ColorTheme(ColorTheme.themes.BLUE_GREY);
 
+        
+        view.onFrame = onFrame;
     };
 
-    var radius  = config.MAX_RADIUS;
-    var dir = 1;
+    var frame = 0;
     var onFrame = function(event) {
 
-        if(!pixelData) {
-            return;
-        }
+        project.activeLayer.remove();
 
+        drawShape(150, ColorTheme.themes.BLUE[2]);
+        drawShape(50, ColorTheme.themes.BLUE[4]);
 
-        points = [];
+        frame += .005;
+    };
 
-        radius += (dir * 1);
+    var drawShape = function(radius, color) {
+        var center = bounds.center;
+        var spacing = 48;
+        var steps = Math.floor(Utils.circumference(radius) / (spacing));
 
-        if(radius > config.MAX_RADIUS || radius < config.MIN_RADIUS) {
-            dir *= -1;
-        }
+        var path;
+        for(let i = 0; i < steps; i++) {
 
-        var points = Utils.randomPointsInCircle(bounds.center, radius, config.POINT_COUNT);
+            var a = (Math.PI * 2) / steps;
+            var p = Utils.pointOnCircle(center, radius + (compoundSin(i + frame) * 30) , a * i);
 
-        var polygonPoints = Utils.findConvexHull(points);
+            /*
+            var c = new Path.Circle({
+                center:p,
+                radius:2,
+                strokeColor:"white"
 
+            });
+            */
 
-        var path = new Path({
-            segments: [...polygonPoints],
-            closed:true,
-        });
-
-        path.strokeColor = pixelData.getHex(new Point(bounds.center.x, bounds.center.y - radius));
-
-        if(config.USE_FILL) {
-            path.fillColor = path.strokeColor;
-        }
-
-        if(config.SHAPE_OUTLINE) {
-            path.strokeColor = "black";
-        }
-
-        paths.unshift(path);
-
-        var len = paths.length;
-
-        for(let k = 0; k < len; k++) {
-            var _path = paths[k];
-
-            var o = (config.MAX_OPACITY - (k / config.MAX_PATHS));
-
-            if(o <= 0 ) {
-                o = 0;
-                _path.remove();
+            if(!path) {
+                path = new Path(p);
+                path.strokeColor = "white";
+                path.fillColor = color;
+                path.opacity = .8;
+                path.closePath();
+            } else {
+                path.add(p);
+                path.smooth();
             }
 
-            _path.opacity = o;
-
+            //todo: if added to compound path, fillcolor is ignored
+            //path.addChild(c);
         }
-
-        if(paths.length > config.MAX_PATHS ) {
-            paths.length = config.MAX_PATHS ;
-        }
-
-        path.smooth();
-    };
+    }
 
     /*********************** init code ************************/
 
@@ -193,6 +165,7 @@
 
             view.update();
 
+            main();
         };
 
         templateImage.src = config.TEMPLATE;
@@ -218,11 +191,7 @@
                 );
         
         rect.fillColor = config.CANVAS_BACKGROUND_COLOR;
-      
-        if(config.TEMPLATE) {
-            initTemplate(drawCanvas);
-        }
-
+    
         t = new Tool();
 
         //Listen for SHIFT-p to save content as SVG file.
@@ -237,12 +206,13 @@
             }
         };
 
-        if(config.ANIMATE) {
-            view.onFrame = onFrame;
-        }
-
         bounds = view.bounds;
-        main();
+
+        if(config.TEMPLATE) {
+            initTemplate(drawCanvas);
+        } else {
+            main();
+        }
     };
 
 }());
