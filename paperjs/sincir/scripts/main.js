@@ -12,18 +12,34 @@
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
-
+        CANVAS_BACKGROUND_COLOR:"#555555",
+        STROKE_COLOR:"white",
+        OPACITY:1.0,
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
-        ALLOW_TEMPLATE_SKEW: false
+        ALLOW_TEMPLATE_SKEW: false,
+        SELECTED: false,
+        POINT_DENSITY: 48,
+        MOVEMENT_COEFFICIENT:.005, //high = faster
+        SMOOTH:true,
+        COUNT:40,
+        RADIUS_BASE:25,
+        BLEND_MODE:BlendModes.NORMAL
     };
     
     /*********** Override Config defaults here ******************/
     
+    config.OPACITY = 1.0;
+    config.TEMPLATE = "../_templates/gradients/gradient_12.png"
+    config.BACKGROUND_COLOR = "#111111";
+    config.CANVAS_BACKGROUND_COLOR = "#FFFFFF";
+    //config.STROKE_COLOR = undefined;
+    config.COUNT = 25;
+    config.RADIUS_BASE = 15;
+
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
     
@@ -50,45 +66,51 @@
 
         project.activeLayer.remove();
 
-        drawShape(150, ColorTheme.themes.BLUE[2]);
-        drawShape(50, ColorTheme.themes.BLUE[4]);
+        //drawShape(150, ColorTheme.themes.BLUE[2]);
+        //drawShape(50, ColorTheme.themes.BLUE[4]);
 
-        frame += .005;
+        config.OPACITY = 1;
+        //for(let i = 0; i < config.COUNT; i++) {
+        for(let i = config.COUNT; i > 0; i--) {
+            var radius = (i * 10) + config.RADIUS_BASE;
+            var color = pixelData.getHex(bounds.center.add(new Point(0, -radius)));
+
+            config.OPACITY =  1 - (i / config.COUNT);
+            drawShape(radius, color);
+        }
+
+        frame += config.MOVEMENT_COEFFICIENT;
     };
 
     var drawShape = function(radius, color) {
         var center = bounds.center;
-        var spacing = 48;
+        var spacing = config.POINT_DENSITY;
         var steps = Math.floor(Utils.circumference(radius) / (spacing));
 
         var path;
         for(let i = 0; i < steps; i++) {
 
             var a = (Math.PI * 2) / steps;
-            var p = Utils.pointOnCircle(center, radius + (compoundSin(i + frame) * 30) , a * i);
-
-            /*
-            var c = new Path.Circle({
-                center:p,
-                radius:2,
-                strokeColor:"white"
-
-            });
-            */
+            var p = Utils.pointOnCircle(center, radius + (compoundSin(i + frame) * 30) , a * i);    
 
             if(!path) {
                 path = new Path(p);
-                path.strokeColor = "white";
+                path.strokeColor = config.STROKE_COLOR;
                 path.fillColor = color;
-                path.opacity = .8;
+                path.opacity = config.OPACITY;
+                path.blendMode = config.BLEND_MODE;
                 path.closePath();
             } else {
                 path.add(p);
-                path.smooth();
+
+                if(config.SMOOTH) {
+                    path.smooth();
+                }
             }
 
-            //todo: if added to compound path, fillcolor is ignored
-            //path.addChild(c);
+            if(config.SELECTED) {
+                path.selected = true;
+            }
         }
     }
 
