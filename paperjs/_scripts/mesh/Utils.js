@@ -28,6 +28,16 @@ class Utils {
         return Utils.randomPointInBounds(view.bounds, padding);
     };
 
+    static randomPointsInBounds(bounds, count, padding = 0) {
+        let out = [];
+
+        for(let i < 0; i < count; i++) {
+            out.push(Utils.randomPointInBounds(bounds, padding));
+        }
+
+        return out;
+    };
+
     static randomPointInBounds(bounds, padding = 0) {
 
         var point = new Point(

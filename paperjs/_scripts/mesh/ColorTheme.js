@@ -75,7 +75,11 @@
         ],
         
         FOREVER_LOSTS: [
-            '#5D4157', '#838689', '#A8CABA', '#CAD7B2', '#EBE3AA'
+            '#5D4157', 
+            '#838689', 
+            '#A8CABA', 
+            '#CAD7B2', 
+            '#EBE3AA'
         ],
         
         ONLY_HUMAN: [

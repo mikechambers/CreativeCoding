@@ -92,12 +92,12 @@ class Mover {
         var hitBounds = false;
         //var _bounds = (!bounds)?this.bounds:bounds;
 
-        if(this.location.x < bounds.x || this.location.x > bounds.width) {
+        if(this.location.x < bounds.x || this.location.x > bounds.right) {
             this.velocity.x *= -1;
             hitBounds = true;
         }
         
-        if(this.location.y < bounds.y || this.location.y > bounds.height) {
+        if(this.location.y < bounds.y || this.location.y > bounds.bottom) {
             this.velocity.y *= -1;
             hitBounds = true;
         }
