@@ -10,7 +10,7 @@
     
 
     var config = {
-        APP_NAME: window.location.pathname.replace(/\//gi, ""),,
+        APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
         CANVAS_BACKGROUND_COLOR:"#111111",
 
@@ -37,8 +37,9 @@
         
 
 
-        
-        view.onFrame = onFrame;
+        if(config.ANIMATE) {
+            view.onFrame = onFrame;
+        }
     };
 
     var onFrame = function(event) {

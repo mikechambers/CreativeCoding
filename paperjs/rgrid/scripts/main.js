@@ -8,32 +8,25 @@
     
     paper.install(window);
     
-    var RENDERERS = {
-        RECTANGLE:"RECTANGLE",
-        TRIANGLE:"TRIANGLE",
-        RANDOM:"RANDOM"
-
-    };
 
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#333333",
+        CANVAS_BACKGROUND_COLOR:"#111111",
+
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
-        ITEM_WIDTH: 30,
-        ITEM_HEIGHT: 30,
-        PADDING: 20,
-        COLOR_THEME:null,
         MIN_WIDTH:10,
-        OPACITY:1.0,
-        RENDERER:RENDERERS.RANDOM
+        MAX_WIDTH:200,
+        PADDING:5,
+        HEIGHT:20,
+        INFLUENCE_WIDTH:true
     };
-
+    
     /*********** Override Config defaults here ******************/
     
     //config.CANVAS_WIDTH = 1280;
@@ -44,110 +37,68 @@
     var t; //paperjs tool reference
     var bounds;
     var pixelData;
-    var colorTheme;
 
     var main = function(){
-    
-        colorTheme = new ColorTheme(ColorTheme.themes.BLUE_AND_PINK);
+        
+        for(let h = 0; h < config.CANVAS_HEIGHT - config.PADDING;) {
+
+            h += config.PADDING;
+
+            //do we need to take into account padding here?
+            if(h + config.HEIGHT > config.CANVAS_HEIGHT - config.PADDING) {
+                break;
+            }
+
+            for(let w = 0; w < config.CANVAS_WIDTH - config.PADDING;) {
+
+                w += config.PADDING;
 
 
-        //start with padding
-        //then randomly mover over
-        //the putting padding
-        //repeart until you get to the end with padding
-        createGrid(bounds, config.ITEM_WIDTH, config.ITEM_HEIGHT, config.PADDING);
+                let rW = config.MAX_WIDTH;
+
+                if(config.INFLUENCE_WIDTH) {
+                    rW = (config.MAX_WIDTH *  (w / config.CANVAS_WIDTH) + (config.MIN_WIDTH * 2));
+                }
+
+                //what happens if these numbers are the same
+                let rWidth = Math.round(Utils.getRandomArbitrary(config.MIN_WIDTH, rW));
+
+                let tmp = -1;
+
+                //make sure we are not going over edge
+                if(rWidth + w > config.CANVAS_WIDTH - config.PADDING) {
+                    tmp = 0;
+
+                //make sure we are not leaving just a small sliver
+                } else if (rWidth + w + config.MIN_WIDTH > config.CANVAS_WIDTH - config.PADDING) {
+                    tmp = config.MIN_WIDTH;
+                }
+
+                if(tmp != -1) {
+                     rWidth -= (rWidth + w + tmp) - (config.CANVAS_WIDTH - config.PADDING);
+                }
+
+
+                let r = new Path.Rectangle(new Point(w, h), new Size(rWidth, config.HEIGHT));
+                r.strokeColor = "white";
+
+                w += rWidth;
+            }
+
+            h += config.HEIGHT;
+        }
+
+
+
+        
+        if(config.ANIMATE) {
+            view.onFrame = onFrame;
+        }
     };
 
-    var createGrid = function(rectangle, width, height, padding) {
-        let colCount = Math.floor((rectangle.width - padding) / (width + padding));
-        let rowCount =  Math.floor((rectangle.height - padding) / (height + padding));
+    var onFrame = function(event) {
 
-        let colOffset = ((rectangle.width - colCount * (width + padding) - padding) / 2);
-        let rowOffset = ((rectangle.height - rowCount * (height + padding) - padding) / 2);
-
-        for(let i = 0; i < rowCount; i++) {
-            for(let k = 0; k < colCount; k++) {
-
-                var _x = rectangle.x + ((k * width ) + (padding * (k + 1))) + colOffset; 
-                var _y = rectangle.y + ((i * height) + (padding * (i + 1))) + rowOffset; 
-
-                var r = new Rectangle(new Point(_x, _y), new Size(width, height));
-
-                let s = 0; //RECTANGLE
-
-                if(config.RENDERER == RENDERERS.TRIANGLE) {
-                    s = 1;
-                } else { //RANDOM
-                    s = Math.random();
-                }
-
-                if(s < 0.5) {
-                    createRect(r);
-                }
-                
-                if(s >= 1) {
-                    createTriangle(r);
-                }
-
-                if(r.width < config.MIN_WIDTH) {
-                    return;
-                }
-
-                createGrid(r, width / 2, height / 2, 2);
-
-                //createMover(r);
-            }
-        }
-    }
-
-    var createRect = function(r) {
-
-        var p = new Path.Rectangle(r);
-        p.strokeColor = colorTheme.getNextColor();
-        p.fillColor = colorTheme.getRandomColor();
-        p.strokeWidth = 1.0;
-        p.opacity = config.OPACITY;
-    }
-
-
-    var createTriangle = function(r) {
-        var _t = new Path();
-        _t.add(r.topLeft);
-        _t.add(r.topRight);
-        _t.add(r.bottomLeft);
-        _t.closed = true;
-        _t.fillColor = colorTheme.getRandomColor();
-        _t.strokeColor = "white";
-        _t.opacity = config.OPACITY;
-
-        var _t2 = new Path();
-        _t2.add(r.topRight);
-        _t2.add(r.bottomRight);
-        _t2.add(r.bottomLeft);
-        _t2.closed = true;
-        _t2.fillColor = colorTheme.getRandomColor();
-        _t2.strokeColor = "white";
-        _t2.opacity = config.OPACITY;
-    }
-
-
-    //is r passed by reference or copy?
-    //can you pass by reference
-    var createMover = function(r) {
-
-        r.mover = new Mover(r);
-        r.mover.location = Utils.randomPointInBounds(r);
-        r.mover.velocity = Utils.randomVector(.5);
-
-        r.circle = new Path.Circle(r.mover.location, 2);
-        r.circle.strokeColor = "white";
-
-        r.onFrame = function(event) {
-            this.mover.updateAndCheckBounds();
-
-            this.circle.position = this.mover.location;
-        }
-    }
+    };
 
     /*********************** init code ************************/
 

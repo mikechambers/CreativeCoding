@@ -31,7 +31,7 @@ class Utils {
     static randomPointsInBounds(bounds, count, padding = 0) {
         let out = [];
 
-        for(let i < 0; i < count; i++) {
+    for(let i = 0; i < count; i++) {
             out.push(Utils.randomPointInBounds(bounds, padding));
         }
 
@@ -215,6 +215,18 @@ class Utils {
         
         return pointsOnHull;
     }
+
+    //inclusive - exclusive
+    static getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    //inclusive - inclusive
+    static getRandomInclusive(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+
 }
 
 Utils.Sign = {
