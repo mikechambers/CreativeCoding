@@ -20,9 +20,9 @@
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
         MIN_WIDTH:10,
-        MAX_WIDTH:200,
-        PADDING:10,
-        HEIGHT:20,
+        MAX_WIDTH:400,
+        PADDING:5,
+        HEIGHT:10,
         INFLUENCE_WIDTH:false,
         OPACITY:1.0
     };
