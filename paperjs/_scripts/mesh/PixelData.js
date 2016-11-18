@@ -31,6 +31,7 @@ class PixelData {
         this.imageData = imageData;
     }
 
+    /*
     static initFromImage(src, w, h, scale, callback) {
         
         if (!src) {
@@ -71,8 +72,44 @@ class PixelData {
 
         templateImage.src = src;
     };
+    */
     
-    
+    getAverageHex(rect) {
+        let tmp = {
+            r:0,
+            g:0,
+            b:0,
+            a:0
+        };
+
+        let p = new Point();
+        for(let w = rect.x; w < rect.right; w++) {
+            for(let h = rect.y; h < rect.bottom; h++) {
+
+                p.x = w;
+                p.y = h;
+                let _rgba = this.getRBGA(p);
+
+                tmp.r += _rgba.r;
+                tmp.g += _rgba.g;
+                tmp.b += _rgba.b;
+                //tmp.a += _rgba.a;
+            }
+        }
+
+        let total = rect.width * rect.height;
+        tmp.r /= total;
+        tmp.g /= total;
+        tmp.b /= total;
+        tmp.a /= total;
+
+        tmp.r = Math.floor(tmp.r);
+        tmp.g = Math.floor(tmp.g);
+        tmp.b = Math.floor(tmp.b);
+        //tmp.a = Math.floor(tmp.a);
+
+        return PixelData.rgbToHex(tmp.r, tmp.g, tmp.b);
+    }
 
     getHex(point) {
 
@@ -88,7 +125,8 @@ class PixelData {
         var yPos = Math.floor(point.y);
 
         if (point.x < 0 || point.x > this.imageData.width || point.y < 0 || point.y > this.imageData.height) {
-            console.log("point out of range", point);
+            //console.log("point out of range", point);
+            return {r:0, g:0, b:0, a:0};
         }
 
         //copy imageData to a local variable to speed up access

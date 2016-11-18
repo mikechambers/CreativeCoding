@@ -13,18 +13,18 @@
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
         CANVAS_BACKGROUND_COLOR:"#111111",
-
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
-        TEMPLATE: null,
+        TEMPLATE: "../_templates/gradients/gradient_11.jpg",
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
         MIN_WIDTH:10,
         MAX_WIDTH:200,
-        PADDING:5,
+        PADDING:10,
         HEIGHT:20,
-        INFLUENCE_WIDTH:true
+        INFLUENCE_WIDTH:false,
+        OPACITY:1.0
     };
     
     /*********** Override Config defaults here ******************/
@@ -53,9 +53,7 @@
 
                 w += config.PADDING;
 
-
                 let rW = config.MAX_WIDTH;
-
                 if(config.INFLUENCE_WIDTH) {
                     rW = (config.MAX_WIDTH *  (w / config.CANVAS_WIDTH) + (config.MIN_WIDTH * 2));
                 }
@@ -78,17 +76,19 @@
                      rWidth -= (rWidth + w + tmp) - (config.CANVAS_WIDTH - config.PADDING);
                 }
 
-
-                let r = new Path.Rectangle(new Point(w, h), new Size(rWidth, config.HEIGHT));
+                let p = new Point(w, h);
+                let rect = new Rectangle(p, new Size(rWidth, config.HEIGHT));
+                
+                let r = new Path.Rectangle(rect);
                 r.strokeColor = "white";
+                r.fillColor = pixelData.getAverageHex(rect);
+                r.opacity = config.OPACITY;
 
                 w += rWidth;
             }
 
             h += config.HEIGHT;
         }
-
-
 
         
         if(config.ANIMATE) {
@@ -137,6 +137,7 @@
         return drawCanvas;
     };
     
+    /*
     var initTemplate = function(drawCanvas) {
         var w = drawCanvas.width;
         var h = drawCanvas.height;
@@ -178,6 +179,7 @@
 
         templateImage.src = config.TEMPLATE;
     };
+    */
 
     var fileDownloader;
     window.onload = function () {
@@ -216,11 +218,14 @@
 
         bounds = view.bounds;
 
-        if(config.TEMPLATE) {
-            initTemplate(drawCanvas);
-        } else {
-            main();
-        }
+        let loader = new PixelDataLoader(config.CANVAS_WIDTH, config.CANVAS_HEIGHT);
+
+        loader.load(config.TEMPLATE,
+            function(_pixelData){
+                pixelData = _pixelData;
+                main();
+            }
+        );
     };
 
 }());
