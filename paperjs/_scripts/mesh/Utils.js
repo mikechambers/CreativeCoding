@@ -226,6 +226,38 @@ class Utils {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+//http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
+    static findCentroidOfPolygon(points) {
+        let a = 0.0;
+        let len = points.length;
+        
+        let p0;
+        let p1;
+        let _x = 0.0;
+        let _y = 0.0;
+        for(let i = 0; i < len; i++){
+
+            if(i < len - 1) {
+                p0 = points[i];
+                p1 = points[i + 1];
+            } else {
+                p0 = points[i];
+                p1 = points[0];
+            }
+
+            a += ((p0.x * p1.y) - (p1.x * p0.y));
+            _x += ((p0.x + p1.x) * ((p0.x * p1.y) - (p1.x * p0.y)));
+            _y += ((p0.y + p1.y) * ((p0.x * p1.y) - (p1.x * p0.y)));
+        }
+
+        a = a * 0.5;
+
+        _x = _x / (6.0 * a);
+        _y = _y / (6.0 * a);
+
+        return new Point(_x, _y);
+    }
+
 
 }
 

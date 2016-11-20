@@ -18,20 +18,21 @@
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#333333",
-        CANVAS_WIDTH: 640,
-        CANVAS_HEIGHT: 640, //16:9 aspect ratio
+        CANVAS_BACKGROUND_COLOR:"#FFFFFE",
+        CANVAS_WIDTH: 1280,
+        CANVAS_HEIGHT: 1280, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
-        ITEM_WIDTH: 30,
-        ITEM_HEIGHT: 30,
-        PADDING: 20,
+        ITEM_WIDTH: 40,
+        ITEM_HEIGHT: 40,
+        PADDING: 5,
         COLOR_THEME:null,
         MIN_WIDTH:10,
         OPACITY:1.0,
-        RENDERER:RENDERERS.RANDOM
+        RENDERER:RENDERERS.RANDOM,
+        POINT_COUNT:8
     };
 
     /*********** Override Config defaults here ******************/
@@ -46,7 +47,6 @@
     var pixelData;
     var colorTheme;
 
-    var grid;
     var main = function(){
     
         colorTheme = new ColorTheme(ColorTheme.themes.BLUE_AND_PINK);
@@ -56,27 +56,7 @@
         //then randomly mover over
         //the putting padding
         //repeart until you get to the end with padding
-        //createGrid(bounds, config.ITEM_WIDTH, config.ITEM_HEIGHT, config.PADDING);
-
-        grid = new Grid(bounds, config.ITEM_WIDTH, config.ITEM_HEIGHT, config.PADDING);
-
-        grid.addRenderer(function(r, cellWidth, cellHeight, padding) {
-            var p = new Path.Rectangle(r);
-            p.strokeColor = colorTheme.getNextColor();
-            p.fillColor = colorTheme.getRandomColor();
-            p.strokeWidth = 1.0;
-            p.opacity = config.OPACITY;
-
-            if(r.width < config.MIN_WIDTH) {
-                return;
-            }
-            
-            grid.render(r, cellWidth / 2, cellHeight / 2, padding);
-        });
-
-        grid.render();
-
-
+        createGrid(bounds, config.ITEM_WIDTH, config.ITEM_HEIGHT, config.PADDING);
     };
 
     var createGrid = function(rectangle, width, height, padding) {
@@ -94,6 +74,7 @@
 
                 var r = new Rectangle(new Point(_x, _y), new Size(width, height));
 
+                /*
                 let s = 0; //RECTANGLE
 
                 if(config.RENDERER == RENDERERS.TRIANGLE) {
@@ -110,9 +91,13 @@
                     createTriangle(r);
                 }
 
+    
                 if(r.width < config.MIN_WIDTH) {
                     return;
                 }
+                */
+
+                createBlob(r);
 
                 createGrid(r, width / 2, height / 2, 2);
 
@@ -120,6 +105,24 @@
             }
         }
     }
+
+    var createBlob = function(r) {
+
+        var points = Utils.randomPointsInCircle(r.center, r.width / 2, config.POINT_COUNT);
+
+        var polygonPoints = Utils.findConvexHull(points);
+
+        var path = new Path({
+            segments: [...polygonPoints],
+            closed:true,
+            strokeColor:colorTheme.getRandomColor(),
+            fillColor:colorTheme.getRandomColor(),
+            opacity:config.OPACITY
+        });
+
+        path.smooth(true);
+    }
+
 
     var createRect = function(r) {
 
