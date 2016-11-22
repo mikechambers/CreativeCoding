@@ -11,15 +11,14 @@
 
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
-        BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        BACKGROUND_COLOR: "#111111",
+        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
+        ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false
     };
     
@@ -32,11 +31,32 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
+    let mousePos = new Point();
+
+    let tileCountX = 2;
+    let tileCountY = 10;
+
+    //https://github.com/processing-js/processing-js/blob/master/src/P5Functions/Math.js
+    var map = function(value, istart, istop, ostart, ostop) {
+        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+    };
+
+    let colorsLeft = [];
+    let colorsRight = [];
+
+    var initColors = function() {
+
+        for (let i = 0; i < tileCountY; i++) {
+            colorsLeft.push(chroma.random());
+            colorsRight.push(chroma.random());
+        }
+    }
 
     var main = function(){
-        
+        t.onMouseMove = onMouseMove;
 
+        initColors();
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
@@ -45,6 +65,37 @@
 
     var onFrame = function(event) {
 
+        project.clear();
+
+        tileCountX = map(mousePos.x, 0, config.CANVAS_WIDTH, 2, 100);
+        tileCountY = map(mousePos.y, 0, config.CANVAS_HEIGHT, 2, 10);
+
+        let tileWidth = config.CANVAS_WIDTH / tileCountX;
+        let tileHeight = config.CANVAS_HEIGHT / tileCountY;
+
+        let interCol;
+
+        for(let gridY = 0; gridY < tileCountY; gridY++){
+
+            let col1 = colorsLeft[gridY];
+            let col2 = colorsRight[gridY];
+
+            var f = chroma.scale([col1, col2]).domain([0, tileCountX]);
+
+            for(let gridX = 0; gridX < tileCountX; gridX++){
+                //let amount = map(gridX, 0, tileCountX - 1, 0, 1);
+
+                interCol = f(gridX).hex();
+
+                let posX = tileWidth * gridX;
+                let posY = tileHeight * gridY;
+
+                let r = new Path.Rectangle(new Point(posX, posY), new Size(tileWidth, tileHeight));
+                r.fillColor = interCol;
+                f.strokeColor = interCol;
+            }
+
+        }
     };
 
     var onMouseMove = function(event) {
@@ -122,10 +173,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };

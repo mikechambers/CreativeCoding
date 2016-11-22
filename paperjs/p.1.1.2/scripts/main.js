@@ -11,15 +11,14 @@
 
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
-        BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        BACKGROUND_COLOR: "#111111",
+        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
+        ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false
     };
     
@@ -32,10 +31,11 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
+    let mousePos = new Point();
 
     var main = function(){
-        
+        t.onMouseMove = onMouseMove;
 
 
         if(config.ANIMATE) {
@@ -44,6 +44,42 @@
     };
 
     var onFrame = function(event) {
+        project.clear();
+
+        let radius = 200;
+        let angleStep = (Math.PI * 2) / 45  ;
+        let center = bounds.center;
+        let lastPoint;
+        let firstPoint;
+
+        for(var angle = 0; angle <= (Math.PI * 2); angle += angleStep) {
+            let vx = config.CANVAS_WIDTH / 2 + Math.cos(angle) * radius;
+            let vy = config.CANVAS_HEIGHT / 2 + Math.sin(angle) * radius;
+
+            let p = new Point(vx, vy);
+
+            if(!firstPoint) {
+                firstPoint = p;
+            }
+
+            if(lastPoint) {
+                let tri = new Path([center, lastPoint, p]);
+                tri.fillColor = new Color({
+                    hue:(angle / (Math.PI * 2)) * 360,
+                    saturation:(mousePos.x / config.CANVAS_WIDTH),
+                    brightness:(mousePos.y / config.CANVAS_HEIGHT)
+                });
+            }
+
+            lastPoint = p;
+        }
+
+        let tri = new Path([center, lastPoint, firstPoint]);
+        tri.fillColor = new Color({
+            hue:(angle / (Math.PI * 2)) * 360,
+            saturation:(mousePos.x / config.CANVAS_WIDTH),
+            brightness:(mousePos.y / config.CANVAS_HEIGHT)
+        });
 
     };
 
@@ -122,10 +158,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };

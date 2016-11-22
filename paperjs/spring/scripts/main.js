@@ -18,8 +18,7 @@
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
+        ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false
     };
     
@@ -32,11 +31,30 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
 
+
+    let anchor;
+    let bob;
+    let gravity = new Point(0,1);
+    let spring;
+    let string;
     var main = function(){
         
+        anchor = bounds.center.subtract(new Point(0, 100));
+        spring = new Spring(anchor, 100);
 
+        var a = new Path.Circle(anchor, 2);
+        a.fillColor = "white"; 
+
+        bob = new Mover(bounds);
+        bob.location = anchor.add(new Point(25, 25));
+
+        bob.circle = new Path.Circle(bob.location, 10);
+        bob.circle.strokeColor = "white";
+
+        string = new Path([anchor, bob.location]);
+        string.strokeColor = "white";
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
@@ -44,12 +62,18 @@
     };
 
     var onFrame = function(event) {
+        bob.applyForce(gravity);
 
+        spring.connect(bob);
+        spring.constrainLength(bob, 30, 200);
+
+        bob.update();
+
+        bob.circle.position = bob.location;
+
+        string.firstSegment.point = anchor;
+        string.lastSegment.point = bob.location;
     };
-
-    var onMouseMove = function(event) {
-        mousePos = event.point; 
-    }
 
     /*********************** init code ************************/
 
@@ -122,10 +146,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };

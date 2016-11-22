@@ -18,9 +18,9 @@
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
-        ALLOW_TEMPLATE_SKEW: false
+        ANIMATE: true,
+        ALLOW_TEMPLATE_SKEW: false,
+        MIN_SIZE: 2
     };
     
     /*********** Override Config defaults here ******************/
@@ -32,11 +32,12 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
+    let mousePos = new Point();
 
     var main = function(){
         
-
+        t.onMouseMove = onMouseMove;
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
@@ -45,6 +46,32 @@
 
     var onFrame = function(event) {
 
+        project.clear();
+
+        let stepX = mousePos.x + config.MIN_SIZE;
+        let stepY = mousePos.y + config.MIN_SIZE;
+
+        if(stepX < 0) {
+            stepX = config.MIN_SIZE;
+        }
+
+        if(stepY < 0) {
+            stepY = config.MIN_SIZE;
+        }
+
+        let s = new Size(stepX, stepY);
+
+        for(let gridY = 0; gridY < config.CANVAS_HEIGHT; gridY += stepY) {
+            for(let gridX = 0; gridX < config.CANVAS_WIDTH; gridX += stepX){
+                let r = new Path.Rectangle(new Point(gridX, gridY),s);
+                
+                r.fillColor = new Color({
+                    hue:(gridX / config.CANVAS_WIDTH) * 360,
+                    saturation:(config.CANVAS_HEIGHT - gridY) / config.CANVAS_HEIGHT,
+                    brightness:1
+                });
+            }
+        }
     };
 
     var onMouseMove = function(event) {
@@ -122,10 +149,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };

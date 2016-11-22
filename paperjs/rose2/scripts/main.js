@@ -12,15 +12,19 @@
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        CANVAS_BACKGROUND_COLOR:"#EEEEEE",
 
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
-        ALLOW_TEMPLATE_SKEW: false
+        ANIMATE: true,
+        ALLOW_TEMPLATE_SKEW: false,
+        POINT_COUNT:20,
+        THETA_STEP:5,
+        RADIUS_STEP: 1,
+        FILL_COLOR:"pink",
+        STROKE_COLOR:"white"
     };
     
     /*********** Override Config defaults here ******************/
@@ -32,11 +36,15 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
+
+    var theta = 0;
+    var radius = 100;
+    let f;
 
     var main = function(){
         
-
+        f = chroma.scale([chroma.random(), chroma.random()]).domain([0, radius]);
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
@@ -44,12 +52,32 @@
     };
 
     var onFrame = function(event) {
+        //theta += (Math.PI * 2) / 2;
+        //radius -= (Math.PI * 2) / 2;
 
+        theta += config.THETA_STEP;
+        radius -= config.RADIUS_STEP;
+
+        if(radius <= 0) {
+            return;
+        }
+
+        var p = Utils.pointOnCircle(bounds.center, radius, theta);
+
+        var points = Utils.randomPointsInCircle(p, radius, config.POINT_COUNT);
+
+        var polygonPoints = Utils.findConvexHull(points);
+
+        var path = new Path({
+            segments: [...polygonPoints],
+            closed:true,
+            fillColor:f(radius).hex(),
+            strokeColor:config.STROKE_COLOR,
+            blendMode:"normal"
+        });
+
+        path.smooth(true);
     };
-
-    var onMouseMove = function(event) {
-        mousePos = event.point; 
-    }
 
     /*********************** init code ************************/
 
@@ -122,10 +150,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };

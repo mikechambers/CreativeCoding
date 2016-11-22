@@ -18,8 +18,7 @@
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
-        ANIMATE: false,
-        TRACK_MOUSE:false,
+        ANIMATE: true,
         ALLOW_TEMPLATE_SKEW: false
     };
     
@@ -32,11 +31,39 @@
   
     var t; //paperjs tool reference
     var bounds;
-    let mousePos;
+    var pixelData;
 
+    let mousePos = new Point();
+
+    let background;
+    let foreground;
+    let g;
     var main = function(){
-        
+        //paper.settings.applyMatrix = false;
 
+        t.onMouseMove = onMouseMove;
+
+        background = new Path.Rectangle(bounds);
+
+        g = new Group([
+            foreground = new Path.Rectangle(bounds)
+        ]);
+
+        foreground.fillColor = new Color({
+            hue:360, 
+            saturation:1, 
+            brightness:1
+        });
+
+        background.fillColor = new Color({
+            hue:360, 
+            saturation:1, 
+            brightness:1
+        });
+
+        g.applyMatrix = false;
+        
+        g.scale(0.5);
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
@@ -45,6 +72,13 @@
 
     var onFrame = function(event) {
 
+        background.fillColor.hue = (mousePos.y / config.CANVAS_HEIGHT) * 360;
+
+        foreground.fillColor.hue = 360 - ((mousePos.y / config.CANVAS_HEIGHT) * 360);
+
+        g.matrix.reset()
+
+        g.scale(mousePos.y / config.CANVAS_HEIGHT);
     };
 
     var onMouseMove = function(event) {
@@ -122,10 +156,6 @@
                 fileDownloader.downloadConfig(config);
             }
         };
-
-        if(config.TRACK_MOUSE) {
-            t.onMouseMove = onMouseMove;
-        }
 
         main();
     };
