@@ -125,7 +125,7 @@ class PixelData {
         var yPos = Math.floor(point.y);
 
         if (point.x < 0 || point.x > this.imageData.width || point.y < 0 || point.y > this.imageData.height) {
-            //console.log("point out of range", point);
+            console.log("point out of range", point);
             return {r:0, g:0, b:0, a:0};
         }
 

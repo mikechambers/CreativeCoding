@@ -31,13 +31,14 @@ class Utils {
     static randomPointsInBounds(bounds, count, padding = 0) {
         let out = [];
 
-    for(let i = 0; i < count; i++) {
+        for(let i = 0; i < count; i++) {
             out.push(Utils.randomPointInBounds(bounds, padding));
         }
 
         return out;
     };
 
+    //todo: should we have this return a pixel snapped point?
     static randomPointInBounds(bounds, padding = 0) {
 
         var point = new Point(

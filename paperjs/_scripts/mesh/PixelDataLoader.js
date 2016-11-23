@@ -35,10 +35,16 @@ class PixelDataLoader {
 
     load(src, onload) {
         var templateImage = new Image();
+
+        let _allowTemplateSkew = this.allowTemplateSkew;
+        let _w = this.width;
+        let _h = this.height;
+        let o = this;
+
         templateImage.onload = function () {
                 
-            var w = this.width;
-            var h = this.height;
+            var w = _w
+            var h = _h;
 
             var canvas = document.createElement("canvas");
             canvas.id = this.canvasId;
@@ -51,11 +57,12 @@ class PixelDataLoader {
             context.fillStyle = "#000000";
             context.fillRect(0, 0, w, h);
 
-            if (this.allowTemplateSkew) {
+            if (_allowTemplateSkew) {
                 //WARNING: The causes some dithering and adds color to the template
                 //pretty much broken right now
                 //stretch image to fill entire canvas. This may skew image
                 context.drawImage(templateImage, 0, 0, w, h);
+
             } else {
                 //center the image
 
@@ -65,11 +72,11 @@ class PixelDataLoader {
             }
             
             var imageData = context.getImageData(0, 0, w, h);
-            this.pixelData = new PixelData();
-            this.pixelData.imageData = imageData;
+            o.pixelData = new PixelData();
+            o.pixelData.imageData = imageData;
 
             if(onload) {
-            	onload(this.pixelData);
+            	onload(o.pixelData);
             }
         };
 

@@ -12,17 +12,17 @@
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#111111",
+        CANVAS_BACKGROUND_COLOR:"#000000",
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
-        TEMPLATE: "../_templates/gradients/gradient_11.jpg",
+        TEMPLATE: "../_templates/masks/mike.gif",
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
         MIN_WIDTH:10,
-        MAX_WIDTH:400,
-        PADDING:5,
-        HEIGHT:10,
+        MAX_WIDTH:100,
+        PADDING:2,
+        HEIGHT:5,
         INFLUENCE_WIDTH:false,
         OPACITY:1.0
     };
