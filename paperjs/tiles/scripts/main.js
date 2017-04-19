@@ -98,8 +98,8 @@
         var size;
         for (i = 0; i < config.TILE_COUNT; i++) {
             
-            size = Utils.getRandomSize(config.BASE_SIZE);
-            point = Utils.getRandomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
+            size = Utils.randomSize(config.BASE_SIZE);
+            point = Utils.randomPointInBoundsForRectangle(config.BOUNDS_PADDING, size, view);
             
             rect = new Path.Rectangle({
                 point: point,
@@ -108,7 +108,7 @@
                 strokeColor: config.STROKE_COLOR,
                 strokeWidth: config.STROKE_WIDTH,
                 blendMode: config.BLEND_MODE,
-                rotation: Utils.getRandomRotationInRange(config.ROTATION_RANGE)
+                rotation: Utils.randomRotationInRange(config.ROTATION_RANGE)
             });
             
             out.push(rect);

@@ -21,8 +21,8 @@
         TEMPLATE: null,
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
-        RADIUS: 2
-        //TEMPLATE:"../_templates/mass_2016-04-23-21-11-26-405.png",
+        RADIUS: 2,
+        TEMPLATE: "../_templates/svg/create_something.svg"
         //ALLOW_TEMPLATE_SKEW:true
     };
     
@@ -88,7 +88,7 @@
             var m = new Mover(bounds);
             m.location = c.position;
 
-            m.setToRandomVelocity(5);
+			m.velocity = Utils.randomVector(5);
 
             c.mover = m;
 
@@ -245,7 +245,7 @@
 
         background.closed = true;
 
-        project.importSVG("assets/create_something.svg", {
+        project.importSVG(config.TEMPLATE, {
             "expandShapes": true,
             applyMatrix:true,
             onLoad : function(item, rawSVG) {
@@ -322,8 +322,7 @@
             }
             
             var imageData = context.getImageData(0, 0, w, h);
-            pixelData = new PixelData();
-            pixelData.imageData = imageData;
+            pixelData = new PixelData(imageData);
 
             view.update();
 

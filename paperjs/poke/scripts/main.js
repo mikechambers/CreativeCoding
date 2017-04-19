@@ -21,7 +21,8 @@
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
         LAYER_WIDTH:20,
-        LAYER_COUNT:25
+        LAYER_COUNT:25,
+		DEBUG: false
     };
     
     /*********** Override Config defaults here ******************/
@@ -36,7 +37,6 @@
     var pixelData;
 
     var main = function(){
-
         var center = bounds.center;
 
         circle(center, 0, config.LAYER_WIDTH);
@@ -168,7 +168,6 @@
             var steps = Math.floor(Utils.circumference(midpoint) / (spacing));
 
             var strokeWidth = Math.ceil(Math.random() * (spacing / 2));
-            console.log(strokeWidth);
 
             for(let i = 0; i < steps; i++) {
 
@@ -179,6 +178,12 @@
                 var c = new Path.Line(p1, p2);
                 c.strokeColor = "black";
                 c.strokeWidth = strokeWidth;
+				
+				//this is debug
+				
+				if(config.DEBUG) {
+					c.selected = true;
+				}
             }
 
             return path;
@@ -232,7 +237,6 @@
                 if(!_p) {
                      _p = new Path(point);
                      _p.strokeColor = "black";
-                     _p.strokeColor = "black";
                      _p.closePath();
                 } else {
                     _p.add(point);
@@ -243,7 +247,6 @@
                 }
                 
             }
-
             return path;
         }
     ];

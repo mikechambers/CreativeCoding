@@ -27,8 +27,29 @@
 class PixelData {
     //simple class that exposes an api to make it easy to get
     //data about individual pixels in an ImageData instance
-    constructor(imageData) {
+    constructor(imageData, cache = false) {
         this.imageData = imageData;
+
+        this.width = this.imageData.width;
+        this.height = this.imageData.height;
+
+        this.pixels = null;
+
+        if(cache) {
+            this.pixels = [];
+
+            let _p = new Point();
+            for(let y = 0; y < this.height; y++) {
+                for(let x = 0; x < this.width; x++) {
+                    _p.x = x;
+                    _p.y = y;
+
+                    this.pixels.push(this.getColor(_p));
+                }
+            }
+        }
+
+        this.cache = cache;
     }
 
     /*
@@ -74,6 +95,7 @@ class PixelData {
     };
     */
     
+    /*
     getAverageHex(rect) {
         let tmp = {
             r:0,
@@ -110,23 +132,50 @@ class PixelData {
 
         return PixelData.rgbToHex(tmp.r, tmp.g, tmp.b);
     }
+    */
+
+    getColors() {
+        return this.pixels;
+    }
+
+    getAverageHex(rect) {
+
+        let colors = [];
+
+        let p = new Point();
+        for(let w = rect.x; w < rect.right; w++) {
+            for(let h = rect.y; h < rect.bottom; h++) {
+                p.x = w;
+                p.y = h;
+                let c = this.getColor(p);
+                colors.push(c);
+            }
+        }
+
+        return chroma.average(colors);
+    }    
 
     getHex(point) {
 
-        var o = this.getRBGA(point);
+        var o = this.getColor(point);
 
-        return PixelData.rgbToHex(o.r, o.g, o.b);
+        //return PixelData.rgbToHex(o.r, o.g, o.b);
+        return o.hex();
     };
 
     //returns an object with r,g,b,a properties with values
     //with color information about the pixel as the specified coordinate.
-    getRBGA(point) {
+    getColor(point) {
         var xPos = Math.floor(point.x);
         var yPos = Math.floor(point.y);
 
         if (point.x < 0 || point.x > this.imageData.width || point.y < 0 || point.y > this.imageData.height) {
             console.log("point out of range", point);
             return {r:0, g:0, b:0, a:0};
+        }
+
+        if(this.cache) {
+            return this.pixels[(yPos * this.width) + xPos];
         }
 
         //copy imageData to a local variable to speed up access
@@ -143,14 +192,26 @@ class PixelData {
         //red:0, green:1, blue:2, alhpa:3
 
         //copy the data into an object
+        /*
         var out = {
             r: imageData.data[(offset)],
             g: imageData.data[(offset + 1)],
             b: imageData.data[(offset + 2)],
             a: imageData.data[(offset + 3)]
         };
+        */
 
-        return out;
+        let c = chroma([
+                imageData.data[(offset)],
+                imageData.data[(offset + 1)],
+                imageData.data[(offset + 2)]
+                ]).alpha(
+
+                imageData.data[(offset + 3)] / 255
+
+                );
+
+        return c;
     };
 
     static _helper(c) {

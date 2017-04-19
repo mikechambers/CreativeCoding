@@ -114,7 +114,7 @@
         }
         
         if (!point) {
-            point = Utils.getRandomPointInView(view, config.BOUNDS_PADDING);
+            point = Utils.randomPointInView(view, config.BOUNDS_PADDING);
         }
         
         var circle = new Shape.Circle({
@@ -192,7 +192,7 @@
                 continue;
             }
 
-            dist = MathUtils.getDistanceBetweenPoints(c.position, circle.position);
+            dist = MathUtils.distanceBetweenPoints(c.position, circle.position);
             
             //This hashes on the PaperJS naming for each Circle instance
             //we can't hash on the distance (which would be faster), because it is possible 
@@ -377,8 +377,7 @@
             }
             
             var imageData = context.getImageData(0, 0, w, h);
-            pixelData = new PixelData();
-            pixelData.imageData = imageData;
+            pixelData = new PixelData(imageData);
             
             circlesStore = [];
             

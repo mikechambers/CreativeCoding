@@ -13,17 +13,17 @@
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
         CANVAS_BACKGROUND_COLOR:"#000000",
-        CANVAS_WIDTH: 640,
-        CANVAS_HEIGHT: 640, //16:9 aspect ratio
+        CANVAS_WIDTH: 1280,
+        CANVAS_HEIGHT: 1280, //16:9 aspect ratio
         SCALE_CANVAS: false,
-        TEMPLATE: "../_templates/masks/mike.gif",
+        TEMPLATE: "../_templates/masks/mesh.gif",
         ANIMATE: false,
         ALLOW_TEMPLATE_SKEW: false,
-        MIN_WIDTH:10,
-        MAX_WIDTH:100,
-        PADDING:2,
-        HEIGHT:5,
-        INFLUENCE_WIDTH:false,
+        MIN_WIDTH:20,
+        MAX_WIDTH:400,
+        PADDING:0,
+        HEIGHT:20,
+        INFLUENCE_WIDTH:true,
         OPACITY:1.0
     };
     
@@ -81,7 +81,7 @@
                 
                 let r = new Path.Rectangle(rect);
                 r.strokeColor = "white";
-                r.fillColor = pixelData.getAverageHex(rect);
+                r.fillColor = pixelData.getHex(rect.center);
                 r.opacity = config.OPACITY;
 
                 w += rWidth;

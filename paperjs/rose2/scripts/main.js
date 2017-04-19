@@ -44,7 +44,10 @@
 
     var main = function(){
         
-        f = chroma.scale([chroma.random(), chroma.random()]).domain([0, radius]);
+        //f = chroma.scale([chroma.random(), chroma.random()]).domain([0, radius]);
+        f = chroma.scale(["#488880","#eaebbf", "#e8cc9c", "#e28167"]).domain([0, radius]);
+
+        
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;

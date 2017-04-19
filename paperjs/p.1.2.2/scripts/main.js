@@ -20,7 +20,8 @@
         TEMPLATE: "../_templates/car.png",
         ANIMATE: false,
         TRACK_MOUSE:false,
-        ALLOW_TEMPLATE_SKEW: false
+        ALLOW_TEMPLATE_SKEW: false,
+        CACHE_PIXELS:true
     };
     
     /*********** Override Config defaults here ******************/
@@ -46,11 +47,34 @@
 
         raster.position = bounds.center;
 
+        let pixels = pixelData.getColors();
+
+
+        var compare = function(a, b) {
+
+            let al = a.get('hsl.l');
+            let bl = b.get('hsl.l');
+
+            if (al < bl) {
+                return -1;
+            }
+
+            if (al > bl) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        }
+
+        console.log("start sort");
+        pixels.sort(compare);
+        console.log("end sort");
+
         for(let x = 0; x < config.CANVAS_WIDTH; x++) {
             for(let y = 0; y < config.CANVAS_HEIGHT; y++) {
                 let _p = new Point(x, y);
 
-                raster.setPixel(_p, pixelData.getHex(_p));
+                raster.setPixel(_p, pixels[(y * config.CANVAS_WIDTH) + x].hex());
             }
         }
 
@@ -153,7 +177,8 @@
             function(_pixelData) {
                 pixelData = _pixelData;
                 main();
-            }
+            },
+            config.CACHE_PIXELS
         );
     };
 

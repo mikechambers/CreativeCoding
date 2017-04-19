@@ -290,7 +290,7 @@
                 strokeColor: config.STROKE_COLOR,
                 strokeWidth: config.STROKE_WIDTH,
                 blendMode: config.BLEND_MODE,
-                rotation: Utils.getRandomRotationInRange(config.ROTATION_RANGE)
+                rotation: Utils.randomRotationInRange(config.ROTATION_RANGE)
             });
 
             out.push(rect);
@@ -427,7 +427,10 @@
             
         };
         
+	
+		
         if (config.TEMPLATE) {
+			/*
             PixelData.initFromImage(
                 config.TEMPLATE,
                 drawCanvas.width,
@@ -435,6 +438,19 @@
                 config.ALLOW_TEMPLATE_SKEW,
                 _f
             );
+			*/
+
+	        var pdl = new PixelDataLoader(config.CANVAS_WIDTH, config.CANVAS_HEIGHT);
+
+	        pdl.load(config.TEMPLATE,
+	            function(_pd) {
+					//console.log(_pd);
+	                //pixelData = _pd;
+	                _f(_pd);
+	            }
+	        );				
+			
+			
         } else {
             _f();
         }

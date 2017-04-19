@@ -33,13 +33,15 @@ class PixelDataLoader {
         this.canvasId = (Math.random() + "" + new Date().getTime());//need to 
     }
 
-    load(src, onload) {
+    load(src, onload, cache = false) {
         var templateImage = new Image();
 
         let _allowTemplateSkew = this.allowTemplateSkew;
         let _w = this.width;
         let _h = this.height;
         let o = this;
+
+        let _cache = cache;
 
         templateImage.onload = function () {
                 
@@ -72,8 +74,7 @@ class PixelDataLoader {
             }
             
             var imageData = context.getImageData(0, 0, w, h);
-            o.pixelData = new PixelData();
-            o.pixelData.imageData = imageData;
+            o.pixelData = new PixelData(imageData, _cache);
 
             if(onload) {
             	onload(o.pixelData);

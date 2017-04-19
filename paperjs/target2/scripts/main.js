@@ -260,8 +260,7 @@
             }
             
             var imageData = context.getImageData(0, 0, w, h);
-            pixelData = new PixelData();
-            pixelData.imageData = imageData;
+            pixelData = new PixelData(imageData);
 
             view.update();
 

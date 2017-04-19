@@ -23,8 +23,8 @@
         POINT_COUNT:20,
         THETA_STEP:5,
         RADIUS_STEP: 1,
-        FILL_COLOR:"pink",
-        STROKE_COLOR:"white"
+        FILL_COLOR:"white",
+        STROKE_COLOR:"black"
     };
     
     /*********** Override Config defaults here ******************/

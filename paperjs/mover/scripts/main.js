@@ -36,8 +36,8 @@
 
         //todo: move to a get bounds util
         m = new Mover(new Rectangle(new Point(), paper.view.viewSize));
-        m.location = Utils.getRandomPointInView(paper.view);
-        m.setToRandomVelocity();
+        m.location = Utils.randomPointInView(paper.view);
+        m.velocity = Utils.randomVector();
 
         circle = new Path.Circle(m.location, 4);
         circle.fillColor = 'white';
