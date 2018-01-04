@@ -18,6 +18,8 @@ class Mover {
 
     constructor(bounds) {
 
+        //todo: consider adding a getter / setter for position that maps
+        //to location to make it consistent with paper js
         this.location = new Point();
         this.velocity = new Point();
         this.acceleration = new Point();

@@ -174,7 +174,7 @@
                 let sLen = this.segments.length;
 
                 for(let i = 0; i < sLen; i++) {
-                    this.segments[0].opacity = ( ((sLen - i) / sLen)  * config.PATH_OPACITY);
+                    this.segments[i].opacity = ( ((sLen - i) / sLen)  * config.PATH_OPACITY);
                 }
 
             }

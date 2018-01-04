@@ -16,10 +16,28 @@ class MathUtils {
         var dy = p2.y - p1.y;
         var dx = p2.x - p1.x;
         var angle = Math.atan2(dy, dx);
-        
+    
         return angle;
     };
     
+
+    //todo: look at naming to make consitent
+
+
+    //this is really a hack right now. should just do the math to get the point
+    //also need to rename to make it clear, i.e. extendLine, or getOPointExtendingLine
+    static getPointExtendedFromLine(p1, p2, distance) {
+        return MathUtils.pointOnCircleAlongLine(p2, -distance, p1);
+    }
+
+    //todo: not sure if it returns in degrees or radians
+    static angleOfLine(p1, p2) {
+        let dy = p2.y - p1.y;
+        let dx = p2.x - p1.x;
+        return Math.atan2(dy,dx);
+    }
+
+
     /* returns the intersection point on circle1 of a line that goes from the center point of circle1
         to the center point of circle 2 */
     static pointOnCircleAlongLine(centerPoint1, radius1, centerPoint2) {
@@ -28,7 +46,8 @@ class MathUtils {
         var p2 = centerPoint2;
         var radius = radius1;
 
-        var angle = MathUtils.getLineAngle(p1, p2);
+        //todo: this call doesnt exist
+        var angle = MathUtils.angleOfLine(p1, p2);
         
         //figure out the point on the circle, based on the angle.
         //this returns the point, relative to (0,0)

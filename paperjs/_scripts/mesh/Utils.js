@@ -3,6 +3,14 @@
 
 class Utils {
     
+    static randomHexColor() {
+        return Utils.randomColor().hex();
+    }
+
+    static randomColor() {
+        return chroma.random();
+    }
+
     static randomSize(baseSize) {
         
         //todo: need to do something about this -5
@@ -216,6 +224,8 @@ class Utils {
         
         return pointsOnHull;
     }
+
+
 
     //inclusive - exclusive
     static getRandomArbitrary(min, max) {
