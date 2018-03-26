@@ -12,25 +12,27 @@
     var config = {
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
         BACKGROUND_COLOR: "#FFFFFF",
-        CANVAS_BACKGROUND_COLOR:"#FFFFFF",
-        STROKE_COLOR:"#333333",
+        CANVAS_BACKGROUND_COLOR:"#111111",
+
         CANVAS_WIDTH: 640,
         CANVAS_HEIGHT: 640, //16:9 aspect ratio
         SCALE_CANVAS: false,
         TEMPLATE: null,
         ANIMATE: false,
         TRACK_MOUSE:false,
-        ALLOW_TEMPLATE_SKEW: false,
-        PADDING:10,
-        MAX_DEPTH:10,
-        STROKE_WIDTH:.25,
-        MIN_DIMENSION:20
+        ALLOW_TEMPLATE_SKEW: false
     };
     
     /*********** Override Config defaults here ******************/
     
     //config.CANVAS_WIDTH = 1280;
     //config.CANVAS_HEIGHT = 1280;
+
+    config.TILE_COUNT = 20;
+    config.STROKE_COLOR = "black";
+    config.CANVAS_BACKGROUND_COLOR = "white";
+    config.STROKE_CAP = "round"; //round, square, butt
+    config.STROKE_WIDTH = 4;
     
     /*************** End Config Override **********************/
   
@@ -40,88 +42,48 @@
 
     var main = function(){
         
-        let mainRect = new Rectangle(
-            config.PADDING, 
-            config.PADDING,
-            bounds.width - (config.PADDING * 2),
-            bounds.height - (config.PADDING * 2)
-        );
+        for(let gridY = 0; gridY < config.TILE_COUNT; gridY++) {
+            for(let gridX = 0; gridX < config.TILE_COUNT; gridX++){
+                let posX = config.CANVAS_WIDTH / config.TILE_COUNT * gridX;
+                let posY = config.CANVAS_HEIGHT / config.TILE_COUNT * gridY;
 
-        let rectPath = new Path.Rectangle(mainRect);
-        rectPath.strokeColor = config.STROKE_COLOR;
-        rectPath.strokeWidth = config.STROKE_WIDTH;
+                let toggle = Utils.getRandomInclusive(0,1);
 
-        splitRect(mainRect);
+                let segments = [];
+                let strokeWidth = config.STROKE_WIDTH;
+                switch (toggle) {
+                    case 0: {
+
+                        segments[0] = new Point(posX, posY);
+                        segments[1] = new Point(posX + config.CANVAS_WIDTH / config.TILE_COUNT, 
+                                posY + config.CANVAS_HEIGHT / config.TILE_COUNT)
+
+                        strokeWidth = 14;
+
+                        break;
+                    }
+                    case 1: {
+                        segments[0] = new Point(posX,  posY + config.CANVAS_WIDTH / config.TILE_COUNT);
+                        segments[1] = new Point(posX + config.CANVAS_HEIGHT / config.TILE_COUNT, posY);
+
+                        strokeWidth = 22;
+                        break;
+                    }
+                }
+
+                var p = new Path(segments);
+                p.strokeColor = config.STROKE_COLOR;
+                p.strokeCap = config.STROKE_CAP;
+                p.strokeWidth = strokeWidth;
+            }
+        }
+
+
 
         if(config.ANIMATE) {
             view.onFrame = onFrame;
         }
     };
-
-
-    var splitRect = function(rect, depth = 1) {
-
-        let rect1 = new Rectangle();
-        let rect2 = new Rectangle();
-
-        let divisor = Utils.getRandomInclusive(2, 5);
-
-        let p1;
-        let p2;
-
-        rect1.x = rect.x;
-        rect1.y = rect.y;
-
-        if(Math.random() > 0.5) {
-
-            rect1.width = rect.width / divisor;
-            rect1.height = rect.height;
-
-            rect2.x = rect1.x + rect1.width;
-            rect2.y = rect.y;
-            rect2.width = rect.width - rect1.width;
-            rect2.height = rect.height;
-
-            p1 = rect2.topLeft;
-            p2 = rect2.bottomLeft;
-
-        } else {
-
-            rect1.width = rect.width;
-            rect1.height = rect.height  / divisor;
-
-            rect2.x = rect.x;
-            rect2.y = rect1.y + rect1.height;
-            rect2.width = rect.width;
-            rect2.height = rect.height - rect1.height;
-
-            p1 = rect2.topLeft;
-            p2 = rect2.topRight;
-        }
-
-        let p = new Path.Line(p1, p2);
-        p.strokeColor = config.STROKE_COLOR; 
-        p.strokeWidth = config.STROKE_WIDTH;
-
-        depth++;
-
-        if(depth > config.MAX_DEPTH) {
-            return;
-        }
-
-        splitRect(rect1, depth);
-        splitRect(rect2, depth);
-
-    }
-
-    let f = chroma.scale(["blue", "green"]);
-    var drawRect = function(rect, depth) {
-
-        let r = new Path.Rectangle(rect);
-        r.fillColor = f((depth / config.MAX_DEPTH)).hex();
-        //console.log(f((depth / config.MAX_DEPTH)).hex());
-
-    }
 
     var onFrame = function(event) {
 
