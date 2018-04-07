@@ -63,3 +63,5 @@ class MathUtils {
     };
 
 }
+
+MathUtils.PI_2 = 2 * Math.PI;
