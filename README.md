@@ -1,4 +1,4 @@
-GenerativeArt
+CreativeCoding
 =============
 
 Mike Chambers  
