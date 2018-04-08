@@ -34,24 +34,27 @@
     //config.CANVAS_HEIGHT = 1280;
 
     config.RADIUS_SPACING = 1;
-    config.CIRCLE_COUNT = 600;
+    config.CIRCLE_COUNT = 100;
     config.ANIMATE = true;
 
-    config.POINT_SIZE = 300;
+    config.POINT_SIZE = 2;
 
     config.CANVAS_BACKGROUND_COLOR = "white";
 
-    config.RADIUS_COLOR = "black";
+    config.RADIUS_COLOR = "white";
 
-    config.POINT_COLOR = config.CANVAS_BACKGROUND_COLOR;
-    config.POINT_STROKE_COLOR = undefined;//"black";
+    config.POINT_COLOR = undefined;//"black";
+    config.POINT_STROKE_COLOR = undefined;//'white';;
 
 
+    config.STROKE_WIDTH = 80;
     config.RECORD_CANVAS = true;
 
-    config.RANDOM_COLOR = true;
+    config.RANDOM_COLOR = false;
     config.DRAW_RADIUS = false;
-    config.OPACITY = .3;
+    config.OPACITY = 1.0;
+
+    config.CLOSE_PATH = false;
     
     /*************** End Config Override **********************/
   
@@ -107,8 +110,33 @@
         }
     };
 
+    let p;
+
+
+    //let f = chroma.scale(['yellow', 'orange', 'red', 'orange', 'yellow']);
+    //let f = chroma.scale(['lightblue', 'blue', 'lightgreen', 'green','lightgreen', 'blue', 'lightblue']);
+    let f = chroma.scale(chroma.brewer.Spectral);
+    let count = 0;
     var onFrame = function(event) {
+
+        count++;
         let len = circles.length;
+
+        if(p) {
+            p.remove();
+        }
+
+        p = new Path();
+        p.strokeColor = config.RADIUS_COLOR;
+        p.strokeWidth = config.STROKE_WIDTH;
+        p.opacity = config.OPACITY;
+        p.strokeCap = "round";
+
+        p.shadowColor = f((count % 400) / 400).hex();
+        p.shadowBlur = 10;
+        p.shadowOffset = new Point(0,0);
+
+        p.add(center);
 
         for(let i = 0; i < len; i++) {
             let c = circles[i];
@@ -120,8 +148,15 @@
             } else {
                 c.position = Utils.pointOnCircle(center, c.radius, angle - (MathUtils.PI_2 / 360) * c.velocity);
             }
+
+            p.add(c.position);
         }
 
+        p.smooth();
+
+        if(config.CLOSE_PATH) {
+            p.closed = true;
+        }
     };
 
     var onMouseMove = function(event) {
@@ -131,7 +166,6 @@
     /*********************** init code ************************/
 
     var initCanvas = function () {
-
 
         let container = document.getElementById("canvas_container");
         var canvas = document.createElement('canvas');
