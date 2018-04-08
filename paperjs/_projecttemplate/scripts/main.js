@@ -21,7 +21,8 @@
         ANIMATE: false,
         TRACK_MOUSE:false,
         ALLOW_TEMPLATE_SKEW: false,
-        HIDPI:false
+        HIDPI:false;
+        RECORD_CANVAS: false;
     };
     
     /*********** Override Config defaults here ******************/
