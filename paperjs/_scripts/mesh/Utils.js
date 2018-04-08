@@ -3,6 +3,10 @@
 
 class Utils {
     
+    static randomSign() {
+        return (Math.random() > 0.5) ? Utils.Sign.POSITIVE : Utils.Sign.NEGATIVE;
+    }
+
     static randomHexColor() {
         return Utils.randomColor().hex();
     }
