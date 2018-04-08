@@ -7,7 +7,7 @@ mikechambers@gmail.com
 
 This is a repository of my generative art / creative coding projects, all released under an MIT license. You can view examples of images and videos created with the code on my [instagram account](https://www.instagram.com/mesh2325/).
 
-Code is in various states of quality and usability. I am sharing as there may be useful bits that others can re-use and / or learn from.
+Code is in various states of quality and usability (some bits may no longer compile / run). I am sharing as there may be useful bits that others can re-use and / or learn from.
 
 These are my personal projects, and generally were not created for sharing, and thus have various levels of documentation and support.
 
