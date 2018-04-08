@@ -21,7 +21,7 @@ Projects are organized by frameworks which they leverage.
 
 Projects using the [openFrameworks](http://openframeworks.cc/) C++ library. All of my projects were compiled using XCode on Mac.
 
-Look in *lib/mesh/* for reusable library code,
+Look in *lib/mesh/* for reusable library code.
 
 ### paperjs
 
@@ -41,7 +41,7 @@ Some of the projects also use [chroma.js](https://github.com/gka/chroma.js/) whi
 
 Desktop based projects using the [Processing](https://processing.org/) runtime and language.
 
-Almost all of these examples require my [fork of Processing](https://github.com/mikechambers/processing) which adds support for file includes. You can find more info on the full in my (rejected) [pull request](https://github.com/processing/processing/issues/2788).
+Almost all of these examples require my [fork of Processing](https://github.com/mikechambers/processing) which adds support for file includes. You can find more info on the fork in my (rejected) [pull request](https://github.com/processing/processing/issues/2788).
 
 Reusable libraries are found in the *includes/* folder.
 
