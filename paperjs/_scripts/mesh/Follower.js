@@ -12,6 +12,14 @@ class Follower extends Mover {
 		this.attractionCoefficient = 0.1;
 	}
 
+	set target(value) {
+		this._target = value;
+	}
+
+	get target() {
+		return this._target;
+	}
+
 	update(tPoint) {
     	if(!tPoint) {
     		tPoint = this.target.location;
