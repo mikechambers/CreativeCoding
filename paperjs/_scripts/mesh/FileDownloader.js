@@ -51,7 +51,7 @@ class FileDownloader {
         this.recorder.stop();
     }
 
-    startRecord(canvas, mimeString="video/webm;codecs=h264", fileExtension="webm", frameRate=24) {
+    startRecord(canvas, mimeString="video/webm;codecs=h264", fileExtension="webm", frameRate=60) {
 
         this.chunks = [];
         var o = this;
