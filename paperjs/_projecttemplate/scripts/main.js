@@ -5,6 +5,9 @@
 
     Released under an MIT License
     https://opensource.org/licenses/MIT
+
+    You can find an extensive write up of this template at
+    http://mikechambers.com/blog/2018/04/11/a-templated-approach-for-paperjs-projects/
 */
 
 (function () {
@@ -12,8 +15,8 @@
     
     paper.install(window);
     
-    /*********** Override Config defaults here ******************/
-    var config = {
+    /*********** Default Configuration Settings ******************/
+    let config = {
 
         //get the app name from the directory name
         APP_NAME: window.location.pathname.replace(/\//gi, ""),
@@ -29,7 +32,7 @@
         CACHE_PIXEL_DATA:false,
 
         ANIMATE: false,
-        TRACK_MOUSE:false, //whether we listen for mouse moe events
+        TRACK_MOUSE:false, //whether we listen for mouse move events
         
         //whether we enable Paper.hs hidpi setting
         //this changes canvas size when true (default) and causes issues when capturing video
@@ -41,14 +44,14 @@
     
     /*********** Override Config defaults here ******************/
     
-    //config.CANVAS_WIDTH = 1280;
-    //config.CANVAS_HEIGHT = 1280;
-    //config.RECORD_CANVAS = truel
-    //config.ANIMATE = true;
+    config.CANVAS_WIDTH = 1280;
+    config.CANVAS_HEIGHT = 1280;
+    //config.RECORD_CANVAS = true;
+    config.ANIMATE = true;
     
     /*************** End Config Override **********************/
   
-    //PixelData avaliable is config.TEMPLATE is not undefined
+    //PixelData available if config.TEMPLATE is not undefined
     let pixelData;
 
     let bounds;
@@ -56,14 +59,14 @@
 
     //main entry point for code. Called once when page
     //loads
-    var main = function(){
+    let main = function(){
         //ADD CODE HERE
     };
 
     //Called every frame
     //note config.ANIMATE must be set to true in order for this
     //to fire
-    var onFrame = function(event) {
+    let onFrame = function(event) {
         //ADD UPDATE CODE HERE
     };
 
@@ -73,15 +76,15 @@
     //called if TRACK_MOUSE is set to true
     //note for performance reasons dont update code here. Instread, use
     //the mousePos variable within onFrame above
-    var onMouseMove = function(event) {
+    let onMouseMove = function(event) {
         mousePos = event.point; 
     }
 
     //initialize, size and setup canvas
-    var initCanvas = function () {
+    let initCanvas = function () {
 
         let container = document.getElementById("canvas_container");
-        var canvas = document.createElement('canvas');
+        let canvas = document.createElement('canvas');
         
         canvas.id = "paperjs_canvas";
         canvas.height = config.CANVAS_HEIGHT;
@@ -103,11 +106,11 @@
         //and save PNGs, SVGs and videos from our projects
         fileDownloader = new FileDownloader(config.APP_NAME);
 
-        var drawCanvas = initCanvas();
+        let drawCanvas = initCanvas();
         
         paper.setup(drawCanvas);
 
-        //programtically set the background colors so we can set it once in a var.
+        //programtically set the background colors so we can set it once
         document.body.style.background = config.BACKGROUND_COLOR;
         drawCanvas.style.background = config.CANVAS_BACKGROUND_COLOR;
         
@@ -120,7 +123,7 @@
         //draw a rectangle as the background color. This is so
         //correct background color is included when exporting as
         //SVG
-        var rect = new Path.Rectangle(bounds);
+        let rect = new Path.Rectangle(bounds);
         rect.fillColor = config.CANVAS_BACKGROUND_COLOR;
     
         t = new Tool();
@@ -158,7 +161,7 @@
             //if config.TEMPLATE is set to an image path, we load that image, and capture its pixeldata
             //for access later.
             //make sure PixelData.js and PixelDataLoader.js are loaded in index.html
-            var pdl = new PixelDataLoader(config.CANVAS_WIDTH, config.CANVAS_HEIGHT, config.ALLOW_TEMPLATE_SKEW);
+            let pdl = new PixelDataLoader(config.CANVAS_WIDTH, config.CANVAS_HEIGHT, config.ALLOW_TEMPLATE_SKEW);
 
             pdl.load(config.TEMPLATE,
                 function(pd) {
