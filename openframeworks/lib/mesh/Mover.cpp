@@ -60,7 +60,7 @@ ofVec3f Mover::attract(Mover mover) {
     
     float strength = (gravity_coefficient * mass * mover.mass) / (distance * distance);
     force *= strength;
-    
+
     return force;
 }
 

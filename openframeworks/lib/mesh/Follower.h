@@ -19,8 +19,12 @@ public:
     Mover * target;
     float attractionCoefficient = 0.1;
     
-    void setTarget(Mover * _target);
-    void update();
+    int index = 0;
+    
+    void setIndex(int _index);
+    
+    virtual void setTarget(Mover * _target);
+    virtual void update();
     void update(ofVec3f t);
 };
 

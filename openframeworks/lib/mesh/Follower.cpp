@@ -12,6 +12,11 @@ void Follower::setTarget(Mover * _target) {
     target = _target;
 }
 
+void Follower::setIndex(int _index) {
+    index = _index;
+}
+
+
 void Follower::update() {
     update(target->location);
 }

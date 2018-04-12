@@ -874,7 +874,7 @@
 				);
 				OBJROOT = "$(SRCROOT)/../../lib/osx/build/debug/";
 				PRODUCT_NAME = openFrameworksDebug;
-				SDKROOT = "";
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -903,7 +903,7 @@
 				);
 				OBJROOT = "$(SRCROOT)/../../lib/osx/build/release/";
 				PRODUCT_NAME = openFrameworks;
-				SDKROOT = "";
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
