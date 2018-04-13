@@ -13,17 +13,11 @@ bool paused = false;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenshot(APP_NAME);
+    utils.enableScreenshot(APP_NAME, 'p');
     syphon.setName(APP_NAME);
     
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
-    
-    init();
-}
-
-void ofApp::init() {
-    
 }
 
 //--------------------------------------------------------------
