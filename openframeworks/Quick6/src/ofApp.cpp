@@ -13,19 +13,19 @@ ofxSyphonServer syphon;
 const string APP_NAME = "Quick5";
 
 const int GRAVITY_RANGE = 100;
-const int POINT_COUNT = 500;
+const int POINT_COUNT = 25000 ;
 const float MAX_RANGE = 8.0;
 const float MIN_RANGE = 2.0;
 const float STEP_SIZE = 0.02;
 const float RADIUS_SIZE = 1;
-const int MIN_OPACITY = 255;
-const int MAX_OPACITY = 255;
+const int MIN_OPACITY = 32;
+const int MAX_OPACITY = 200;
 
-const string IMG_PATH = "../../../images/gradient_9.jpg";
+const string IMG_PATH = "../../../images/mike.png";
 
 ofRectangle bounds;
 
-bool paused = true;
+bool paused = false;
 
 Mover mouseMover;
 ofVec3f mousePosition;
