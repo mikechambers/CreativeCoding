@@ -13,17 +13,20 @@ ofxSyphonServer syphon;
 const string APP_NAME = "Web";
 bool paused = true;
 
-const int OPACITY = 10;
-const int CONNECT_DISTANCE = 50;
+const int OPACITY = 5;
+const int CONNECT_DISTANCE = 100;
 const float VELOCITY = 10;
 const int POINT_COUNT = 30;
 const bool RANDOM_POINTS = false;
 const int BOUNDS_PADDING = 40;
+const bool DRAW_GUIDES = false;
 
 const string IMG_PATH = "../../../images/tycho_awake.png";
 
 vector <ofPoint> drawnPoints;
-vector <Line> lines;
+
+ofVboMesh lineMesh;
+ofVboMesh pointMesh;
 
 vector<ofVec3f> points;
 
@@ -50,6 +53,9 @@ void ofApp::setup(){
     
     image.load(IMG_PATH);
     image.resize(640, 640);
+ 
+    lineMesh.setMode(OF_PRIMITIVE_LINES);
+    lineMesh.enableColors();
     
     pointFollower.setToRandomLocation();
     pointFollower.setToRandomVelocity(VELOCITY);
@@ -58,9 +64,21 @@ void ofApp::setup(){
     points = mGetRandomPointsInBounds(mGetBoundsWithPadding(bounds, BOUNDS_PADDING), POINT_COUNT);
     pointFollower.setPoints(points);
     
+    pointMesh.setMode(OF_PRIMITIVE_POINTS);
+    pointMesh.enableColors();
+    
+    for(auto point : points ){
+        pointMesh.addColor(ofColor::black);
+        pointMesh.addVertex(point);
+    }
+    
+    
+    
     follower.setTarget(&pointFollower);
     follower.setToRandomLocation();
     follower.attractionCoefficient = 0.2;
+    
+    
 }
 
 //--------------------------------------------------------------
@@ -81,13 +99,15 @@ void ofApp::update(){
         
         float dist = (mouse - point).length();
         if(dist < CONNECT_DISTANCE) {
-            Line lineTemp;
-            lineTemp.a = mouse;
-            lineTemp.b = point;
-            lines.push_back(lineTemp);
+            
+            lineMesh.addColor(ofColor(image.getColor(mouse), OPACITY));
+            lineMesh.addVertex(mouse);
+            
+            lineMesh.addColor(ofColor(image.getColor(point), OPACITY));
+            lineMesh.addVertex(point);
         }
     }
-    
+
     drawnPoints.push_back(mouse);
 }
 
@@ -100,29 +120,25 @@ void ofApp::draw(){
     
     //ofEnableAlphaBlending();
     
-    ofNoFill();
-    ofSetColor(ofColor::red);
-    ofDrawCircle(pointFollower.getCurrentPoint(), 12);
     
-    ofFill();
-    ofSetColor(ofColor::black);
-    
-    for(auto point : points) {
-        ofDrawCircle(point, 1);
+    if(DRAW_GUIDES) {
+        pointMesh.draw();
+        
+        ofNoFill();
+        ofSetColor(ofColor::red);
+        ofDrawCircle(pointFollower.getCurrentPoint(), 12);
+        
+        ofFill();
+        ofSetColor(ofColor::black);
+        
+        ofSetColor(ofColor::red);
+        ofDrawLine(follower.location, pointFollower.location);
+        ofDrawCircle(pointFollower.location, 2);
+        ofDrawCircle(follower.location, 2);
     }
     
-    for(auto line : lines) {
-        ofSetColor(ofColor(image.getColor(line.a), OPACITY));
-        ofDrawLine(line.a, line.b);
-    }
-    
-    ofSetColor(ofColor::red);
-    ofDrawLine(follower.location, pointFollower.location);
-    ofDrawCircle(pointFollower.location, 2);
-    ofDrawCircle(follower.location, 2);
-    
+    lineMesh.draw();
 
-    
     syphon.publishScreen();
 }
 
