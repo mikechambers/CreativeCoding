@@ -168,6 +168,12 @@ ofVec3f mGetPointOnCircle(ofVec3f center, float radius, float angleInRadians) {
     return out;
 }
 
+ofVec3f mGetRandomPointOnCircle(ofVec3f center, float radius) {
+    float angleInRadians = ofRandom(1) * (M_PI * 2);
+    
+    return mGetPointOnCircle(center, radius, angleInRadians);
+}
+
 ofVec3f mGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance) {
     //float angle = p1.angleRad(p2);
     

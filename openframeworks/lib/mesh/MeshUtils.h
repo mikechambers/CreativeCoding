@@ -40,6 +40,7 @@ float mConstrain(float amt, float low, float high);
 
 
 ofVec3f mGetPointOnCircle(ofVec3f center, float radius, float angle);
+ofVec3f mGetRandomPointOnCircle(ofVec3f center, float radius);
 ofVec3f mGetPointOnLine(ofVec3f p1, ofVec3f p2, float distance);
 ofVec3f mGetPointOnCircleAlongLing(ofVec3f center1, float radius, ofVec3f center2);
 float mGetAngleOfLine(ofVec3f p1, ofVec3f p2);
