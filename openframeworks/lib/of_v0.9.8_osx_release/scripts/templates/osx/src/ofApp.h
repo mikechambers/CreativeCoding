@@ -1,3 +1,14 @@
+/*
+	Copyright Mike Chambers 2018
+	mikechambers@gmail.com
+
+	http://www.mikechambers.com
+	https://github.com/mikechambers/CreativeCoding
+
+	Released un an MIT License
+	https://github.com/mikechambers/CreativeCoding/blob/master/LICENSE.txt
+*/
+
 #pragma once
 
 #include "ofMain.h"

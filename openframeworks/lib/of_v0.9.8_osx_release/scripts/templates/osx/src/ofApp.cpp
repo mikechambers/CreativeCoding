@@ -1,3 +1,14 @@
+/*
+    Copyright Mike Chambers 2018
+    mikechambers@gmail.com
+
+    http://www.mikechambers.com
+    https://github.com/mikechambers/CreativeCoding
+
+    Released un an MIT License
+    https://github.com/mikechambers/CreativeCoding/blob/master/LICENSE.txt
+*/
+
 #include "ofApp.h"
 
 #include "ofxSyphonClient.h"
@@ -9,12 +20,16 @@ ofxSyphonServer syphon;
 
 const string APP_NAME = "APP_NAME";
 
+ofRectangle bounds;
+
 bool paused = false;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     utils.enableScreenshot(APP_NAME, 'p');
     syphon.setName(APP_NAME);
+
+    bounds = ofGetWindowRect();
     
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
