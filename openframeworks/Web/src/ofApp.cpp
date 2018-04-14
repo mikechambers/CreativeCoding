@@ -13,15 +13,16 @@ ofxSyphonServer syphon;
 const string APP_NAME = "Web";
 bool paused = true;
 
-const int OPACITY = 5;
-const int CONNECT_DISTANCE = 100;
+const int OPACITY = 32;
+const int CONNECT_DISTANCE = 10;
 const float VELOCITY = 10;
-const int POINT_COUNT = 30;
+const int POINT_COUNT = 2;
 const bool RANDOM_POINTS = false;
-const int BOUNDS_PADDING = 40;
+const int BOUNDS_PADDING = 250;
 const bool DRAW_GUIDES = false;
+const int PATH_JITTER = 50;
 
-const string IMG_PATH = "../../../images/tycho_awake.png";
+const string IMG_PATH = "../../../images/gradient_10.jpg";
 
 vector <ofPoint> drawnPoints;
 
@@ -60,6 +61,7 @@ void ofApp::setup(){
     pointFollower.setToRandomLocation();
     pointFollower.setToRandomVelocity(VELOCITY);
     pointFollower.randomOrder = RANDOM_POINTS;
+    pointFollower.pathJitter = PATH_JITTER;
     
     points = mGetRandomPointsInBounds(mGetBoundsWithPadding(bounds, BOUNDS_PADDING), POINT_COUNT);
     pointFollower.setPoints(points);
