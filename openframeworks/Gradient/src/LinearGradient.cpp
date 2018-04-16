@@ -49,17 +49,12 @@ void LinearGradient::render() {
     ofColor startColor = tmpColorStops.begin()->second;
 
     float currentPosition = 0;
+    ofPixels pixels;
+    pixels.allocate(bounds.width, bounds.height, OF_IMAGE_COLOR_ALPHA);
+    
     
     int index = 0;
     for ( it = tmpColorStops.begin(); it != tmpColorStops.end(); ++it) {
-        cout << "key : " << it->first << endl;
-        
-        /*
-        float nextPosition = it->first;
-        if(nextPosition == 0.0) {
-            continue;
-        }
-         */
         
         if(index == 0) {
             index++;
@@ -68,11 +63,7 @@ void LinearGradient::render() {
         
         float nextPosition = it->first;
         ofColor nextColor = it->second;
-        
-        //int x = currentPosition * bounds.width;
-        
-        //float w = x + ((nextPosition * bounds.width) - (currentPosition * bounds.width));
-        
+
         ofRectangle section = ofRectangle(currentPosition * bounds.width, 0, (nextPosition * bounds.width) - (currentPosition * bounds.width), bounds.height);
         
         int r;
@@ -82,21 +73,12 @@ void LinearGradient::render() {
         
         float percent = 0;
         
-        //while(x < w) {
         for(int i = 0; i < section.width; i++) {
-            //percent = x / w;
             percent = i / section.width;
 
             switch(mode) {
                 case COS_SQUARED:
-                    r  = floor(sqrt(
-                                    interpolate(
-                                                (startColor.r * startColor.r),
-                                                (nextColor.r * nextColor.r),
-                                                percent
-                                                )
-                                    )
-                               );
+                    r  = floor(sqrt(interpolate((startColor.r * startColor.r),(nextColor.r * nextColor.r),percent)));
                     g  = floor(sqrt(interpolate((startColor.g * startColor.g), (nextColor.g * nextColor.g), percent)));
                     b  = floor(sqrt(interpolate((startColor.b * startColor.b), (nextColor.b * nextColor.b), percent)));
                     a  = floor(sqrt(interpolate((startColor.a * startColor.a), (nextColor.a * nextColor.a), percent)));
@@ -122,15 +104,15 @@ void LinearGradient::render() {
             }
 
             for(int j = 0; j < bounds.height; j++) {
-                image.setColor(section.x + i, j, ofColor(r,g, b, a));
+                pixels.setColor(section.x + i, j, ofColor(r,g, b, a));
             }
-            //x++;
         }
         
         currentPosition = nextPosition;
         startColor = nextColor;
     }
     
+    image.setFromPixels(pixels);
     image.update();
 }
 
@@ -143,3 +125,9 @@ float LinearGradient::interpolate(float a, float b, float px) {
 void LinearGradient::draw() {
     image.draw(bounds.x, bounds.y);
 }
+
+ofImage LinearGradient::getImage() {
+    return image;
+}
+
+

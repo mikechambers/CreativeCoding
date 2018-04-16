@@ -35,11 +35,8 @@ public:
     void setMode(GRADIENT_MODE _mode);
     void render();
     void draw();
+    ofImage getImage();
     
-    //void draw();
-    //void getPixels();
-    
-    //void setOrientationAngle();
 };
 
 #endif /* Gradient_hpp */
