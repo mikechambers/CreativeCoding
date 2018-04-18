@@ -16,7 +16,6 @@ void Follower::setIndex(int _index) {
     index = _index;
 }
 
-
 void Follower::update() {
     update(target->location);
 }

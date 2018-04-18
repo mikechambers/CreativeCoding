@@ -6,6 +6,7 @@
 //
 
 #include "LinearGradient.h"
+#include "MeshUtils.h"
 
 
 void LinearGradient::setOrientation(GRADIENT_ORIENTATION _orientation) {
@@ -17,7 +18,12 @@ void LinearGradient::setMode(GRADIENT_MODE _mode) {
 }
 
 void LinearGradient::setBounds(const ofRectangle & _bounds) {
+    
+
     bounds = _bounds;
+    float side = floor(sqrt((bounds.width * bounds.width) + (bounds.height * bounds.height)));
+    bounds.width = side;
+    bounds.height = side;
 }
 
 void LinearGradient::addStep(ofColor c1, float stopPosition) {
@@ -26,9 +32,8 @@ void LinearGradient::addStep(ofColor c1, float stopPosition) {
     colorStops.insert(make_pair(p, c1));
 }
 
+
 void LinearGradient::render() {
-    image.clear();
-    image.allocate(bounds.width, bounds.height, OF_IMAGE_COLOR_ALPHA);
     
     map<float, ofColor> tmpColorStops;
     tmpColorStops.insert(colorStops.begin(), colorStops.end());
@@ -64,7 +69,8 @@ void LinearGradient::render() {
         float nextPosition = it->first;
         ofColor nextColor = it->second;
 
-        ofRectangle section = ofRectangle(currentPosition * bounds.width, 0, (nextPosition * bounds.width) - (currentPosition * bounds.width), bounds.height);
+        float _x = currentPosition * bounds.width;
+        ofRectangle section = ofRectangle(_x, 0, (nextPosition * bounds.width) - _x, bounds.height);
         
         int r;
         int g;
@@ -104,17 +110,75 @@ void LinearGradient::render() {
             }
 
             for(int j = 0; j < bounds.height; j++) {
-                pixels.setColor(section.x + i, j, ofColor(r,g, b, a));
+                pixels.setColor(section.x + i, j, ofColor(r, g, b, a));
             }
         }
         
         currentPosition = nextPosition;
         startColor = nextColor;
     }
+
     
-    image.setFromPixels(pixels);
+    ofPixels rotated;
+    rotated.allocate(bounds.width, bounds.height, OF_IMAGE_COLOR_ALPHA);
+    
+    ofVec3f center = bounds.getCenter();
+    
+    /*
+     for each pixel in input:
+     {
+     p2 = rotate(pixel, -angle);
+     value = interpolate(input, p2)
+     
+     output(pixel) = value
+     }
+     */
+    
+    ofRectangle outRect = ofRectangle(0, 0, 1280, 1280);
+    
+    ofVec3f outCenter = outRect.getCenter();
+    //outCenter = center;
+
+    float angle = 0.785398;
+    for(int y = 0; y < outRect.height; y++) {
+        for(int x = 0; x < outRect.width; x++) {
+            
+            //https://stackoverflow.com/a/695130
+            angle = angle;
+            
+            float dx = x - center.x;
+            float dy = y - center.y;
+            
+            float newX = cos(-angle) * dx - sin(-angle) * dy + (center.x);
+            float newY = cos(-angle) * dy + sin(-angle) * dx + center.y;
+
+            //rotated.setColor(newX, newY, pixels.getColor(x, y));
+            
+            rotated.setColor(x, y, pixels.getColor(newX, newY));            
+        }
+    }
+    
+    /*
+    for (int y = 0; y < SIZEY; y++) {
+        for (int x = 0; x < SIZEX; x++) {
+            double dx = ((double)x)-centerX;
+            double dy = ((double)y)-centerY;
+            double newX = cos(angle)*dx-sin(angle)*dy+centerX;
+            double newY = cos(angle)*dy+sin(angle)*dx+centerY;
+            
+            int ix = (int) round(newX);
+            int iy = (int) round(newY);
+            target[x][y] = source[ix][iy];
+        }
+    }
+    */
+    
+    image.clear();
+    image.allocate(bounds.width, bounds.height, OF_IMAGE_COLOR_ALPHA);
+    image.setFromPixels(rotated);
     image.update();
 }
+
 
 float LinearGradient::interpolate(float a, float b, float px) {
     float ft = px * M_PI;

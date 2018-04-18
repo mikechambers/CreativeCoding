@@ -21,6 +21,9 @@ public:
     void disableScreenshot();
 };
 
+ofColor mRandomColor(int opacity);
+ofColor mRandomColor();
+
 ofRectangle mGetBoundsWithPadding(const ofRectangle & bounds, float padding);
 ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds);
 ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds, float depth);

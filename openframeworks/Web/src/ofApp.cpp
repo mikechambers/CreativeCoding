@@ -13,16 +13,16 @@ ofxSyphonServer syphon;
 const string APP_NAME = "Web";
 bool paused = true;
 
-const int OPACITY = 32;
-const int CONNECT_DISTANCE = 10;
+const int OPACITY = 2;
+const int CONNECT_DISTANCE = 30;
 const float VELOCITY = 10;
-const int POINT_COUNT = 2;
-const bool RANDOM_POINTS = false;
-const int BOUNDS_PADDING = 250;
+const int POINT_COUNT = 30;
+const bool RANDOM_POINTS = true;
+const int BOUNDS_PADDING = 100;
 const bool DRAW_GUIDES = false;
 const int PATH_JITTER = 50;
 
-const string IMG_PATH = "../../../images/gradient_10.jpg";
+const string IMG_PATH = "../../../images/masks/tree.gif";
 
 vector <ofPoint> drawnPoints;
 

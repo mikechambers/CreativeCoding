@@ -30,6 +30,14 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 
 /*******************  General Util APIs        *******************/
 
+ofColor mRandomColor(int opacity) {
+    return ofColor(ofRandom( 0, 255 ), ofRandom( 0, 255), ofRandom( 0, 255), opacity);
+}
+
+ofColor mRandomColor() {
+    return mRandomColor(255);
+}
+
 ofVec3f mGetWindowCenterPoint() {
     return ofVec3f(ofGetWidth() / 2, ofGetHeight() / 2, 0.0);
 }

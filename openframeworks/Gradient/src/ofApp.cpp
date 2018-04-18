@@ -16,7 +16,6 @@
 
 #include "LinearGradient.h"
 
-
 MeshUtils utils;
 ofxSyphonServer syphon;
 
