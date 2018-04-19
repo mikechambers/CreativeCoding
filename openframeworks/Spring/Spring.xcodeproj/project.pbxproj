@@ -15,7 +15,6 @@
 		47F2C83F2086B05F00ABB068 /* Follower.h in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83B2086B05F00ABB068 /* Follower.h */; };
 		47F2C8402086B05F00ABB068 /* Follower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83C2086B05F00ABB068 /* Follower.cpp */; };
 		47F2C8412086B05F00ABB068 /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83D2086B05F00ABB068 /* Mover.cpp */; };
-		47F2C8472086E63D00ABB068 /* Spring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C8452086E63D00ABB068 /* Spring.cpp */; };
 		47FBCAC920885A4A004CB79F /* PointFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47FBCAC720885A49004CB79F /* PointFollower.cpp */; };
 		47FBCACA20885A4A004CB79F /* PointFollower.h in Sources */ = {isa = PBXBuildFile; fileRef = 47FBCAC820885A4A004CB79F /* PointFollower.h */; };
 		4D508D34156E7076531D9084 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D58DCB2C0AEFDE6171E29540 /* Syphon.framework */; };
@@ -71,8 +70,6 @@
 		47F2C83B2086B05F00ABB068 /* Follower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Follower.h; path = ../lib/mesh/Follower.h; sourceTree = "<group>"; };
 		47F2C83C2086B05F00ABB068 /* Follower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Follower.cpp; path = ../lib/mesh/Follower.cpp; sourceTree = "<group>"; };
 		47F2C83D2086B05F00ABB068 /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/Mover.cpp; sourceTree = "<group>"; };
-		47F2C8452086E63D00ABB068 /* Spring.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Spring.cpp; path = src/Spring.cpp; sourceTree = "<group>"; };
-		47F2C8462086E63D00ABB068 /* Spring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Spring.h; path = src/Spring.h; sourceTree = "<group>"; };
 		47FBCAC720885A49004CB79F /* PointFollower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PointFollower.cpp; path = ../lib/mesh/PointFollower.cpp; sourceTree = "<group>"; };
 		47FBCAC820885A4A004CB79F /* PointFollower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointFollower.h; path = ../lib/mesh/PointFollower.h; sourceTree = "<group>"; };
 		9FBB24B6275F39436518E824 /* ofxSyphonClient.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonClient.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.mm; sourceTree = SOURCE_ROOT; };
@@ -199,8 +196,6 @@
 				47FBCAC820885A4A004CB79F /* PointFollower.h */,
 				478EE12F20870D09009DCE76 /* Group.cpp */,
 				478EE13020870D09009DCE76 /* Group.h */,
-				47F2C8452086E63D00ABB068 /* Spring.cpp */,
-				47F2C8462086E63D00ABB068 /* Spring.h */,
 				47F2C83C2086B05F00ABB068 /* Follower.cpp */,
 				47F2C83B2086B05F00ABB068 /* Follower.h */,
 				47F2C83D2086B05F00ABB068 /* Mover.cpp */,
@@ -336,7 +331,6 @@
 				C781B91F07C14A90499EE0D8 /* ofxSyphonServer.mm in Sources */,
 				5666329D903F71012C0EFCC9 /* ofxSyphonClient.mm in Sources */,
 				A24705DE57AFCAF7741ECD62 /* ofxSyphonServerDirectory.mm in Sources */,
-				47F2C8472086E63D00ABB068 /* Spring.cpp in Sources */,
 				478EE13120870D09009DCE76 /* Group.cpp in Sources */,
 				2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */,
 			);

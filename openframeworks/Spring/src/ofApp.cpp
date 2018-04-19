@@ -22,29 +22,30 @@ MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "Spring";
-const int GRID_SIZE = 2;
-bool paused = true;
 
+bool paused = false;
+
+const bool DRAW_GUIDES = false;
+
+const int GRID_SIZE = 2;
 const float MAX_VELOCITY = 10;
 const int POINT_COUNT = 30;
 const bool RANDOM_POINTS = true;
 const int PATH_JITTER = 50;
 const int MASS = 100;
-const bool DRAW_GUIDES = false;
-
-const int CIRLCE_SIZE = 2;
+const bool SCALE_GRAVITY  = true;
+const int POINT_OPACITY = 30;
+const float FRICTION = 0.03;
+const int POINT_SIZE = 2;
+const int PADDING = 20;
 
 ofRectangle bounds;
-
-Mover mouseMover;
 
 ofVboMesh lineMesh;
 
 PointFollower pointFollower;
 Follower follower;
 
-
-//vector<Group> groups;
 vector<shared_ptr<Group>> groups;
 
 //--------------------------------------------------------------
@@ -55,19 +56,17 @@ void ofApp::setup(){
     bounds = ofGetWindowRect();
     
     ofSetBackgroundAuto(true);
-    //ofSetBackgroundColor(ofColor::darkSlateGray);
-    
     ofColor c = mRandomColor();
     ofSetBackgroundColor(c);
     
-    cout << "ofColor(" << c.r << "," << c.g << "," << c.b << ")" << endl;
+    cout << "ofColor(" << int(c.r) << "," << int(c.g) << "," << int(c.b) << ")" << endl;
     
     lineMesh.enableColors();
     lineMesh.setMode(OF_PRIMITIVE_LINES);
     
     vector<ofVec3f> points;
     
-    points = mGetRandomPointsInBounds(bounds, POINT_COUNT);
+    points = mGetRandomPointsInBounds(mGetBoundsWithPadding(bounds, PADDING), POINT_COUNT);
     
     pointFollower.setPoints(points);
     pointFollower.setToRandomLocation();
@@ -90,14 +89,11 @@ void ofApp::setup(){
             shared_ptr<Group> g(new Group());
 
             g->init(l);
-            g->color = ofColor(ofColor::darkBlue, 30);
-            g->spring.friction = 0.03;
+            g->color = ofColor(ofColor::white, POINT_OPACITY);
+            g->spring.friction = FRICTION;
             groups.push_back(g);
         }
     }
-
-    
-    mouseMover.mass = 100;
 }
 
 //--------------------------------------------------------------
@@ -118,9 +114,17 @@ void ofApp::update(){
         if(dist < MASS) {
             ofVec3f force = follower.repel(group->spring);
             
-            float mod = ((MASS - dist) / MASS);
-            group->spring.applyForce(force * mod);
-            //group->spring.applyForce(force);
+            
+            //note, could simplify this a bit by setting mod to
+            //1 by default  and then just applying force, but
+            //duplicating code to we dont have unecessary vector
+            //multiplication when SCALE_GRAVITY is false.
+            if(SCALE_GRAVITY) {
+                float mod = ((MASS - dist) / MASS);
+                group->spring.applyForce(force * mod);
+            } else {
+                group->spring.applyForce(force);
+            }
         }
 
         group->spring.update();
@@ -145,17 +149,15 @@ void ofApp::draw(){
     for(auto& group : groups) {
         ofFill();
         ofSetColor(ofColor::black);
-        //ofDrawCircle(group->anchor.location, 2);
-        
-        //ofDrawLine(group->anchor.location, group->spring.location);
-        
+
         ofSetColor(group->color);
-        ofDrawCircle(group->spring.location, CIRLCE_SIZE);
+        ofDrawCircle(group->spring.location, POINT_SIZE);
     }
 
     if(DRAW_GUIDES) {
         ofSetColor(ofColor::black);
-        ofDrawCircle(follower.location, 20);
+        ofNoFill();
+        ofDrawCircle(follower.location, follower.mass);
         ofDrawCircle(pointFollower.location, 4);
     }
     
@@ -178,8 +180,6 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-    mouseMover.location.x = x;
-    mouseMover.location.y = y;
 }
 
 //--------------------------------------------------------------

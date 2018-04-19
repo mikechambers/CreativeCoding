@@ -25,9 +25,6 @@ Mover::Mover() {
     
     mass = 1.0;
     
-    
-    //do we need to set this?
-    //acceleration.limit(1.0);
 }
 
 void Mover::applyForce(ofVec3f force) {

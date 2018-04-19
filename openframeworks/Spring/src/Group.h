@@ -10,13 +10,13 @@
 
 #include <stdio.h>
 #include "Mover.h"
-#include "Spring.h"
+#include "Follower.h"
 #include "ofMain.h"
 
 class Group {
 public:
     Mover anchor;
-    Spring spring;
+    Follower spring;
     ofColor color;
     
     void init(ofVec3f location);

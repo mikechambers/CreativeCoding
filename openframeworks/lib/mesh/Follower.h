@@ -20,6 +20,7 @@ public:
     float attractionCoefficient = 0.1;
     
     int index = 0;
+    float friction = 0.0;
     
     void setIndex(int _index);
     

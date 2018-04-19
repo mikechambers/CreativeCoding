@@ -38,6 +38,14 @@ void Follower::update() {
 
 void Follower::update(ofVec3f t) {
     
+    if(friction != 0) {
+        ofVec3f force = velocity * -1;
+        force.normalize();
+        force *= friction;
+        
+        applyForce(force);
+    }
+    
     //do we need this limit?
     velocity.limit(limit);
     ofVec3f dir = t - location;
