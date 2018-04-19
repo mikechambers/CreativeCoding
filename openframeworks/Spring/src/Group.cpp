@@ -9,11 +9,23 @@
 #include "ofMain.h"
 #include "MeshUtils.h"
 
+
+Group::Group(){
+}
+
+Group::Group(const Group &source) {
+    color = source.color;
+    
+    spring = source.spring;
+    anchor = source.anchor;
+}
+
 void Group::init(ofVec3f location) {
-    color = mRandomColor();
-    
-    anchor.location = location;
-    
+    //color = mRandomColor();
+    color = ofColor(ofColor::lightBlue, 128);
+
     spring.setTarget(&anchor);
     spring.location = location;
+    
+    anchor.location = location;
 }

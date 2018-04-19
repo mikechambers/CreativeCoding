@@ -17,7 +17,10 @@ private:
     float friction = .01;
     
 public:
-    void update();
+    void update() override;
+    Spring(const Spring &source);
+    Spring();
+    Spring(Mover * _target);
 };
 
 #endif /* Spring_hpp */

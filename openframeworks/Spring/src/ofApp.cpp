@@ -5,7 +5,7 @@
     http://www.mikechambers.com
     https://github.com/mikechambers/CreativeCoding
 
-    Released un an MIT License
+    Released under an MIT License
     https://github.com/mikechambers/CreativeCoding/blob/master/LICENSE.txt
 */
 
@@ -14,20 +14,24 @@
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
 #include "Mover.h"
-#include "Spring.h"
+#include "Follower.h"
 #include "Group.h"
 
 MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "Spring";
+const int GRID_SIZE = 4;
 bool paused = false;
 
 ofRectangle bounds;
 
 Mover mouseMover;
 
-vector<Group> groups;
+ofVboMesh lineMesh;
+
+//vector<Group> groups;
+vector<shared_ptr<Group>> groups;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -39,8 +43,9 @@ void ofApp::setup(){
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
     
-
-    int GRID_SIZE = 20;
+    lineMesh.enableColors();
+    lineMesh.setMode(OF_PRIMITIVE_LINES);
+    
     for(int y = 0; y < (bounds.height / GRID_SIZE) - 1; y++) {
         for(int x = 0; x < (bounds.width / GRID_SIZE) - 1; x++) {
         
@@ -48,8 +53,9 @@ void ofApp::setup(){
             l.x = (x +  1) * GRID_SIZE;
             l.y =  (y + 1) * GRID_SIZE;
             
-            Group g;
-            g.init(l);
+            shared_ptr<Group> g(new Group());
+
+            g->init(l);
             
             groups.push_back(g);
         }
@@ -65,21 +71,31 @@ void ofApp::update(){
         return;
     }
     
+    lineMesh.clear();
+    
     //for(auto group : groups) {
-    vector<Group>::iterator it = groups.begin();
-    for(; it != groups.end(); ++it){
-        Group &group = *it;
+    //vector<shared_ptr<Group>>::iterator it = groups->begin();
+    
+    //for(; it != groups.end(); ++it){
+    for(auto& group : groups) {
+        //Group &group = *it;
         
-        float dist = (mouseMover.location - group.spring.location).length();
+        float dist = (mouseMover.location - group->spring.location).length();
         if(dist < 20) {
-            ofVec3f force = mouseMover.repel(group.spring);
+            ofVec3f force = mouseMover.repel(group->spring);
             
             //float mod = ((20 - dist) / 20);
             //spring.applyForce(force * mod);
-            group.spring.applyForce(force);
+            group->spring.applyForce(force);
         }
 
-        group.spring.update();
+        group->spring.update();
+        
+        lineMesh.addColor(ofColor::lightGray);
+        lineMesh.addVertex(group->anchor.location);
+        lineMesh.addColor(ofColor::white);
+        lineMesh.addVertex(group->spring.location);
+        
     }
 }
 
@@ -90,22 +106,21 @@ void ofApp::draw(){
         return;
     }
     
-    vector<Group>::iterator it = groups.begin();
-    for(; it != groups.end(); ++it){
-        Group &group = *it;
-        
+    lineMesh.draw();
+
+    for(auto& group : groups) {
         ofFill();
-        ofSetColor(ofColor(ofColor::black,  36));
-        ofDrawCircle(group.anchor.location, 2);
+        ofSetColor(ofColor::black);
+        //ofDrawCircle(group->anchor.location, 2);
         
-        ofDrawLine(group.anchor.location, group.spring.location);
+        //ofDrawLine(group->anchor.location, group->spring.location);
         
-        ofSetColor(group.color);
-        ofDrawCircle(group.spring.location, 4);
+        ofSetColor(group->color);
+        ofDrawCircle(group->spring.location, 2);
     }
 
-    ofNoFill();
-    ofDrawCircle(mouseMover.location, 20);
+    //ofNoFill();
+    //ofDrawCircle(mouseMover.location, 20);
     
     
     syphon.publishScreen();

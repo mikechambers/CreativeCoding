@@ -5,7 +5,7 @@
 	http://www.mikechambers.com
 	https://github.com/mikechambers/CreativeCoding
 
-	Released un an MIT License
+	Released under an MIT License
 	https://github.com/mikechambers/CreativeCoding/blob/master/LICENSE.txt
 */
 

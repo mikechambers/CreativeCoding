@@ -1,5 +1,5 @@
 //
-//  Follower.hpp
+//  Follower.h
 //  Persistence
 //
 //  Created by Mike Chambers on 4/19/16.
@@ -23,9 +23,12 @@ public:
     
     void setIndex(int _index);
     
-    virtual void setTarget(Mover * _target);
-    virtual void update();
-    void update(ofVec3f t);
+    void setTarget(Mover * _target);
+    virtual void update() override;
+    virtual void update(ofVec3f t);
+    Follower(const Follower &obj);
+    Follower(Mover * _target);
+    Follower();
 };
 
 

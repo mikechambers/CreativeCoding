@@ -11,7 +11,6 @@
 		478EE13120870D09009DCE76 /* Group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478EE12F20870D09009DCE76 /* Group.cpp */; };
 		47F2C8352086AE8B00ABB068 /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C8332086AE8B00ABB068 /* MeshUtils.cpp */; };
 		47F2C8362086AE8B00ABB068 /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C8342086AE8B00ABB068 /* MeshUtils.h */; };
-		47F2C8392086AEAC00ABB068 /* SpringMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C8372086AEAC00ABB068 /* SpringMover.cpp */; };
 		47F2C83E2086B05F00ABB068 /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83A2086B05F00ABB068 /* Mover.h */; };
 		47F2C83F2086B05F00ABB068 /* Follower.h in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83B2086B05F00ABB068 /* Follower.h */; };
 		47F2C8402086B05F00ABB068 /* Follower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47F2C83C2086B05F00ABB068 /* Follower.cpp */; };
@@ -66,8 +65,6 @@
 		478EE13020870D09009DCE76 /* Group.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Group.h; path = src/Group.h; sourceTree = "<group>"; };
 		47F2C8332086AE8B00ABB068 /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
 		47F2C8342086AE8B00ABB068 /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
-		47F2C8372086AEAC00ABB068 /* SpringMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SpringMover.cpp; path = src/SpringMover.cpp; sourceTree = "<group>"; };
-		47F2C8382086AEAC00ABB068 /* SpringMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpringMover.h; path = src/SpringMover.h; sourceTree = "<group>"; };
 		47F2C83A2086B05F00ABB068 /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/Mover.h; sourceTree = "<group>"; };
 		47F2C83B2086B05F00ABB068 /* Follower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Follower.h; path = ../lib/mesh/Follower.h; sourceTree = "<group>"; };
 		47F2C83C2086B05F00ABB068 /* Follower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Follower.cpp; path = ../lib/mesh/Follower.cpp; sourceTree = "<group>"; };
@@ -202,8 +199,6 @@
 				47F2C83B2086B05F00ABB068 /* Follower.h */,
 				47F2C83D2086B05F00ABB068 /* Mover.cpp */,
 				47F2C83A2086B05F00ABB068 /* Mover.h */,
-				47F2C8372086AEAC00ABB068 /* SpringMover.cpp */,
-				47F2C8382086AEAC00ABB068 /* SpringMover.h */,
 				47F2C8332086AE8B00ABB068 /* MeshUtils.cpp */,
 				47F2C8342086AE8B00ABB068 /* MeshUtils.h */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
@@ -329,7 +324,6 @@
 				47F2C8352086AE8B00ABB068 /* MeshUtils.cpp in Sources */,
 				47F2C8362086AE8B00ABB068 /* MeshUtils.h in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
-				47F2C8392086AEAC00ABB068 /* SpringMover.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				C781B91F07C14A90499EE0D8 /* ofxSyphonServer.mm in Sources */,
 				5666329D903F71012C0EFCC9 /* ofxSyphonClient.mm in Sources */,

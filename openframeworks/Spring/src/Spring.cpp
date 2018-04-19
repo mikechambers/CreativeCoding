@@ -6,6 +6,18 @@
 //
 
 #include "Spring.h"
+#include "Follower.h"
+
+Spring::Spring():Follower() {
+    
+}
+Spring::Spring(Mover * _target) : Follower(_target) {
+    
+}
+
+Spring::Spring(const Spring &source) : Follower(source){
+    friction = source.friction;
+}
 
 void Spring::update() {
     
@@ -13,7 +25,6 @@ void Spring::update() {
     //force *= -1;
     force.normalize();
     force *= friction;
-    
     
     applyForce(force);
     

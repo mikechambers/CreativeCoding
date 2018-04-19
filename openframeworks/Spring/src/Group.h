@@ -1,5 +1,5 @@
 //
-//  Group.hpp
+//  Group.h
 //  Spring
 //
 //  Created by Mike Chambers on 4/17/18.
@@ -20,6 +20,8 @@ public:
     ofColor color;
     
     void init(ofVec3f location);
+    Group(const Group &source);
+    Group();
 };
 
 #endif /* Group_hpp */
