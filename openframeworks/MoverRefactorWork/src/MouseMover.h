@@ -1,13 +1,18 @@
 //
-//  MouseMover.hpp
-//  MoverRefactorWork
+//  MouseMover.h
 //
 //  Created by Mike Chambers on 4/19/18.
 //
 
-#ifndef MouseMover_hpp
-#define MouseMover_hpp
+#ifndef MouseMover_h
+#define MouseMover_h
 
 #include <stdio.h>
+#include "Mover.h"
 
-#endif /* MouseMover_hpp */
+class MouseMover : public Mover {
+public:
+    void update() override;
+};
+
+#endif /* MouseMover_h */
