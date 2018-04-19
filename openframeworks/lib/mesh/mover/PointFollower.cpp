@@ -1,9 +1,15 @@
+//
+//  PointFollower.cpp
+//
+//  Created by Mike Chambers on 4/19/18.
+//
+
 #include "PointFollower.h"
 #include "MeshUtils.h"
 
 PointFollower::PointFollower() {
+
     attractionCoefficient = 1.8;
-    
     currentPoint = ofVec3f(0, 0, CURRENT_POINT_INITIALIZATION_VALUE);
 }
 
@@ -15,7 +21,7 @@ void PointFollower::setPoints(vector<ofVec3f> _points) {
 ofVec3f PointFollower::getCurrentPoint () {
     
     if(pointIndex == -1) {
-        cout << "PointFollower::getCurrentTarget points have not been specified" << endl;
+        cout << "PointFollower::getCurrentPoint points have not been specified" << endl;
         return;
     }
     
@@ -64,11 +70,11 @@ void PointFollower::update() {
     
     ofVec3f tPoint = getCurrentPoint();
     
-    if(ofDist(tPoint.x, tPoint.y, location.x, location.y) < hitRadius) {
+    if(ofDist(tPoint.x, tPoint.y, position.x, position.y) < pointHitRadius) {
         tPoint = getNextPoint();
-    
+        
         currentPoint = tPoint;
     }
-
+    
     Follower::update(tPoint);
 }
