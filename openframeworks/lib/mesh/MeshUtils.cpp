@@ -30,6 +30,19 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 
 /*******************  General Util APIs        *******************/
 
+ofVec3f mGetRandomVelocity(float max) {
+    ofVec3f velocity;
+    
+    float s1 = (ofRandom(1) > 0.5)? max : -1;
+    float s2 = (ofRandom(1) > 0.5)? max : -1;
+    float s3 = (ofRandom(1) > 0.5)? max : -1;
+    float s4 = (ofRandom(1) > 0.5)? max : -1;
+    
+    velocity.set(ofRandom(-max, max), ofRandom(-max, max));
+    
+    return velocity;
+}
+
 string mColorToString(ofColor color) {
     string out = "ofColor(" + ofToString(int(color.r)) + ", " + ofToString(int(color.g)) + ", " + ofToString(int(color.b)) + ", " + ofToString(int(color.a)) + ")";
     return out;
