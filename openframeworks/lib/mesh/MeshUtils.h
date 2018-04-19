@@ -24,6 +24,8 @@ public:
 ofColor mRandomColor(int opacity);
 ofColor mRandomColor();
 
+string mColorToString(ofColor color);
+
 ofRectangle mGetBoundsWithPadding(const ofRectangle & bounds, float padding);
 ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds);
 ofVec3f mGetRandomPointInBounds(const ofRectangle & bounds, float depth);

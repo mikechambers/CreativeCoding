@@ -30,6 +30,11 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
 
 /*******************  General Util APIs        *******************/
 
+string mColorToString(ofColor color) {
+    string out = "ofColor(" + ofToString(int(color.r)) + ", " + ofToString(int(color.g)) + ", " + ofToString(int(color.b)) + ", " + ofToString(int(color.a)) + ")";
+    return out;
+}
+
 ofColor mRandomColor(int opacity) {
     return ofColor(ofRandom( 0, 255 ), ofRandom( 0, 255), ofRandom( 0, 255), opacity);
 }
