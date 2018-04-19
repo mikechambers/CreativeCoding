@@ -15,20 +15,34 @@
 #include "MeshUtils.h"
 #include "Mover.h"
 #include "Follower.h"
+#include "PointFollower.h"
 #include "Group.h"
 
 MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "Spring";
-const int GRID_SIZE = 4;
-bool paused = false;
+const int GRID_SIZE = 2;
+bool paused = true;
+
+const float MAX_VELOCITY = 10;
+const int POINT_COUNT = 30;
+const bool RANDOM_POINTS = true;
+const int PATH_JITTER = 50;
+const int MASS = 100;
+const bool DRAW_GUIDES = false;
+
+const int CIRLCE_SIZE = 2;
 
 ofRectangle bounds;
 
 Mover mouseMover;
 
 ofVboMesh lineMesh;
+
+PointFollower pointFollower;
+Follower follower;
+
 
 //vector<Group> groups;
 vector<shared_ptr<Group>> groups;
@@ -41,22 +55,43 @@ void ofApp::setup(){
     bounds = ofGetWindowRect();
     
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::white);
+    //ofSetBackgroundColor(ofColor::darkSlateGray);
+    
+    ofColor c = mRandomColor();
+    ofSetBackgroundColor(c);
+    
+    cout << "ofColor(" << c.r << "," << c.g << "," << c.b << ")" << endl;
     
     lineMesh.enableColors();
     lineMesh.setMode(OF_PRIMITIVE_LINES);
+    
+    vector<ofVec3f> points;
+    
+    points = mGetRandomPointsInBounds(bounds, POINT_COUNT);
+    
+    pointFollower.setPoints(points);
+    pointFollower.setToRandomLocation();
+    pointFollower.setToRandomVelocity(MAX_VELOCITY);
+    pointFollower.randomOrder = RANDOM_POINTS;
+    pointFollower.pathJitter = PATH_JITTER;
+    
+    follower.setToRandomLocation();
+    follower.setTarget(&pointFollower);
+    follower.attractionCoefficient = 0.2;
+    follower.mass = MASS;
     
     for(int y = 0; y < (bounds.height / GRID_SIZE) - 1; y++) {
         for(int x = 0; x < (bounds.width / GRID_SIZE) - 1; x++) {
         
             ofVec3f l;
             l.x = (x +  1) * GRID_SIZE;
-            l.y =  (y + 1) * GRID_SIZE;
+            l.y = (y + 1) * GRID_SIZE;
             
             shared_ptr<Group> g(new Group());
 
             g->init(l);
-            
+            g->color = ofColor(ofColor::darkBlue, 30);
+            g->spring.friction = 0.03;
             groups.push_back(g);
         }
     }
@@ -73,27 +108,26 @@ void ofApp::update(){
     
     lineMesh.clear();
     
-    //for(auto group : groups) {
-    //vector<shared_ptr<Group>>::iterator it = groups->begin();
+    pointFollower.update();
+    follower.update();
     
-    //for(; it != groups.end(); ++it){
     for(auto& group : groups) {
         //Group &group = *it;
         
-        float dist = (mouseMover.location - group->spring.location).length();
-        if(dist < 20) {
-            ofVec3f force = mouseMover.repel(group->spring);
+        float dist = (follower.location - group->spring.location).length();
+        if(dist < MASS) {
+            ofVec3f force = follower.repel(group->spring);
             
-            //float mod = ((20 - dist) / 20);
-            //spring.applyForce(force * mod);
-            group->spring.applyForce(force);
+            float mod = ((MASS - dist) / MASS);
+            group->spring.applyForce(force * mod);
+            //group->spring.applyForce(force);
         }
 
         group->spring.update();
         
-        lineMesh.addColor(ofColor::lightGray);
+        lineMesh.addColor(ofColor(ofColor::white, 255));
         lineMesh.addVertex(group->anchor.location);
-        lineMesh.addColor(ofColor::white);
+        lineMesh.addColor(ofColor(ofColor::white, 0));
         lineMesh.addVertex(group->spring.location);
         
     }
@@ -116,11 +150,14 @@ void ofApp::draw(){
         //ofDrawLine(group->anchor.location, group->spring.location);
         
         ofSetColor(group->color);
-        ofDrawCircle(group->spring.location, 2);
+        ofDrawCircle(group->spring.location, CIRLCE_SIZE);
     }
 
-    //ofNoFill();
-    //ofDrawCircle(mouseMover.location, 20);
+    if(DRAW_GUIDES) {
+        ofSetColor(ofColor::black);
+        ofDrawCircle(follower.location, 20);
+        ofDrawCircle(pointFollower.location, 4);
+    }
     
     
     syphon.publishScreen();

@@ -22,7 +22,6 @@ Group::Group(const Group &source) {
 
 void Group::init(ofVec3f location) {
     //color = mRandomColor();
-    color = ofColor(ofColor::lightBlue, 128);
 
     spring.setTarget(&anchor);
     spring.location = location;

@@ -12,11 +12,11 @@
 #include "Follower.h"
 
 class Spring : public Follower {
+ 
+public:
     
-private:
     float friction = .01;
     
-public:
     void update() override;
     Spring(const Spring &source);
     Spring();
