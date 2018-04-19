@@ -33,7 +33,7 @@ const int POINT_COUNT = 30;
 const bool RANDOM_POINTS = true;
 const int PATH_JITTER = 50;
 const int MASS = 100;
-const bool SCALE_GRAVITY  = true;
+const bool SCALE_GRAVITY  = false;
 const int POINT_OPACITY = 30;
 const float FRICTION = 0.03;
 const int POINT_SIZE = 2;
@@ -59,7 +59,7 @@ void ofApp::setup(){
     ofColor c = mRandomColor();
     ofSetBackgroundColor(c);
     
-    cout << "ofColor(" << int(c.r) << "," << int(c.g) << "," << int(c.b) << ")" << endl;
+    cout << mColorToString(c) << endl;
     
     lineMesh.enableColors();
     lineMesh.setMode(OF_PRIMITIVE_LINES);
