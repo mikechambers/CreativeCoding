@@ -16,14 +16,6 @@ Follower::Follower(Mover * _target) : Mover() {
     target = _target;
 }
 
-Follower::Follower(const Follower &source) {
-    target = new Mover();
-    *target = *source.target; // copy the value
-    
-    attractionCoefficient = source.attractionCoefficient;
-    index = source.index;
-}
-
 void Follower::setTarget(Mover * _target) {
     target = _target;
 }

@@ -27,7 +27,6 @@ public:
     void setTarget(Mover * _target);
     virtual void update() override;
     virtual void update(ofVec3f t);
-    Follower(const Follower &obj);
     Follower(Mover * _target);
     Follower();
 };
