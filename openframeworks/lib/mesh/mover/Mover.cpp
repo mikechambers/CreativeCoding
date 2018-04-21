@@ -44,13 +44,12 @@ ofVec3f Mover::repel(Mover mover) {
 
 ofVec3f Mover::attract(Mover mover) {
     ofVec3f force = position - mover.position;
-    //float distance = mConstrain(force.length(), minGravityInfluence, maxGravityInfluence);
-    
     float distance = ofClamp(force.length(), minGravityInfluence, maxGravityInfluence);
     
     force.normalize();
     
-    float strength = (gravityCoefficient * mass * mover.mass) / (distance * distance);
+    //float strength = (gravityCoefficient * mass * mover.mass) / (distance * distance);
+    float strength = (gravityCoefficient * mass * mover.mass) / (distance);
     force *= strength;
     
     return force;

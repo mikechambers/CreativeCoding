@@ -23,9 +23,9 @@ public:
     //in degrees
     float angle;
     
-    float minGravityInfluence = 5.0;
-    float maxGravityInfluence = 25.0;
-    float gravityCoefficient = 0.4;
+    float minGravityInfluence = 1.0;
+    float maxGravityInfluence = 200.0;
+    float gravityCoefficient = 0.3;
     
     /** Maxium velocity **/
     float maxVelocity = 5.0;
