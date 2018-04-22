@@ -19,25 +19,23 @@ void MeshUtils::disableScreenshot() {
     ofRemoveListener(ofEvents().keyPressed, this, &MeshUtils::onKeyPressed);
 }
 
+void MeshUtils::takeScreenshot() {
+    string n = "../../../screenshots/" + _name + "_" + ofGetTimestampString() + ".png";
+    ofSaveScreen(n);
+    cout << "Screenshot Saved : '" + n  + "'" << endl;
+}
+
 void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
     
     if(eventArgs.key == _screenshotKey)  {
-        string n = "../../../screenshots/" + _name + "_" + ofGetTimestampString() + ".png";
-        ofSaveScreen(n);
-        cout << "Screenshot Saved : '" + n  + "'"<< endl;
+        takeScreenshot();
     }
 }
 
 /*******************  General Util APIs        *******************/
 
 ofVec3f mGetRandomVelocity(float max) {
-    ofVec3f velocity;
-    
-    float s1 = (ofRandom(1) > 0.5)? max : -1;
-    float s2 = (ofRandom(1) > 0.5)? max : -1;
-    float s3 = (ofRandom(1) > 0.5)? max : -1;
-    float s4 = (ofRandom(1) > 0.5)? max : -1;
-    
+    ofVec3f velocity;    
     velocity.set(ofRandom(-max, max), ofRandom(-max, max));
     
     return velocity;

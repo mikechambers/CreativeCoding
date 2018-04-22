@@ -19,6 +19,7 @@ public:
     
     void onKeyPressed(ofKeyEventArgs& eventArgs);
     void disableScreenshot();
+    void takeScreenshot();
 };
 
 ofColor mRandomColor(int opacity);

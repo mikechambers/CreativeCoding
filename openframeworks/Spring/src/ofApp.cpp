@@ -32,8 +32,8 @@ const float MAX_VELOCITY = 10;
 const int POINT_COUNT = 30;
 const bool RANDOM_POINTS = true;
 const int PATH_JITTER = 50;
-const int MASS = 100;
-const bool SCALE_GRAVITY  = false;
+const int MASS = 25;
+const bool SCALE_GRAVITY  = true;
 const int POINT_OPACITY = 30;
 const float FRICTION = 0.03;
 const int POINT_SIZE = 2;
@@ -69,13 +69,13 @@ void ofApp::setup(){
     points = mGetRandomPointsInBounds(mGetBoundsWithPadding(bounds, PADDING), POINT_COUNT);
     
     pointFollower.setPoints(points);
-    pointFollower.setToRandomLocation();
-    pointFollower.setToRandomVelocity(MAX_VELOCITY);
+    pointFollower.position = mGetRandomPointInBounds(bounds);
+    pointFollower.position = mGetRandomVelocity(MAX_VELOCITY);
     pointFollower.randomOrder = RANDOM_POINTS;
     pointFollower.pathJitter = PATH_JITTER;
     
-    follower.setToRandomLocation();
-    follower.setTarget(&pointFollower);
+    follower.position = mGetRandomPointInBounds(bounds);
+    follower.target = &pointFollower;
     follower.attractionCoefficient = 0.2;
     follower.mass = MASS;
     
@@ -110,7 +110,7 @@ void ofApp::update(){
     for(auto& group : groups) {
         //Group &group = *it;
         
-        float dist = (follower.location - group->spring.location).length();
+        float dist = (follower.position - group->spring.position).length();
         if(dist < MASS) {
             ofVec3f force = follower.repel(group->spring);
             
@@ -130,9 +130,9 @@ void ofApp::update(){
         group->spring.update();
         
         lineMesh.addColor(ofColor(ofColor::white, 255));
-        lineMesh.addVertex(group->anchor.location);
+        lineMesh.addVertex(group->anchor.position);
         lineMesh.addColor(ofColor(ofColor::white, 0));
-        lineMesh.addVertex(group->spring.location);
+        lineMesh.addVertex(group->spring.position);
         
     }
 }
@@ -151,14 +151,14 @@ void ofApp::draw(){
         ofSetColor(ofColor::black);
 
         ofSetColor(group->color);
-        ofDrawCircle(group->spring.location, POINT_SIZE);
+        ofDrawCircle(group->spring.position, POINT_SIZE);
     }
 
     if(DRAW_GUIDES) {
         ofSetColor(ofColor::black);
         ofNoFill();
-        ofDrawCircle(follower.location, follower.mass);
-        ofDrawCircle(pointFollower.location, 4);
+        ofDrawCircle(follower.position, follower.mass);
+        ofDrawCircle(pointFollower.position, 4);
     }
     
     

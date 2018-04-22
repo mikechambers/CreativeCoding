@@ -8,18 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */; };
-		478B8CEA2089513100F676E4 /* BoundsMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE02089513000F676E4 /* BoundsMover.cpp */; };
-		478B8CEB2089513100F676E4 /* Follower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE12089513000F676E4 /* Follower.cpp */; };
-		478B8CEC2089513100F676E4 /* MouseMover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE22089513000F676E4 /* MouseMover.h */; };
-		478B8CED2089513100F676E4 /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE32089513000F676E4 /* Mover.cpp */; };
-		478B8CEE2089513100F676E4 /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE42089513100F676E4 /* Mover.h */; };
-		478B8CEF2089513100F676E4 /* Follower.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE52089513100F676E4 /* Follower.h */; };
-		478B8CF02089513100F676E4 /* PointFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE62089513100F676E4 /* PointFollower.cpp */; };
-		478B8CF12089513100F676E4 /* PointFollower.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE72089513100F676E4 /* PointFollower.h */; };
-		478B8CF22089513100F676E4 /* MouseMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE82089513100F676E4 /* MouseMover.cpp */; };
-		478B8CF32089513100F676E4 /* BoundsMover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CE92089513100F676E4 /* BoundsMover.h */; };
-		47D037D12089100500CB8D88 /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47D037CF2089100400CB8D88 /* MeshUtils.cpp */; };
-		47D037D22089100500CB8D88 /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 47D037D02089100400CB8D88 /* MeshUtils.h */; };
+		478B8CFF208955CF00F676E4 /* BoundsMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CF5208955CE00F676E4 /* BoundsMover.cpp */; };
+		478B8D00208955CF00F676E4 /* Follower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CF6208955CE00F676E4 /* Follower.cpp */; };
+		478B8D01208955CF00F676E4 /* MouseMover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CF7208955CF00F676E4 /* MouseMover.h */; };
+		478B8D02208955CF00F676E4 /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CF8208955CF00F676E4 /* Mover.cpp */; };
+		478B8D03208955CF00F676E4 /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CF9208955CF00F676E4 /* Mover.h */; };
+		478B8D04208955CF00F676E4 /* Follower.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CFA208955CF00F676E4 /* Follower.h */; };
+		478B8D05208955CF00F676E4 /* PointFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CFB208955CF00F676E4 /* PointFollower.cpp */; };
+		478B8D06208955CF00F676E4 /* PointFollower.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CFC208955CF00F676E4 /* PointFollower.h */; };
+		478B8D07208955CF00F676E4 /* MouseMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CFD208955CF00F676E4 /* MouseMover.cpp */; };
+		478B8D08208955CF00F676E4 /* BoundsMover.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8CFE208955CF00F676E4 /* BoundsMover.h */; };
+		478B8D0B2089567500F676E4 /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 478B8D092089567500F676E4 /* MeshUtils.cpp */; };
+		478B8D0C2089567500F676E4 /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 478B8D0A2089567500F676E4 /* MeshUtils.h */; };
 		4D508D34156E7076531D9084 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D58DCB2C0AEFDE6171E29540 /* Syphon.framework */; };
 		5666329D903F71012C0EFCC9 /* ofxSyphonClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9FBB24B6275F39436518E824 /* ofxSyphonClient.mm */; };
 		A24705DE57AFCAF7741ECD62 /* ofxSyphonServerDirectory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 07B9A18301D1B0DA4A7F8E48 /* ofxSyphonServerDirectory.mm */; };
@@ -65,16 +65,18 @@
 		07B9A18301D1B0DA4A7F8E48 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonServerDirectory.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonServerDirectory.mm; sourceTree = SOURCE_ROOT; };
 		0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = SyphonNameboundClient.m; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon/src/SyphonNameboundClient.m; sourceTree = SOURCE_ROOT; };
 		3C77E820B17063DED1EF941F /* ofxSyphonClient.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonClient.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.h; sourceTree = SOURCE_ROOT; };
-		478B8CE02089513000F676E4 /* BoundsMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BoundsMover.cpp; path = ../lib/mesh/mover/BoundsMover.cpp; sourceTree = "<group>"; };
-		478B8CE12089513000F676E4 /* Follower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Follower.cpp; path = ../lib/mesh/mover/Follower.cpp; sourceTree = "<group>"; };
-		478B8CE22089513000F676E4 /* MouseMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MouseMover.h; path = ../lib/mesh/mover/MouseMover.h; sourceTree = "<group>"; };
-		478B8CE32089513000F676E4 /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/mover/Mover.cpp; sourceTree = "<group>"; };
-		478B8CE42089513100F676E4 /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/mover/Mover.h; sourceTree = "<group>"; };
-		478B8CE52089513100F676E4 /* Follower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Follower.h; path = ../lib/mesh/mover/Follower.h; sourceTree = "<group>"; };
-		478B8CE62089513100F676E4 /* PointFollower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PointFollower.cpp; path = ../lib/mesh/mover/PointFollower.cpp; sourceTree = "<group>"; };
-		478B8CE72089513100F676E4 /* PointFollower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointFollower.h; path = ../lib/mesh/mover/PointFollower.h; sourceTree = "<group>"; };
-		478B8CE82089513100F676E4 /* MouseMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MouseMover.cpp; path = ../lib/mesh/mover/MouseMover.cpp; sourceTree = "<group>"; };
-		478B8CE92089513100F676E4 /* BoundsMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BoundsMover.h; path = ../lib/mesh/mover/BoundsMover.h; sourceTree = "<group>"; };
+		478B8CF5208955CE00F676E4 /* BoundsMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BoundsMover.cpp; path = ../lib/mesh/mover/BoundsMover.cpp; sourceTree = "<group>"; };
+		478B8CF6208955CE00F676E4 /* Follower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Follower.cpp; path = ../lib/mesh/mover/Follower.cpp; sourceTree = "<group>"; };
+		478B8CF7208955CF00F676E4 /* MouseMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MouseMover.h; path = ../lib/mesh/mover/MouseMover.h; sourceTree = "<group>"; };
+		478B8CF8208955CF00F676E4 /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/mover/Mover.cpp; sourceTree = "<group>"; };
+		478B8CF9208955CF00F676E4 /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/mover/Mover.h; sourceTree = "<group>"; };
+		478B8CFA208955CF00F676E4 /* Follower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Follower.h; path = ../lib/mesh/mover/Follower.h; sourceTree = "<group>"; };
+		478B8CFB208955CF00F676E4 /* PointFollower.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PointFollower.cpp; path = ../lib/mesh/mover/PointFollower.cpp; sourceTree = "<group>"; };
+		478B8CFC208955CF00F676E4 /* PointFollower.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointFollower.h; path = ../lib/mesh/mover/PointFollower.h; sourceTree = "<group>"; };
+		478B8CFD208955CF00F676E4 /* MouseMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MouseMover.cpp; path = ../lib/mesh/mover/MouseMover.cpp; sourceTree = "<group>"; };
+		478B8CFE208955CF00F676E4 /* BoundsMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BoundsMover.h; path = ../lib/mesh/mover/BoundsMover.h; sourceTree = "<group>"; };
+		478B8D092089567500F676E4 /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
+		478B8D0A2089567500F676E4 /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
 		47D037CF2089100400CB8D88 /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
 		47D037D02089100400CB8D88 /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
 		9FBB24B6275F39436518E824 /* ofxSyphonClient.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonClient.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.mm; sourceTree = SOURCE_ROOT; };
@@ -197,16 +199,18 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
-				478B8CE02089513000F676E4 /* BoundsMover.cpp */,
-				478B8CE92089513100F676E4 /* BoundsMover.h */,
-				478B8CE12089513000F676E4 /* Follower.cpp */,
-				478B8CE52089513100F676E4 /* Follower.h */,
-				478B8CE82089513100F676E4 /* MouseMover.cpp */,
-				478B8CE22089513000F676E4 /* MouseMover.h */,
-				478B8CE32089513000F676E4 /* Mover.cpp */,
-				478B8CE42089513100F676E4 /* Mover.h */,
-				478B8CE62089513100F676E4 /* PointFollower.cpp */,
-				478B8CE72089513100F676E4 /* PointFollower.h */,
+				478B8D092089567500F676E4 /* MeshUtils.cpp */,
+				478B8D0A2089567500F676E4 /* MeshUtils.h */,
+				478B8CF5208955CE00F676E4 /* BoundsMover.cpp */,
+				478B8CFE208955CF00F676E4 /* BoundsMover.h */,
+				478B8CF6208955CE00F676E4 /* Follower.cpp */,
+				478B8CFA208955CF00F676E4 /* Follower.h */,
+				478B8CFD208955CF00F676E4 /* MouseMover.cpp */,
+				478B8CF7208955CF00F676E4 /* MouseMover.h */,
+				478B8CF8208955CF00F676E4 /* Mover.cpp */,
+				478B8CF9208955CF00F676E4 /* Mover.h */,
+				478B8CFB208955CF00F676E4 /* PointFollower.cpp */,
+				478B8CFC208955CF00F676E4 /* PointFollower.h */,
 				47D037CF2089100400CB8D88 /* MeshUtils.cpp */,
 				47D037D02089100400CB8D88 /* MeshUtils.h */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
@@ -325,18 +329,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				478B8CEA2089513100F676E4 /* BoundsMover.cpp in Sources */,
-				478B8CEB2089513100F676E4 /* Follower.cpp in Sources */,
-				478B8CEC2089513100F676E4 /* MouseMover.h in Sources */,
-				478B8CED2089513100F676E4 /* Mover.cpp in Sources */,
-				478B8CEE2089513100F676E4 /* Mover.h in Sources */,
-				478B8CEF2089513100F676E4 /* Follower.h in Sources */,
-				478B8CF02089513100F676E4 /* PointFollower.cpp in Sources */,
-				478B8CF12089513100F676E4 /* PointFollower.h in Sources */,
-				478B8CF22089513100F676E4 /* MouseMover.cpp in Sources */,
-				478B8CF32089513100F676E4 /* BoundsMover.h in Sources */,
-				47D037D12089100500CB8D88 /* MeshUtils.cpp in Sources */,
-				47D037D22089100500CB8D88 /* MeshUtils.h in Sources */,
+				478B8D0B2089567500F676E4 /* MeshUtils.cpp in Sources */,
+				478B8D0C2089567500F676E4 /* MeshUtils.h in Sources */,
+				478B8CFF208955CF00F676E4 /* BoundsMover.cpp in Sources */,
+				478B8D00208955CF00F676E4 /* Follower.cpp in Sources */,
+				478B8D01208955CF00F676E4 /* MouseMover.h in Sources */,
+				478B8D02208955CF00F676E4 /* Mover.cpp in Sources */,
+				478B8D03208955CF00F676E4 /* Mover.h in Sources */,
+				478B8D04208955CF00F676E4 /* Follower.h in Sources */,
+				478B8D05208955CF00F676E4 /* PointFollower.cpp in Sources */,
+				478B8D06208955CF00F676E4 /* PointFollower.h in Sources */,
+				478B8D07208955CF00F676E4 /* MouseMover.cpp in Sources */,
+				478B8D08208955CF00F676E4 /* BoundsMover.h in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				C781B91F07C14A90499EE0D8 /* ofxSyphonServer.mm in Sources */,

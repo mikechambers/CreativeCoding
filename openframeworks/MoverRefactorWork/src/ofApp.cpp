@@ -35,7 +35,7 @@ bool paused = false;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenshot(APP_NAME, 'p');
+    utils.enableScreenshot(APP_NAME, 's');
     syphon.setName(APP_NAME);
 
     bounds = ofGetWindowRect();
@@ -69,8 +69,12 @@ void ofApp::update(){
     }
     
     float dist = (mouseMover.position - spring.position).length();
-    if(dist < 20) {
+    if(dist < mouseMover.mass) {
         ofVec3f force = mouseMover.repel(spring);
+        
+        //float mod = ((mouseMover.mass - dist) / mouseMover.mass);
+        //spring.applyForce(force * mod);
+        
         spring.applyForce(force);
     }
     
@@ -100,7 +104,7 @@ void ofApp::draw(){
     ofDrawCircle(follower.position, 2);
     
     ofSetColor(ofColor::red);
-    ofDrawCircle(mouseMover.position, 2);
+    ofDrawCircle(mouseMover.position, mouseMover.mass);
 
     
     syphon.publishScreen();
