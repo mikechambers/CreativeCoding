@@ -1,7 +1,7 @@
 #  PerlinPlayRender
 
-Created by Mike Chambers
-http://www.mikechambers.com
+Created by Mike Chambers  
+http://www.mikechambers.com  
 http://instagram.com/mesh2325  
 
 openFrameworks project that randomly generates and saves high resolution desktop wallpaper graphics created using Perlin noise.
