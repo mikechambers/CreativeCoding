@@ -63,7 +63,7 @@ void ofApp::setup(){
     renderBounds = ofRectangle(0,0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     
     ofSetBackgroundAuto(CLEAR_BETWEEN_FRAMES);
-    ofSetBackgroundColor(ofColor::white);
+    ofSetBackgroundColor(ofColor::black);
     
     mesh.enableColors();
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
@@ -83,7 +83,7 @@ void ofApp::init(){
     ofEnableAlphaBlending();
     
     renderer.begin();
-    ofClear(ofColor::white);
+    ofClear(ofColor::black);
     renderer.end();
     
     mesh.clear();
@@ -287,9 +287,10 @@ void ofApp::keyPressed(int key){
         paused = !paused;
     } else if(key == 's') {
         saveImageOfRender();
+    } else if (key == 'n') {
+        init();
     }
 }
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
