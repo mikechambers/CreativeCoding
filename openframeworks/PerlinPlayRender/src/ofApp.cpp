@@ -213,6 +213,8 @@ void ofApp::update(){
     float radius = RADIUS;
     float centerY = center.y;
 
+    
+    //http://genekogan.com/code/p5js-perlin-noise/
     for(int i = 0; i < STEPS; i++) {
         
         ofVec3f p;
