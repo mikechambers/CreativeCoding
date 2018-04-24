@@ -71,12 +71,14 @@ void ofApp::setup(){
     
     ofEnableAlphaBlending();
     
-    int backgroundTransparency = 255;
+    int glMode = GL_RGB;
+    int backgroundOpacity = 255;
     if(TRANSPARENT_BACKGROUND) {
-        backgroundTransparency = 0;
+        backgroundOpacity = 0;
+        glMode = GL_RGBA;
     }
     
-    canvas.allocate(renderBounds, ofColor(ofColor::black, backgroundTransparency));
+    canvas.allocate(renderBounds, ofColor(ofColor::white, backgroundOpacity), glMode);
     
     init();
 }

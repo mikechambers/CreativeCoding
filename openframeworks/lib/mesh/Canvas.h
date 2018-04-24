@@ -16,7 +16,7 @@ public:
     float height = 0;
     float width = 0;
     
-    void allocate(ofRectangle _bounds, ofColor backgroundColor);
+    void allocate(ofRectangle _bounds, ofColor backgroundColor, int internalformat = GL_RGBA);
     void reset();
     void draw(ofRectangle targetBounds);
     void saveImage(string path);
@@ -24,6 +24,7 @@ public:
 private:
     ofRectangle bounds;
     ofColor backgroundColor;
+    int glFormat = GL_RGBA;
 };
 
 

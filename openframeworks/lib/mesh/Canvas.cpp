@@ -7,13 +7,19 @@
 
 #include "Canvas.h"
 
-void Canvas::allocate(ofRectangle _bounds,  ofColor _backgroundColor) {
+void Canvas::allocate(ofRectangle _bounds,  ofColor _backgroundColor, int internalformat) {
     bounds = _bounds;
     height = bounds.height;
     width = bounds.width;
     backgroundColor = _backgroundColor;
+    glFormat = internalformat;
     
-    ofFbo::allocate(bounds.width, bounds.height, GL_RGBA);
+    if(internalformat == GL_RGB && backgroundColor.a != 255) {
+        cout << "Warning : Canvas::allocate() :  GL_RGB does not support transparent backgrounds." << endl;
+    }
+    
+    ofFbo::allocate(bounds.width, bounds.height, glFormat);
+    
     
     begin();
     ofClear(backgroundColor);
@@ -22,7 +28,7 @@ void Canvas::allocate(ofRectangle _bounds,  ofColor _backgroundColor) {
 
 void Canvas::reset() {
     clear();
-    allocate(bounds, backgroundColor);
+    allocate(bounds, backgroundColor, glFormat);
 }
 
 void Canvas::draw(ofRectangle targetBounds) {
