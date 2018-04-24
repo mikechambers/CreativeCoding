@@ -14,18 +14,19 @@
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
 #include "ImageLoader.h"
+#include "Canvas.h"
 
 
 MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "PerlinPlay";
-const bool CLEAR_BETWEEN_FRAMES = false;
 const bool DRAW_GRADIENT = false;
 const bool RANDOMIZE_PARAMETERS = true;
 const int REFRESH_SECONDS =  10;
 const int OUTPUT_WIDTH = 3840;
 const int OUTPUT_HEIGHT = 2160;
+const int TRANSPARENT_BACKGROUND = false;
 
 
 ofRectangle windowBounds;
@@ -36,7 +37,7 @@ bool paused = false;
 ofVboMesh mesh;
 ImageLoader image;
 
-ofFbo renderer;
+Canvas canvas;
 ofPixels gradientColors;
 
 /** Render Settings **/
@@ -46,13 +47,12 @@ int OPACITY = 20;
 int STEPS = 200;
 float I_MOD = 0.008;
 float T_MOD = 0.005;
-bool GRADIENT_FOUR_COLOR = true;
+bool GRADIENT_FOUR_COLOR = false;
 
 ofColor c1;
 ofColor c2;
 ofColor c3;
 ofColor c4;
-
 
 void ofApp::setup(){
     syphon.setName(APP_NAME);
@@ -62,11 +62,21 @@ void ofApp::setup(){
     //4k 3840 pixels × 2160
     renderBounds = ofRectangle(0,0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     
-    ofSetBackgroundAuto(CLEAR_BETWEEN_FRAMES);
-    ofSetBackgroundColor(ofColor::black);
+    ofSetBackgroundAuto(true);
+    ofSetBackgroundColor(ofColor::fromHex(0x333333));
     
     mesh.enableColors();
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    
+    
+    ofEnableAlphaBlending();
+    
+    int backgroundTransparency = 255;
+    if(TRANSPARENT_BACKGROUND) {
+        backgroundTransparency = 0;
+    }
+    
+    canvas.allocate(renderBounds, ofColor(ofColor::black, backgroundTransparency));
     
     init();
 }
@@ -75,16 +85,7 @@ void ofApp::init(){
 
     initParameters();
     
-    ofFbo tmpRenderer;
-    renderer = tmpRenderer;
-    
-    renderer.clear();
-    renderer.allocate(renderBounds.width, renderBounds.height, GL_RGB);
-    ofEnableAlphaBlending();
-    
-    renderer.begin();
-    ofClear(ofColor::black);
-    renderer.end();
+    canvas.reset();
     
     mesh.clear();
 
@@ -163,15 +164,19 @@ void ofApp::initParameters() {
     c3 = ofColor::red;
     c4 = ofColor::blue;
     
+    
+    //c1 = ofColor(255, 190, 0);
+    //c2 = ofColor(255,0,0);
+    
     if(RANDOMIZE_PARAMETERS) {
         
         I_MOD = ofRandom(0.006, 0.009);
         T_MOD = ofRandom(0.004, 0.006);
-        CIRCLE = (ofRandom(1) > 0.5)? true : false;
+        //CIRCLE = (ofRandom(1) > 0.5)? true : false;
         GRADIENT_FOUR_COLOR = (ofRandom(1) > 0.5)? true : false;
         STEPS = ofRandom(25, 1000);
-        RADIUS = ofRandom(50, 1800);
-        OPACITY = ofRandom(10, 255);
+        RADIUS = ofRandom(200, 2200); //2200 is height that wont go out of bounds for 4k
+        OPACITY = ofRandom(50, 255);
         
         c1 = mRandomColor();
         c2 = mRandomColor();
@@ -179,8 +184,11 @@ void ofApp::initParameters() {
         c4 = mRandomColor();
     }
 
-    cout << RADIUS << endl;
-    
+    cout << "I_MOD : " << I_MOD << endl;
+    cout << "T_MOD : " << T_MOD << endl;
+    cout << "STEPS : " << STEPS << endl;
+    cout << "Radius : " << RADIUS << endl;
+    cout << "---------------" << endl;
 }
 
 int lastScreenShotTime = 0;
@@ -202,11 +210,6 @@ void ofApp::update(){
     
     
     ofVec3f center = renderBounds.getCenter();
-    //int STEPS = 50;
-    
-    //bool CIRCLE = false;
-    //int RADIUS = 600;
-    //int OPACITY = 20;
     
     mesh.clear();
 
@@ -222,36 +225,48 @@ void ofApp::update(){
         float distortion = RADIUS * ofNoise(i * I_MOD, t * T_MOD); //, t
 
         if(CIRCLE) {
-            float ang = ofMap(i, 0, STEPS -  1,  0, M_TWO_PI );
+            float ang = ofMap(i, 0, STEPS,  0, M_TWO_PI );
             //float radius = 200 * ofNoise(i * 0.2, t * 0.0005);
 
             radius = distortion * ofNoise(ofGetSystemTimeMicros() * 0.001);
             p = mGetPointOnCircle(center, radius, ang);
         } else {
-            float ang = ofMap(i, 0, STEPS - 1,  0, renderBounds.width);
-            //float distortion = 100 * ofNoise(ang * 0.003, t * 0.005);
-
+            float ang = ofMap(i, 0, STEPS,  0, renderBounds.width);
+            
+            //make  sure we dont go outside of the bounds
+            ang = ofClamp(ang, 0, renderBounds.width);
+            
+            //need this to make sure graphic goes all the way to the edge
+            //align last pixel with bounds on right
+            if(i == STEPS - 1) {
+                ang = renderBounds.width;
+            }
+            
             p = ofVec3f(ang, (centerY + distortion - (RADIUS / 2)));
         }
 
+        
+        //need this to make sure color doesnt overflow
+        //to start
+        float colorXPosition = p.x;
+        if(i == STEPS - 1) {
+            colorXPosition = renderBounds.width - 1;
+        }
+
+        
+        mesh.addColor(ofColor(gradientColors.getColor(colorXPosition, p.y),  OPACITY));
         mesh.addVertex(p);
-        mesh.addColor(ofColor(gradientColors.getColor(p.x, p.y),  OPACITY));
     }
     
     t++;
     
-    renderer.begin();
+    canvas.begin();
     mesh.draw();
-    renderer.end();
+    canvas.end();
 }
 
 void ofApp::saveImageOfRender() {
-    ofPixels pixels;
-    renderer.readToPixels(pixels);
-    string n = "../../../screenshots/" + APP_NAME + "_" + ofGetTimestampString() + ".png";
-    
-    cout << "Saving FBO Render : " << n << endl;
-    ofSaveImage(pixels, n);
+    canvas.saveImage(APP_NAME);
 }
 
 //--------------------------------------------------------------
@@ -263,12 +278,10 @@ void ofApp::draw(){
     
     //mesh.draw();
 
-    float tW = windowBounds.height;
-    float tH = (tW * renderBounds.height) / renderBounds.width;
-    
-    float offset = windowBounds.getCenter().y - (tH / 2);
 
-    renderer.draw(0, offset, tW, tH);
+    canvas.draw(windowBounds);
+    
+    //cout << "draw: " << tW << ":" << tH << endl;
     
     if(DRAW_GRADIENT){
         ofImage image;
