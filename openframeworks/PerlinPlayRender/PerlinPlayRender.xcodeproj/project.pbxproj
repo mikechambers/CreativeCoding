@@ -10,6 +10,10 @@
 		2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */; };
 		477F5524208ED2E000E7E544 /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477F5522208ED2E000E7E544 /* Canvas.cpp */; };
 		477F5525208ED2E000E7E544 /* Canvas.h in Sources */ = {isa = PBXBuildFile; fileRef = 477F5523208ED2E000E7E544 /* Canvas.h */; };
+		477F553320903F7300E7E544 /* ColorPaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477F552F20903F7200E7E544 /* ColorPaletteManager.cpp */; };
+		477F553420903F7300E7E544 /* ColorPalette.h in Sources */ = {isa = PBXBuildFile; fileRef = 477F553020903F7300E7E544 /* ColorPalette.h */; };
+		477F553520903F7300E7E544 /* ColorPaletteManager.h in Sources */ = {isa = PBXBuildFile; fileRef = 477F553120903F7300E7E544 /* ColorPaletteManager.h */; };
+		477F553620903F7300E7E544 /* ColorPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477F553220903F7300E7E544 /* ColorPalette.cpp */; };
 		47A99183208D00B500FEF8A2 /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 47A9917F208D00B400FEF8A2 /* MeshUtils.h */; };
 		47A99184208D00B500FEF8A2 /* ImageLoader.h in Sources */ = {isa = PBXBuildFile; fileRef = 47A99180208D00B400FEF8A2 /* ImageLoader.h */; };
 		47A99185208D00B500FEF8A2 /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47A99181208D00B500FEF8A2 /* MeshUtils.cpp */; };
@@ -61,6 +65,10 @@
 		3C77E820B17063DED1EF941F /* ofxSyphonClient.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonClient.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.h; sourceTree = SOURCE_ROOT; };
 		477F5522208ED2E000E7E544 /* Canvas.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Canvas.cpp; path = ../lib/mesh/Canvas.cpp; sourceTree = "<group>"; };
 		477F5523208ED2E000E7E544 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Canvas.h; path = ../lib/mesh/Canvas.h; sourceTree = "<group>"; };
+		477F552F20903F7200E7E544 /* ColorPaletteManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPaletteManager.cpp; path = ../lib/mesh/color/ColorPaletteManager.cpp; sourceTree = "<group>"; };
+		477F553020903F7300E7E544 /* ColorPalette.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorPalette.h; path = ../lib/mesh/color/ColorPalette.h; sourceTree = "<group>"; };
+		477F553120903F7300E7E544 /* ColorPaletteManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorPaletteManager.h; path = ../lib/mesh/color/ColorPaletteManager.h; sourceTree = "<group>"; };
+		477F553220903F7300E7E544 /* ColorPalette.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPalette.cpp; path = ../lib/mesh/color/ColorPalette.cpp; sourceTree = "<group>"; };
 		47A9917F208D00B400FEF8A2 /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
 		47A99180208D00B400FEF8A2 /* ImageLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageLoader.h; path = ../lib/mesh/ImageLoader.h; sourceTree = "<group>"; };
 		47A99181208D00B500FEF8A2 /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
@@ -186,6 +194,10 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				477F553220903F7300E7E544 /* ColorPalette.cpp */,
+				477F553020903F7300E7E544 /* ColorPalette.h */,
+				477F552F20903F7200E7E544 /* ColorPaletteManager.cpp */,
+				477F553120903F7300E7E544 /* ColorPaletteManager.h */,
 				477F5522208ED2E000E7E544 /* Canvas.cpp */,
 				477F5523208ED2E000E7E544 /* Canvas.h */,
 				47A9918C208D885000FEF8A2 /* README.md */,
@@ -309,6 +321,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				477F553320903F7300E7E544 /* ColorPaletteManager.cpp in Sources */,
+				477F553420903F7300E7E544 /* ColorPalette.h in Sources */,
+				477F553520903F7300E7E544 /* ColorPaletteManager.h in Sources */,
+				477F553620903F7300E7E544 /* ColorPalette.cpp in Sources */,
 				477F5524208ED2E000E7E544 /* Canvas.cpp in Sources */,
 				477F5525208ED2E000E7E544 /* Canvas.h in Sources */,
 				47A99183208D00B500FEF8A2 /* MeshUtils.h in Sources */,

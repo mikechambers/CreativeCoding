@@ -15,18 +15,22 @@
 #include "MeshUtils.h"
 #include "ImageLoader.h"
 #include "Canvas.h"
+#include "ColorPaletteManager.h"
+#include "ColorPalette.h"
 
 
 MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "PerlinPlay";
-const bool DRAW_GRADIENT = false;
+const bool DRAW_GRADIENT = true;
 const bool RANDOMIZE_PARAMETERS = true;
 const int REFRESH_SECONDS =  10;
 const int OUTPUT_WIDTH = 3840;
 const int OUTPUT_HEIGHT = 2160;
 const int TRANSPARENT_BACKGROUND = false;
+
+const bool ONE_OFF_OVERRIDE = false;
 
 
 ofRectangle windowBounds;
@@ -54,6 +58,8 @@ ofColor c2;
 ofColor c3;
 ofColor c4;
 
+ColorPaletteManager colorManager;
+
 void ofApp::setup(){
     syphon.setName(APP_NAME);
     
@@ -68,7 +74,6 @@ void ofApp::setup(){
     mesh.enableColors();
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
     
-    
     ofEnableAlphaBlending();
     
     int glMode = GL_RGB;
@@ -78,7 +83,7 @@ void ofApp::setup(){
         glMode = GL_RGBA;
     }
     
-    canvas.allocate(renderBounds, ofColor(ofColor::white, backgroundOpacity), glMode);
+    canvas.allocate(renderBounds, ofColor(ofColor::black, backgroundOpacity), glMode);
     
     init();
 }
@@ -161,14 +166,18 @@ void ofApp::init(){
 
 void ofApp::initParameters() {
 
+    ColorPalette cp = colorManager.getRandomColorPalette();
+    
     c1 = ofColor::green;
     c2 = ofColor::yellow;
     c3 = ofColor::red;
     c4 = ofColor::blue;
     
     
-    //c1 = ofColor(255, 190, 0);
-    //c2 = ofColor(255,0,0);
+    if(ONE_OFF_OVERRIDE) {
+        c1 = ofColor(247, 154, 253);
+        c2 = ofColor(55, 11, 65);
+    }
     
     if(RANDOMIZE_PARAMETERS) {
         
@@ -180,10 +189,17 @@ void ofApp::initParameters() {
         RADIUS = ofRandom(200, 2200); //2200 is height that wont go out of bounds for 4k
         OPACITY = ofRandom(50, 255);
         
-        c1 = mRandomColor();
-        c2 = mRandomColor();
-        c3 = mRandomColor();
-        c4 = mRandomColor();
+        c1 = cp.getColorAtIndex(0);
+        //skip one color to  jump ahead
+        c2 = cp.getColorAtIndex(2);
+        c3 = cp.getColorAtIndex(3);
+        c4 = cp.getColorAtIndex(4);
+        
+        if(ONE_OFF_OVERRIDE) {
+            GRADIENT_FOUR_COLOR = false;
+            c1 = ofColor(247, 154, 253);
+            c2 = ofColor(55, 11, 65);
+        }
     }
 
     cout << "I_MOD : " << I_MOD << endl;
@@ -204,7 +220,11 @@ void ofApp::update(){
     int elapsedTime = int(ofGetElapsedTimef());
     
     if(lastScreenShotTime != elapsedTime && int(elapsedTime) % REFRESH_SECONDS == 0) {
-        saveImageOfRender();
+        
+        if(!DRAW_GRADIENT) {
+            saveImageOfRender();
+        }
+        
         lastScreenShotTime = elapsedTime;
         init();
         return;
@@ -277,19 +297,15 @@ void ofApp::draw(){
         syphon.publishScreen();
         return;
     }
-    
-    //mesh.draw();
 
-
-    canvas.draw(windowBounds);
-    
-    //cout << "draw: " << tW << ":" << tH << endl;
     
     if(DRAW_GRADIENT){
         ofImage image;
         image.setFromPixels(gradientColors);
         image.resize(windowBounds.width, windowBounds.height);
         image.draw(0,0);
+    }  else {
+        canvas.draw(windowBounds);
     }
     
     
