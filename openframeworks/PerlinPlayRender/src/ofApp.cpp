@@ -23,14 +23,14 @@ MeshUtils utils;
 ofxSyphonServer syphon;
 
 const string APP_NAME = "PerlinPlay";
-const bool DRAW_GRADIENT = true;
+const bool DRAW_GRADIENT = false;
 const bool RANDOMIZE_PARAMETERS = true;
 const int REFRESH_SECONDS =  10;
 const int OUTPUT_WIDTH = 3840;
 const int OUTPUT_HEIGHT = 2160;
-const int TRANSPARENT_BACKGROUND = false;
+const int TRANSPARENT_BACKGROUND = true;
 
-const bool ONE_OFF_OVERRIDE = false;
+const bool ONE_OFF_OVERRIDE = true;
 
 
 ofRectangle windowBounds;
@@ -47,7 +47,7 @@ ofPixels gradientColors;
 /** Render Settings **/
 bool CIRCLE = false;
 int RADIUS = 600;
-int OPACITY = 20;
+int OPACITY = 10;
 int STEPS = 200;
 float I_MOD = 0.008;
 float T_MOD = 0.005;
@@ -174,10 +174,7 @@ void ofApp::initParameters() {
     c4 = ofColor::blue;
     
     
-    if(ONE_OFF_OVERRIDE) {
-        c1 = ofColor(247, 154, 253);
-        c2 = ofColor(55, 11, 65);
-    }
+
     
     if(RANDOMIZE_PARAMETERS) {
         
@@ -195,13 +192,22 @@ void ofApp::initParameters() {
         c3 = cp.getColorAtIndex(3);
         c4 = cp.getColorAtIndex(4);
         
-        if(ONE_OFF_OVERRIDE) {
-            GRADIENT_FOUR_COLOR = false;
-            c1 = ofColor(247, 154, 253);
-            c2 = ofColor(55, 11, 65);
-        }
+
     }
 
+    if(ONE_OFF_OVERRIDE) {
+        GRADIENT_FOUR_COLOR = false;
+        c1 = ofColor(27, 12, 51);
+        c2 = ofColor(212, 163, 254);
+        c3 = ofColor(27, 12, 51);
+        c4 = ofColor(212, 163, 254);
+        
+        //212, 163, 254 (light), 27, 12, 51
+        
+        OPACITY = 200;
+        RADIUS = ofRandom(1800, 2200);
+    }
+    
     cout << "I_MOD : " << I_MOD << endl;
     cout << "T_MOD : " << T_MOD << endl;
     cout << "STEPS : " << STEPS << endl;

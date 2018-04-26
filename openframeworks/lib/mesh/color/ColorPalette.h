@@ -30,8 +30,6 @@ private:
     
     vector<ofColor> _colors;
     
-
-    
 };
 
 

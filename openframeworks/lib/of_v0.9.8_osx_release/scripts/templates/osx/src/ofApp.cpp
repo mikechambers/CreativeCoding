@@ -14,25 +14,30 @@
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
 
-
-MeshUtils utils;
-ofxSyphonServer syphon;
-
-const string APP_NAME = "APP_NAME";
-
-ofRectangle bounds;
+string APP_NAME = ofFilePath::getFileName(ofFilePath::getCurrentExePath());
 
 bool paused = false;
 
+MeshUtils utils;
+ofxSyphonServer syphon;
+ofRectangle bounds;
+ofRectangle bounds;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenshot(APP_NAME, 'p');
+    utils.enableScreenshot(APP_NAME, 's');
     syphon.setName(APP_NAME);
 
     bounds = ofGetWindowRect();
     
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
+
+    init();
+}
+
+void ofApp::init() {
+
 }
 
 //--------------------------------------------------------------
