@@ -13,29 +13,18 @@
 
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
-#include "ColorPaletteManager.h"
-#include "ColorPalette.h"
-#include "Swatch.h"
-
-
-MeshUtils utils;
-ofxSyphonServer syphon;
+#include "PointTween.h"
+#include "TweenMover.h"
 
 string APP_NAME = ofFilePath::getFileName(ofFilePath::getCurrentExePath());
 
-ofRectangle bounds;
-
 bool paused = false;
 
+MeshUtils utils;
+ofxSyphonServer syphon;
+ofRectangle bounds;
 
-ColorPaletteManager cpm;
-ColorPalette cp;
-
-ofVec3f center;
-bool animateDown = true;
-
-//vector<Swatch> swatches;
-vector<shared_ptr<Swatch>> swatches;
+TweenMover mover;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -43,72 +32,40 @@ void ofApp::setup(){
     syphon.setName(APP_NAME);
 
     bounds = ofGetWindowRect();
-    center = bounds.getCenter();
     
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::white);
-    
+    ofSetBackgroundColor(ofColor::fromHex(0xCCCCCC));
+
+    mover.position = bounds.getCenter();
     init();
 }
 
 void ofApp::init() {
     
-    swatches.clear();
-    cp = cpm.getRandomColorPalette();
+    ofVec3f center = bounds.getCenter();
+    ofVec3f startPosition = center;
+    startPosition.y = 0;
     
-    int len = cp.getSize();
-    for(int i = 0; i < len; i++) {
-        
-        shared_ptr<Swatch> s(new Swatch());
-        
-        s->color = cp.getColorAtIndex(i);
-        
-        ofVec3f destination;
-        
-        float xPos = (center.x - ((len - i) * s->width) + (s->width * len) / 2);
-        if(animateDown) {
-            s->position.y = -(s->height);
-            destination.y = center.y;
-        } else {
-            s->position.y = bounds.height;
-            destination.y = center.y;
-        }
-
-        
-        s->position.x = xPos;
-        destination.x = xPos;
-        
-        s->setDestination(destination);
-        
-        s->start(i * 150,  500);
-        
-        swatches.push_back(s);
-    }
+    /*
+    tween.setTween(startPosition,
+                   center,
+                   1000,
+                   ofxeasing::Function::Bounce,
+                   ofxeasing::Type::Out,
+                   500);
+    tween.start();
+     */
+    
+    mover.update();
 }
-
-bool in = true;
 
 //--------------------------------------------------------------
 void ofApp::update(){
     if(paused) {
         return;
     }
-
-    bool complete = true;
-    for(auto & swatch : swatches) {
-        swatch->update();
-        
-        if(!swatch->isCompleted()) {
-            complete = false;
-        }
-    }
     
-    if(complete){
-        animateDown = !animateDown;
-        init();
-    }
-    
-    
+    mover.update();
 }
 
 //--------------------------------------------------------------
@@ -118,15 +75,10 @@ void ofApp::draw(){
         return;
     }
     
-    ofVec3f center = bounds.getCenter();
-    int side = 50;
-    
     ofFill();
+    ofSetColor(ofColor::white);
+    ofDrawCircle(mover.position, 4);
     
-    for(auto & swatch : swatches) {
-        ofSetColor(swatch->color);
-        ofDrawRectangle(swatch->position, swatch->height, swatch->width);
-    }
     syphon.publishScreen();
 }
 
@@ -134,8 +86,6 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key == ' ') {
         paused = !paused;
-    } else if (key == 'n') {
-        init();
     }
 }
 
@@ -147,7 +97,6 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
 }
 
 //--------------------------------------------------------------
@@ -162,7 +111,8 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    ofVec3f p = ofVec3f(x, y);
+    mover.addDestination(p);
 }
 
 //--------------------------------------------------------------

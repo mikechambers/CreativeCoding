@@ -10,29 +10,20 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "TweenMover.h"
 
-class Swatch {
+class Swatch : public TweenMover {
 
 public:
-    ofVec3f position;
-    ofVec3f destination;
+
     ofColor color;
     float width = 50;
     float height = 50;
-    
-    Swatch(ofColor _color);
+
     Swatch();
+    Swatch(ofColor _color);
     
-    void startAfterDelay(int delay, int duration);
-    void start(int duration);
-    void update();
-    
-private:
-    int _delay = -1;
-    uint64_t _delayStartTime = -1;
-    uint64_t _startTime = -1;
-    int _duration = -1;
-    ofVec3f _startPosition;
+    void setDimensions(float _height, float _width);
 };
 
 #endif /* Swatch_h */

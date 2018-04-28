@@ -9,17 +9,12 @@
 /* Begin PBXBuildFile section */
 		2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */; };
 		30981DCD8F43C4BE1CA41FB7 /* easing_terms_of_use.html in Sources */ = {isa = PBXBuildFile; fileRef = 797D64F2A876D9A113B5259D /* easing_terms_of_use.html */; };
-		47066178209151A100E74753 /* Swatch.h in Sources */ = {isa = PBXBuildFile; fileRef = 47066176209151A000E74753 /* Swatch.h */; };
-		47066179209151A100E74753 /* Swatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47066177209151A100E74753 /* Swatch.cpp */; };
-		4706617C209151B300E74753 /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4706617A209151B300E74753 /* MeshUtils.cpp */; };
-		4706617D209151B300E74753 /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 4706617B209151B300E74753 /* MeshUtils.h */; };
-		47066182209151C200E74753 /* ColorPaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4706617E209151C100E74753 /* ColorPaletteManager.cpp */; };
-		47066183209151C200E74753 /* ColorPalette.h in Sources */ = {isa = PBXBuildFile; fileRef = 4706617F209151C100E74753 /* ColorPalette.h */; };
-		47066184209151C200E74753 /* ColorPaletteManager.h in Sources */ = {isa = PBXBuildFile; fileRef = 47066180209151C100E74753 /* ColorPaletteManager.h */; };
-		47066185209151C200E74753 /* ColorPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47066181209151C100E74753 /* ColorPalette.cpp */; };
-		477D54C3209174EF002B1054 /* TweenMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477D54C1209174EF002B1054 /* TweenMover.cpp */; };
-		477D54C620917D57002B1054 /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477D54C420917D57002B1054 /* Mover.cpp */; };
-		477D54C720917D57002B1054 /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 477D54C520917D57002B1054 /* Mover.h */; };
+		474E1323209285C000B26C0D /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E1321209285C000B26C0D /* MeshUtils.cpp */; };
+		474E1324209285C000B26C0D /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 474E1322209285C000B26C0D /* MeshUtils.h */; };
+		474E13272092866D00B26C0D /* PointTween.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E13252092866D00B26C0D /* PointTween.cpp */; };
+		474E132A2092C31400B26C0D /* TweenMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E13282092C31400B26C0D /* TweenMover.cpp */; };
+		474E132E2092C5A400B26C0D /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E132C2092C5A400B26C0D /* Mover.cpp */; };
+		474E132F2092C5A400B26C0D /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 474E132D2092C5A400B26C0D /* Mover.h */; };
 		4D508D34156E7076531D9084 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D58DCB2C0AEFDE6171E29540 /* Syphon.framework */; };
 		5666329D903F71012C0EFCC9 /* ofxSyphonClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9FBB24B6275F39436518E824 /* ofxSyphonClient.mm */; };
 		A24705DE57AFCAF7741ECD62 /* ofxSyphonServerDirectory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 07B9A18301D1B0DA4A7F8E48 /* ofxSyphonServerDirectory.mm */; };
@@ -65,18 +60,14 @@
 		07B9A18301D1B0DA4A7F8E48 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonServerDirectory.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonServerDirectory.mm; sourceTree = SOURCE_ROOT; };
 		0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = SyphonNameboundClient.m; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon/src/SyphonNameboundClient.m; sourceTree = SOURCE_ROOT; };
 		3C77E820B17063DED1EF941F /* ofxSyphonClient.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonClient.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.h; sourceTree = SOURCE_ROOT; };
-		47066176209151A000E74753 /* Swatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swatch.h; sourceTree = "<group>"; };
-		47066177209151A100E74753 /* Swatch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Swatch.cpp; sourceTree = "<group>"; };
-		4706617A209151B300E74753 /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
-		4706617B209151B300E74753 /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
-		4706617E209151C100E74753 /* ColorPaletteManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPaletteManager.cpp; path = ../lib/mesh/color/ColorPaletteManager.cpp; sourceTree = "<group>"; };
-		4706617F209151C100E74753 /* ColorPalette.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorPalette.h; path = ../lib/mesh/color/ColorPalette.h; sourceTree = "<group>"; };
-		47066180209151C100E74753 /* ColorPaletteManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorPaletteManager.h; path = ../lib/mesh/color/ColorPaletteManager.h; sourceTree = "<group>"; };
-		47066181209151C100E74753 /* ColorPalette.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPalette.cpp; path = ../lib/mesh/color/ColorPalette.cpp; sourceTree = "<group>"; };
-		477D54C1209174EF002B1054 /* TweenMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TweenMover.cpp; sourceTree = "<group>"; };
-		477D54C2209174EF002B1054 /* TweenMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweenMover.h; sourceTree = "<group>"; };
-		477D54C420917D57002B1054 /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/mover/Mover.cpp; sourceTree = "<group>"; };
-		477D54C520917D57002B1054 /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/mover/Mover.h; sourceTree = "<group>"; };
+		474E1321209285C000B26C0D /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
+		474E1322209285C000B26C0D /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
+		474E13252092866D00B26C0D /* PointTween.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PointTween.cpp; path = src/PointTween.cpp; sourceTree = "<group>"; };
+		474E13262092866D00B26C0D /* PointTween.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointTween.h; path = src/PointTween.h; sourceTree = "<group>"; };
+		474E13282092C31400B26C0D /* TweenMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TweenMover.cpp; path = src/TweenMover.cpp; sourceTree = "<group>"; };
+		474E13292092C31400B26C0D /* TweenMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TweenMover.h; path = src/TweenMover.h; sourceTree = "<group>"; };
+		474E132C2092C5A400B26C0D /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/mover/Mover.cpp; sourceTree = "<group>"; };
+		474E132D2092C5A400B26C0D /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/mover/Mover.h; sourceTree = "<group>"; };
 		517A183AFA6D8CD5F45D7522 /* ofxEasing.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxEasing.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxEasing/src/ofxEasing.h; sourceTree = SOURCE_ROOT; };
 		797D64F2A876D9A113B5259D /* easing_terms_of_use.html */ = {isa = PBXFileReference; explicitFileType = file; fileEncoding = 30; name = easing_terms_of_use.html; path = ../lib/of_v0.9.8_osx_release/addons/ofxEasing/src/easing_terms_of_use.html; sourceTree = SOURCE_ROOT; };
 		9FBB24B6275F39436518E824 /* ofxSyphonClient.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonClient.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.mm; sourceTree = SOURCE_ROOT; };
@@ -86,7 +77,7 @@
 		DF90403AE7BA56B04FB2B4F3 /* ofxSyphonServer.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonServer.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonServer.mm; sourceTree = SOURCE_ROOT; };
 		E0465533E5289185B542108A /* ofxSyphonServer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonServer.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonServer.h; sourceTree = SOURCE_ROOT; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../lib/of_v0.9.8_osx_release/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
-		E4B69B5B0A3A1756003C02F2 /* ColorPDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorPDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* EasingPlayDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasingPlayDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofApp.cpp; path = src/ofApp.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ofApp.h; path = src/ofApp.h; sourceTree = SOURCE_ROOT; };
@@ -208,25 +199,21 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
-				477D54C420917D57002B1054 /* Mover.cpp */,
-				477D54C520917D57002B1054 /* Mover.h */,
-				477D54C1209174EF002B1054 /* TweenMover.cpp */,
-				477D54C2209174EF002B1054 /* TweenMover.h */,
-				47066181209151C100E74753 /* ColorPalette.cpp */,
-				4706617F209151C100E74753 /* ColorPalette.h */,
-				4706617E209151C100E74753 /* ColorPaletteManager.cpp */,
-				47066180209151C100E74753 /* ColorPaletteManager.h */,
-				4706617A209151B300E74753 /* MeshUtils.cpp */,
-				4706617B209151B300E74753 /* MeshUtils.h */,
-				47066177209151A100E74753 /* Swatch.cpp */,
-				47066176209151A000E74753 /* Swatch.h */,
+				474E132C2092C5A400B26C0D /* Mover.cpp */,
+				474E132D2092C5A400B26C0D /* Mover.h */,
+				474E13282092C31400B26C0D /* TweenMover.cpp */,
+				474E13292092C31400B26C0D /* TweenMover.h */,
+				474E13252092866D00B26C0D /* PointTween.cpp */,
+				474E13262092866D00B26C0D /* PointTween.h */,
+				474E1321209285C000B26C0D /* MeshUtils.cpp */,
+				474E1322209285C000B26C0D /* MeshUtils.h */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				6948EE371B920CB800B5AC1A /* local_addons */,
-				E4B69B5B0A3A1756003C02F2 /* ColorPDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* EasingPlayDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -261,9 +248,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4B69B5A0A3A1756003C02F2 /* ColorP */ = {
+		E4B69B5A0A3A1756003C02F2 /* EasingPlay */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ColorP" */;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "EasingPlay" */;
 			buildPhases = (
 				E4B69B580A3A1756003C02F2 /* Sources */,
 				E4B69B590A3A1756003C02F2 /* Frameworks */,
@@ -275,9 +262,9 @@
 			dependencies = (
 				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
 			);
-			name = ColorP;
+			name = EasingPlay;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* ColorPDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* EasingPlayDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -288,7 +275,7 @@
 			attributes = {
 				LastUpgradeCheck = 0600;
 			};
-			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "ColorP" */;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "EasingPlay" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -309,7 +296,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E4B69B5A0A3A1756003C02F2 /* ColorP */,
+				E4B69B5A0A3A1756003C02F2 /* EasingPlay */,
 			);
 		};
 /* End PBXProject section */
@@ -345,22 +332,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				477D54C620917D57002B1054 /* Mover.cpp in Sources */,
-				477D54C720917D57002B1054 /* Mover.h in Sources */,
-				47066182209151C200E74753 /* ColorPaletteManager.cpp in Sources */,
-				47066183209151C200E74753 /* ColorPalette.h in Sources */,
-				47066184209151C200E74753 /* ColorPaletteManager.h in Sources */,
-				47066185209151C200E74753 /* ColorPalette.cpp in Sources */,
-				4706617C209151B300E74753 /* MeshUtils.cpp in Sources */,
-				4706617D209151B300E74753 /* MeshUtils.h in Sources */,
-				47066178209151A100E74753 /* Swatch.h in Sources */,
-				47066179209151A100E74753 /* Swatch.cpp in Sources */,
+				474E132E2092C5A400B26C0D /* Mover.cpp in Sources */,
+				474E132F2092C5A400B26C0D /* Mover.h in Sources */,
+				474E1323209285C000B26C0D /* MeshUtils.cpp in Sources */,
+				474E132A2092C31400B26C0D /* TweenMover.cpp in Sources */,
+				474E13272092866D00B26C0D /* PointTween.cpp in Sources */,
+				474E1324209285C000B26C0D /* MeshUtils.h in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				30981DCD8F43C4BE1CA41FB7 /* easing_terms_of_use.html in Sources */,
 				C781B91F07C14A90499EE0D8 /* ofxSyphonServer.mm in Sources */,
 				5666329D903F71012C0EFCC9 /* ofxSyphonClient.mm in Sources */,
-				477D54C3209174EF002B1054 /* TweenMover.cpp in Sources */,
 				A24705DE57AFCAF7741ECD62 /* ofxSyphonServerDirectory.mm in Sources */,
 				2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */,
 			);
@@ -398,7 +380,6 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(OF_CORE_HEADERS)",
-					src,
 					../lib/of_v0.9.8_osx_release/addons/ofxEasing/src,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon,
@@ -439,7 +420,6 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(OF_CORE_HEADERS)",
-					src,
 					../lib/of_v0.9.8_osx_release/addons/ofxEasing/src,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon,
@@ -474,7 +454,6 @@
 				GCC_MODEL_TUNING = NONE;
 				HEADER_SEARCH_PATHS = (
 					"$(OF_CORE_HEADERS)",
-					src,
 					../lib/of_v0.9.8_osx_release/addons/ofxEasing/src,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon,
@@ -509,7 +488,6 @@
 				GCC_MODEL_TUNING = NONE;
 				HEADER_SEARCH_PATHS = (
 					"$(OF_CORE_HEADERS)",
-					src,
 					../lib/of_v0.9.8_osx_release/addons/ofxEasing/src,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs,
 					../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon,
@@ -532,7 +510,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "ColorP" */ = {
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "EasingPlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B4E0A3A1720003C02F2 /* Debug */,
@@ -541,7 +519,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ColorP" */ = {
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "EasingPlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B600A3A1757003C02F2 /* Debug */,

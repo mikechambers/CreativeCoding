@@ -1,0 +1,29 @@
+//
+//  TweenMover.hpp
+//  EasingPlay
+//
+//  Created by Mike Chambers on 4/26/18.
+//
+
+#ifndef TweenMover_h
+#define TweenMover_h
+
+#include <stdio.h>
+#include "ofMain.h"
+#include "PointTween.h"
+#include "Mover.h"
+
+//does extending Mover give us anything?
+class TweenMover : public Mover {
+public:
+    void addDestination(ofVec3f destination);
+    
+    void start();
+    void update();
+    
+private:
+    vector<shared_ptr<PointTween>> _tweens;
+};
+
+
+#endif /* TweenMover_h */

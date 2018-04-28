@@ -28,9 +28,9 @@ const bool RANDOMIZE_PARAMETERS = true;
 const int REFRESH_SECONDS =  10;
 const int OUTPUT_WIDTH = 3840;
 const int OUTPUT_HEIGHT = 2160;
-const int TRANSPARENT_BACKGROUND = true;
+const int TRANSPARENT_BACKGROUND = false;
 
-const bool ONE_OFF_OVERRIDE = true;
+const bool ONE_OFF_OVERRIDE = false;
 
 
 ofRectangle windowBounds;
@@ -83,7 +83,7 @@ void ofApp::setup(){
         glMode = GL_RGBA;
     }
     
-    canvas.allocate(renderBounds, ofColor(ofColor::black, backgroundOpacity), glMode);
+    canvas.allocate(renderBounds, ofColor(ofColor::white, backgroundOpacity), glMode);
     
     init();
 }
@@ -173,26 +173,25 @@ void ofApp::initParameters() {
     c3 = ofColor::red;
     c4 = ofColor::blue;
     
-    
-
-    
     if(RANDOMIZE_PARAMETERS) {
         
-        I_MOD = ofRandom(0.006, 0.009);
-        T_MOD = ofRandom(0.004, 0.006);
+        //I_MOD = ofRandom(0.006, 0.009);
+        //T_MOD = ofRandom(0.004, 0.006);
+        
+        I_MOD = ofRandom(0.004, 0.009);
+        T_MOD = ofRandom(0.002, 0.009);
+        
         //CIRCLE = (ofRandom(1) > 0.5)? true : false;
         GRADIENT_FOUR_COLOR = (ofRandom(1) > 0.5)? true : false;
         STEPS = ofRandom(25, 1000);
         RADIUS = ofRandom(200, 2200); //2200 is height that wont go out of bounds for 4k
-        OPACITY = ofRandom(50, 255);
+        OPACITY = ofRandom(20, 245);
         
         c1 = cp.getColorAtIndex(0);
         //skip one color to  jump ahead
         c2 = cp.getColorAtIndex(2);
         c3 = cp.getColorAtIndex(3);
         c4 = cp.getColorAtIndex(4);
-        
-
     }
 
     if(ONE_OFF_OVERRIDE) {
