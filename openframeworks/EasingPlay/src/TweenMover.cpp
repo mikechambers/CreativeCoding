@@ -23,7 +23,7 @@ void TweenMover::addDestination(ofVec3f destination){
     }
     
     //start position need to be set to the destination of the previous tween
-    tween->setTween(startPosition, destination, 1000, ofxeasing::Function::Bounce, ofxeasing::Type::Out, 0);
+    tween->setTween(startPosition, destination, 500, ofxeasing::Function::Cubic, ofxeasing::Type::In, 1000);
     
     bool isFirstTween = _tweens.empty();
     _tweens.push_back(tween);
@@ -40,22 +40,19 @@ void TweenMover::start() {
 }
 
 void TweenMover::initNextTween() {
-    
-    cout << "start" << endl;
+
     if(_tweens.empty()){
         return;
     }
     
     PointTween &tween = *_tweens.at(0);
 
-    cout << "registering for onTweenComplete" << endl;
     ofAddListener(
                   tween.onTweenComplete,
                   this,
                   &TweenMover::onTweenComplete);
-    
- //_tweens.at(0)->start();
-    //tween.start();
+
+    tween.start();
 }
 
 void TweenMover::onTweenComplete(bool & value) {
@@ -83,11 +80,4 @@ void TweenMover::update() {
     tween.update();
     
     position = tween.getCurrentPosition();
-    
-    /*
-    if(tween.tweenIsCompleted()) {
-        _tweens.erase(_tweens.begin());
-        start();
-    }
-     */
 }

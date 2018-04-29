@@ -27,7 +27,7 @@ ofVec3f center;
 
 TweenMover mover;
 
-ofVboMesh mesh;
+ofPath path;
 vector <ofVec3f> points;
 
 //--------------------------------------------------------------
@@ -42,33 +42,26 @@ void ofApp::setup(){
 
     mover.position = bounds.getCenter();
     
-    mesh.enableColors();
-    mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    //mesh.enableColors();
+    //mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
     
     center = bounds.getCenter();
     
     points.push_back(center);
-    
-    mesh.addVertex(center);
     
     init();
 }
 
 void ofApp::init() {
     
-    ofVec3f center = bounds.getCenter();
+    
+    path.moveTo(center);
+    path.setStrokeColor(ofColor(ofColor::white, 128));
+    path.setFilled(false);
+    path.setStrokeWidth(1);
+    
     ofVec3f startPosition = center;
     startPosition.y = 0;
-    
-    /*
-    tween.setTween(startPosition,
-                   center,
-                   1000,
-                   ofxeasing::Function::Bounce,
-                   ofxeasing::Type::Out,
-                   500);
-    tween.start();
-     */
     
     mover.update();
 }
@@ -93,10 +86,10 @@ void ofApp::draw(){
     ofSetColor(ofColor::white);
     ofDrawCircle(mover.position, 4);
     
-    mesh.draw();
+    path.draw();
     
     for(auto point : points) {
-        ofDrawCircle(point, 1);
+        ofDrawCircle(point, 2);
     }
     
     
@@ -138,7 +131,7 @@ void ofApp::mouseReleased(int x, int y, int button){
     mover.addDestination(p);
     
     points.push_back(p);
-    mesh.addVertex(p);
+    path.lineTo(p);
 }
 
 //--------------------------------------------------------------

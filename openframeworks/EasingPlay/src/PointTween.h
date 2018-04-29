@@ -46,6 +46,7 @@ private:
     uint64_t _startTime = 0;
     
     bool _tweenIsCompleted = false;
+    bool _tweenHasBeenStarted = false;
     
     ofxeasing::Function _tweenGroup;
     ofxeasing::Type _tweenType;

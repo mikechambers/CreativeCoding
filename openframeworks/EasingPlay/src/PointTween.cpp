@@ -27,13 +27,15 @@ void PointTween::setTween(ofVec3f startPosition,
 }
 
 void PointTween::start() {
+    _tweenIsCompleted = false;
+    
+    _tweenHasBeenStarted = true;
     if(_delay > 0) {
         _timeToStart = ofGetElapsedTimeMillis() + _delay;
         
         return;
     }
-    
-    _tweenIsCompleted = false;
+
     _startTime = ofGetElapsedTimeMillis();
 }
 
@@ -45,6 +47,10 @@ void PointTween::update() {
         return;
     }
     
+    if(!_tweenHasBeenStarted) {
+        return;
+    }
+    
     if(_delay != -1) {
         if(ofGetElapsedTimeMillis() >= _timeToStart) {
             _delay = -1;
@@ -52,17 +58,15 @@ void PointTween::update() {
         }
         return;
     }
-    
+
     int endTime = _startTime + _duration;
     if(
        (ofGetElapsedTimeMillis() > endTime) &&
        !_onTweenCompleteSent) {
         
         _currentPosition = _destination;
-        
-        //_animating = false;
+
         _tweenIsCompleted = true;
-        cout << "sending onTweenComplete" << endl;
         ofNotifyEvent(onTweenComplete, _tweenIsCompleted);
         _onTweenCompleteSent = true;
         return;
