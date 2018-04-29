@@ -17,6 +17,8 @@
 class TweenMover : public Mover {
 public:
     void addDestination(ofVec3f destination);
+    void addDestination(ofVec3f destination, int duration,
+                    ofxeasing::Function tweenGroup, ofxeasing::Type tweenType, int delay);
     
     void start();
     

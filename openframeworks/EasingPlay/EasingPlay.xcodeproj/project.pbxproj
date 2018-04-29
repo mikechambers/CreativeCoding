@@ -9,10 +9,11 @@
 /* Begin PBXBuildFile section */
 		2B51283D88B0A3AB12FA0B67 /* SyphonNameboundClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */; };
 		30981DCD8F43C4BE1CA41FB7 /* easing_terms_of_use.html in Sources */ = {isa = PBXBuildFile; fileRef = 797D64F2A876D9A113B5259D /* easing_terms_of_use.html */; };
+		47258B9F209667A8002ACB87 /* TweenMover.h in Sources */ = {isa = PBXBuildFile; fileRef = 47258B9D209667A8002ACB87 /* TweenMover.h */; };
+		47258BA0209667A8002ACB87 /* TweenMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47258B9E209667A8002ACB87 /* TweenMover.cpp */; };
 		474E1323209285C000B26C0D /* MeshUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E1321209285C000B26C0D /* MeshUtils.cpp */; };
 		474E1324209285C000B26C0D /* MeshUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 474E1322209285C000B26C0D /* MeshUtils.h */; };
 		474E13272092866D00B26C0D /* PointTween.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E13252092866D00B26C0D /* PointTween.cpp */; };
-		474E132A2092C31400B26C0D /* TweenMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E13282092C31400B26C0D /* TweenMover.cpp */; };
 		474E132E2092C5A400B26C0D /* Mover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474E132C2092C5A400B26C0D /* Mover.cpp */; };
 		474E132F2092C5A400B26C0D /* Mover.h in Sources */ = {isa = PBXBuildFile; fileRef = 474E132D2092C5A400B26C0D /* Mover.h */; };
 		4D508D34156E7076531D9084 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D58DCB2C0AEFDE6171E29540 /* Syphon.framework */; };
@@ -60,12 +61,12 @@
 		07B9A18301D1B0DA4A7F8E48 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxSyphonServerDirectory.mm; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonServerDirectory.mm; sourceTree = SOURCE_ROOT; };
 		0A8A640633E2ABA2DD92BA55 /* SyphonNameboundClient.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = SyphonNameboundClient.m; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/libs/Syphon/src/SyphonNameboundClient.m; sourceTree = SOURCE_ROOT; };
 		3C77E820B17063DED1EF941F /* ofxSyphonClient.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSyphonClient.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxSyphon/src/ofxSyphonClient.h; sourceTree = SOURCE_ROOT; };
+		47258B9D209667A8002ACB87 /* TweenMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TweenMover.h; path = ../lib/mesh/tween/TweenMover.h; sourceTree = "<group>"; };
+		47258B9E209667A8002ACB87 /* TweenMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TweenMover.cpp; path = ../lib/mesh/tween/TweenMover.cpp; sourceTree = "<group>"; };
 		474E1321209285C000B26C0D /* MeshUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshUtils.cpp; path = ../lib/mesh/MeshUtils.cpp; sourceTree = "<group>"; };
 		474E1322209285C000B26C0D /* MeshUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshUtils.h; path = ../lib/mesh/MeshUtils.h; sourceTree = "<group>"; };
 		474E13252092866D00B26C0D /* PointTween.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PointTween.cpp; path = src/PointTween.cpp; sourceTree = "<group>"; };
 		474E13262092866D00B26C0D /* PointTween.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointTween.h; path = src/PointTween.h; sourceTree = "<group>"; };
-		474E13282092C31400B26C0D /* TweenMover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TweenMover.cpp; path = src/TweenMover.cpp; sourceTree = "<group>"; };
-		474E13292092C31400B26C0D /* TweenMover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TweenMover.h; path = src/TweenMover.h; sourceTree = "<group>"; };
 		474E132C2092C5A400B26C0D /* Mover.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mover.cpp; path = ../lib/mesh/mover/Mover.cpp; sourceTree = "<group>"; };
 		474E132D2092C5A400B26C0D /* Mover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mover.h; path = ../lib/mesh/mover/Mover.h; sourceTree = "<group>"; };
 		517A183AFA6D8CD5F45D7522 /* ofxEasing.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxEasing.h; path = ../lib/of_v0.9.8_osx_release/addons/ofxEasing/src/ofxEasing.h; sourceTree = SOURCE_ROOT; };
@@ -199,10 +200,10 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				47258B9E209667A8002ACB87 /* TweenMover.cpp */,
+				47258B9D209667A8002ACB87 /* TweenMover.h */,
 				474E132C2092C5A400B26C0D /* Mover.cpp */,
 				474E132D2092C5A400B26C0D /* Mover.h */,
-				474E13282092C31400B26C0D /* TweenMover.cpp */,
-				474E13292092C31400B26C0D /* TweenMover.h */,
 				474E13252092866D00B26C0D /* PointTween.cpp */,
 				474E13262092866D00B26C0D /* PointTween.h */,
 				474E1321209285C000B26C0D /* MeshUtils.cpp */,
@@ -332,10 +333,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47258B9F209667A8002ACB87 /* TweenMover.h in Sources */,
+				47258BA0209667A8002ACB87 /* TweenMover.cpp in Sources */,
 				474E132E2092C5A400B26C0D /* Mover.cpp in Sources */,
 				474E132F2092C5A400B26C0D /* Mover.h in Sources */,
 				474E1323209285C000B26C0D /* MeshUtils.cpp in Sources */,
-				474E132A2092C31400B26C0D /* TweenMover.cpp in Sources */,
 				474E13272092866D00B26C0D /* PointTween.cpp in Sources */,
 				474E1324209285C000B26C0D /* MeshUtils.h in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,

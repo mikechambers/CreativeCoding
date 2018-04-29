@@ -11,8 +11,8 @@
 #include "PointTween.h"
 #include "ofMain.h"
 
-void TweenMover::addDestination(ofVec3f destination){
-    
+void TweenMover::addDestination(ofVec3f destination, int duration,
+                                ofxeasing::Function tweenGroup, ofxeasing::Type tweenType, int delay) {
     shared_ptr<PointTween> tween(new PointTween());
     
     ofVec3f startPosition = position;
@@ -23,7 +23,7 @@ void TweenMover::addDestination(ofVec3f destination){
     }
     
     //start position need to be set to the destination of the previous tween
-    tween->setTween(startPosition, destination, 500, ofxeasing::Function::Cubic, ofxeasing::Type::In, 1000);
+    tween->setTween(startPosition, destination, duration, tweenGroup, tweenType, delay);
     
     bool isFirstTween = _tweens.empty();
     _tweens.push_back(tween);
@@ -31,6 +31,10 @@ void TweenMover::addDestination(ofVec3f destination){
     if(isFirstTween) {
         initNextTween();
     }
+}
+
+void TweenMover::addDestination(ofVec3f destination){
+    addDestination(destination, 500, ofxeasing::Function::Cubic, ofxeasing::Type::In, 0);
 }
 
 void TweenMover::start() {
