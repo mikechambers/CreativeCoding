@@ -21,7 +21,7 @@ bool paused = false;
 MeshUtils utils;
 ofxSyphonServer syphon;
 ofRectangle bounds;
-ofRectangle bounds;
+ofRectangle center;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -29,6 +29,7 @@ void ofApp::setup(){
     syphon.setName(APP_NAME);
 
     bounds = ofGetWindowRect();
+    center = boubds.getCenter();
     
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(ofColor::white);
