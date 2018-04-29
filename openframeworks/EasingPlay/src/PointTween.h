@@ -31,6 +31,10 @@ public:
     ofVec3f getDestination();
     bool tweenIsCompleted();
     
+    ofEvent<bool> onTweenComplete;
+    //ofEvent<const bool> onAnimationStart;
+    //ofEvent<const bool> onTweenStart;
+    
 private:
     ofVec3f _startPosition;
     ofVec3f _destination;
@@ -45,6 +49,8 @@ private:
     
     ofxeasing::Function _tweenGroup;
     ofxeasing::Type _tweenType;
+    
+    bool _onTweenCompleteSent = false;
 };
 
 #endif /* PointTween_h */

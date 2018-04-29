@@ -19,10 +19,15 @@ public:
     void addDestination(ofVec3f destination);
     
     void start();
+    
     void update();
+    
+    void onTweenComplete(bool & value);
     
 private:
     vector<shared_ptr<PointTween>> _tweens;
+    bool _hasBeenStarted = false;
+    void initNextTween();
 };
 
 

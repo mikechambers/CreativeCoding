@@ -9,6 +9,7 @@
 #include "ofxEasing.h"
 #include "Mover.h"
 #include "PointTween.h"
+#include "ofMain.h"
 
 void TweenMover::addDestination(ofVec3f destination){
     
@@ -24,32 +25,69 @@ void TweenMover::addDestination(ofVec3f destination){
     //start position need to be set to the destination of the previous tween
     tween->setTween(startPosition, destination, 1000, ofxeasing::Function::Bounce, ofxeasing::Type::Out, 0);
     
+    bool isFirstTween = _tweens.empty();
     _tweens.push_back(tween);
+    
+    if(isFirstTween) {
+        initNextTween();
+    }
 }
 
 void TweenMover::start() {
-    if(_tweens.empty()){
-        return;
-    }
+    initNextTween();
     
-    _tweens.at(0)->start();
+    _hasBeenStarted = true;
 }
 
-void TweenMover::update() {
+void TweenMover::initNextTween() {
+    
+    cout << "start" << endl;
     if(_tweens.empty()){
         return;
     }
     
     PointTween &tween = *_tweens.at(0);
+
+    cout << "registering for onTweenComplete" << endl;
+    ofAddListener(
+                  tween.onTweenComplete,
+                  this,
+                  &TweenMover::onTweenComplete);
+    
+ //_tweens.at(0)->start();
+    //tween.start();
+}
+
+void TweenMover::onTweenComplete(bool & value) {
+    cout << "tween complete" << endl;
+    
+    PointTween &tween = *_tweens.at(0);
+    
+    ofRemoveListener(tween.onTweenComplete,
+                     this,
+                     &TweenMover::onTweenComplete);
+    
+    _tweens.erase(_tweens.begin());
+    initNextTween();
+    
+}
+
+void TweenMover::update() {
+    if(!_hasBeenStarted || _tweens.empty()){
+        return;
+    }
+    
+    
+    PointTween &tween = *_tweens.at(0);
+    
     tween.update();
     
     position = tween.getCurrentPosition();
     
+    /*
     if(tween.tweenIsCompleted()) {
         _tweens.erase(_tweens.begin());
         start();
     }
-    
-    
-    
+     */
 }

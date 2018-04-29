@@ -38,6 +38,13 @@ void PointTween::start() {
 }
 
 void PointTween::update() {
+    
+    //todo: might not need this, but have incase events order
+    //is weird
+    if(_tweenIsCompleted) {
+        return;
+    }
+    
     if(_delay != -1) {
         if(ofGetElapsedTimeMillis() >= _timeToStart) {
             _delay = -1;
@@ -47,11 +54,17 @@ void PointTween::update() {
     }
     
     int endTime = _startTime + _duration;
-    if(ofGetElapsedTimeMillis() > endTime) {
+    if(
+       (ofGetElapsedTimeMillis() > endTime) &&
+       !_onTweenCompleteSent) {
+        
         _currentPosition = _destination;
         
         //_animating = false;
         _tweenIsCompleted = true;
+        cout << "sending onTweenComplete" << endl;
+        ofNotifyEvent(onTweenComplete, _tweenIsCompleted);
+        _onTweenCompleteSent = true;
         return;
     }
     
