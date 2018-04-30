@@ -19,6 +19,8 @@ public:
     ColorPalette getRandomColorPalette();
     ColorPalette getColorPaletteAtIndex(uint index);
     ColorPalette getCurrentColorPalette();
+    int addPalette(float colors[5]);
+    
     int getCurrentIndex();
     
 private:

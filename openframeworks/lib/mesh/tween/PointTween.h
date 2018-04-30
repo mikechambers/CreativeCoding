@@ -19,7 +19,7 @@ public:
           int duration,
           ofxeasing::Function tweenGroup,
           ofxeasing::Type tweenType,
-          int delay);
+          int delay = 0);
     
     //do we want to return a point here?
     void update();
@@ -29,6 +29,8 @@ public:
     ofVec3f getCurrentPosition();
     ofVec3f getStartPosition();
     ofVec3f getDestination();
+    ofVec3f getLastPosition();
+    
     bool tweenIsCompleted();
     
     ofEvent<bool> onTweenComplete;
@@ -39,6 +41,7 @@ private:
     ofVec3f _startPosition;
     ofVec3f _destination;
     ofVec3f _currentPosition;
+    ofVec3f _lastPosition;
     
     int _delay;
     int _duration;

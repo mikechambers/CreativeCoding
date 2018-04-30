@@ -15,6 +15,7 @@ void PointTween::setTween(ofVec3f startPosition,
                        int delay){
     
     _startPosition = startPosition;
+    _lastPosition = _startPosition;
     _destination = endPosition;
     _duration = duration;
     _tweenGroup = tweenGroup;
@@ -77,6 +78,8 @@ void PointTween::update() {
 
     ofxeasing::function func = ofxeasing::easing(_tweenGroup, _tweenType);
 
+    _lastPosition = _currentPosition;
+    
     _currentPosition.x = func(t,
                         _startPosition.x,
                         _destination.x  - _startPosition.x,
@@ -102,4 +105,8 @@ ofVec3f PointTween::getStartPosition() {
 
 ofVec3f PointTween::getDestination() {
     return  _destination;
+}
+
+ofVec3f PointTween::getLastPosition() {
+    return _lastPosition;
 }
