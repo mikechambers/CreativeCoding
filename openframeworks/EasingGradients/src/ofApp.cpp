@@ -18,6 +18,8 @@
 
 string APP_NAME = ofFilePath::getFileName(ofFilePath::getCurrentExePath());
 
+bool const CLAMP_COLOR_VALUES = false;
+
 bool paused = false;
 
 MeshUtils utils;
@@ -91,7 +93,7 @@ void ofApp::update(){
     //c change between values
     //d length / duration
     
-    ofxeasing::function easing = ofxeasing::quad::easeInOut;
+    ofxeasing::function easing = ofxeasing::back::easeInOut;
     
     //
     float t = xPos;
@@ -123,6 +125,13 @@ void ofApp::update(){
     a = easing(t, b2, c, d);
     
     ofColor stepColor = ofColor(r, g, b, a);
+    
+    if(CLAMP_COLOR_VALUES) {
+        stepColor.r = ofClamp(r, 0, 255);
+        stepColor.g = ofClamp(g, 0, 255);
+        stepColor.b = ofClamp(b, 0, 255);
+        stepColor.a = ofClamp(a, 0, 255);
+    }
     
     mesh.addColor(stepColor);
     mesh.addVertex(ofVec3f(xPos, 0));
