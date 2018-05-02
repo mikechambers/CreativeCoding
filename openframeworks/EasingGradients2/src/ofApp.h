@@ -20,6 +20,8 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void init();
+    
+        void initEasingData();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -34,4 +36,5 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         void drawGradient();
+    
 };
