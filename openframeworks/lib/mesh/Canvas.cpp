@@ -67,10 +67,11 @@ void Canvas::draw(ofRectangle targetBounds) {
     ofFbo::draw(0, offset, canvasW, canvasH);
 }
 
-void Canvas::saveImage(string name) {
+void Canvas::saveImage(string path) {
     ofPixels pixels;
     readToPixels(pixels);
-    string n = "../../../screenshots/" + name + "_" + ofGetTimestampString() + ".png";
+    //string n = "../../../screenshots/" + name + "_" + ofGetTimestampString() + ".png";
+    string n = path + "_" + ofGetTimestampString() + ".png";
     
     cout << "Saving FBO Render : " << n << endl;
     ofSaveImage(pixels, n);

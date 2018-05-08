@@ -13,32 +13,42 @@
 
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
+#include "Canvas.h"
 
+string SAVE_PATH = ofFilePath::getUserHomeDir() + "/screenshots/";
 string APP_NAME = ofFilePath::getFileName(ofFilePath::getCurrentExePath());
 
 bool paused = false;
 
-MeshUtils utils;
 ofxSyphonServer syphon;
-ofRectangle bounds;
+
+ofRectangle windowBounds;
+ofRectangle canvasBounds;
+
 ofVec3f center;
+
+Canvas canvas;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    utils.enableScreenshot(APP_NAME, 's');
     syphon.setName(APP_NAME);
 
-    bounds = ofGetWindowRect();
-    center = bounds.getCenter();
+    windowBounds = ofGetWindowRect();
+    canvasBounds = ofRectangle(0,0, windowBounds.width * 2, windowBounds.height * 2);
+    center = canvasBounds.getCenter();
     
+    ofColor backgroundColor = ofColor::fromHex(0x424242);
+
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(ofColor::white);
+    ofSetBackgroundColor(backgroundColor);
+
+    canvas.allocate(canvasBounds, backgroundColor);
 
     init();
 }
 
 void ofApp::init() {
-
+    canvas.reset();
 }
 
 //--------------------------------------------------------------
@@ -56,6 +66,7 @@ void ofApp::draw(){
         return;
     }
     
+    canvas.draw(windowBounds);
     
     syphon.publishScreen();
 }
@@ -64,6 +75,8 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key == ' ') {
         paused = !paused;
+    } else if(key == 's') {
+        canvas.saveImage(SAVE_PATH + APP_NAME);
     }
 }
 
