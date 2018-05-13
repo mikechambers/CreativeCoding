@@ -18,10 +18,8 @@ class ofApp : public ofBaseApp{
 	public:
 		void setup();
 		void update();
-        void update2();
 		void draw();
-    
-        ofVec3f transformPoint(ofVec3f p, ofVec3f origin, float theta);
+		void init();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -33,5 +31,7 @@ class ofApp : public ofBaseApp{
 		void mouseExited(int x, int y);
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);		
+		void gotMessage(ofMessage msg);
+    
+        void drawLine(ofVec3f p1, ofVec3f p2);
 };

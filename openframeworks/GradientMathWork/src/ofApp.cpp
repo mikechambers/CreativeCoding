@@ -35,6 +35,8 @@ Line axisLine;
 Line leftLine;
 Line rightLine;
 
+ofVec3f center;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -42,6 +44,7 @@ void ofApp::setup(){
     syphon.setName(APP_NAME);
 
     bounds = ofGetWindowRect();
+    center = bounds.getCenter();
     
     drawingBounds = mGetBoundsWithPadding(bounds, 200);
     drawingBounds.setHeight(drawingBounds.height / 2);
@@ -50,8 +53,81 @@ void ofApp::setup(){
     ofSetBackgroundColor(ofColor::white);
 }
 
+ofVec3f ofApp::transformPoint(ofVec3f p, ofVec3f origin, float theta) {
+    ofVec3f out;
+    
+    out.x = origin.x+(p.x-origin.x)*cos(theta)+(p.y-origin.y)*sin(theta);
+    out.y = origin.y-(p.x-origin.x)*sin(theta)+(p.y-origin.y)*cos(theta);
+    
+    return out;
+}
+
+ofVec3f topLeftBoundsPoint;
+ofVec3f topRightBoundsPoint;
+ofVec3f bottomRightBoundsPoint;
+ofVec3f bottomLeftBoundsPoint;
+
+float angle;
+
+void ofApp::update() {
+    
+    ofVec3f center = drawingBounds.getCenter();
+    
+    ofVec3f mPoint = ofVec3f(ofGetMouseX(), ofGetMouseY());
+    angle = -mGetAngleOfLine(center, mPoint);
+    
+    ofVec3f topLeftTransformPoint = transformPoint(
+                                                   drawingBounds.getTopLeft(),
+                                                   center,
+                                                   angle);
+    
+    ofVec3f topRightTransformPoint = transformPoint(
+                                                   drawingBounds.getTopRight(),
+                                                   center,
+                                                   angle);
+    
+    ofVec3f bottomRightTransformPoint = transformPoint(
+                                                    drawingBounds.getBottomRight(),
+                                                    center,
+                                                    angle);
+    
+    ofVec3f bottomLeftTransformPoint = transformPoint(
+                                                     drawingBounds.getBottomLeft(),
+                                                     center,
+                                                     angle);
+    
+    //https://stackoverflow.com/questions/622140/calculate-bounding-box-coordinates-from-a-rotated-rectangle
+    float min_x = MIN(topLeftTransformPoint.x,topRightTransformPoint.x);
+        min_x = MIN(min_x, bottomRightTransformPoint.x);
+        min_x = MIN(min_x, bottomLeftTransformPoint.x);
+    
+    float min_y = MIN(topLeftTransformPoint.y,topRightTransformPoint.y);
+    min_y = MIN(min_y, bottomRightTransformPoint.y);
+    min_y = MIN(min_y, bottomLeftTransformPoint.y);
+    
+    float max_x = MAX(topLeftTransformPoint.x,topRightTransformPoint.x);
+    max_x = MAX(max_x, bottomRightTransformPoint.x);
+    max_x = MAX(max_x, bottomLeftTransformPoint.x);
+    
+    float max_y = MAX(topLeftTransformPoint.y,topRightTransformPoint.y);
+    max_y = MAX(max_y, bottomRightTransformPoint.y);
+    max_y = MAX(max_y, bottomLeftTransformPoint.y);
+    
+    //(min_x,min_y), (min_x,max_y), (max_x,max_y), (max_x,min_y)
+    topLeftBoundsPoint = ofVec3f(min_x,min_y);
+    topRightBoundsPoint = ofVec3f(min_x,max_y);
+    bottomRightBoundsPoint = ofVec3f(max_x,max_y);
+    bottomLeftBoundsPoint = ofVec3f(max_x,min_y);
+    
+    
+    
+    axisLine.p1 = ofVec3f(center.x, center.y);
+    axisLine.p2 = ofVec3f(ofGetMouseX(), ofGetMouseY());
+}
+
+
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update2(){
     if(paused) {
         return;
     }
@@ -68,26 +144,12 @@ void ofApp::update(){
     float dist = axisLine.p1.distance(drawingCenter) * 2;
     axisLine.p2 = mGetPointOnLine(axisLine.p1, drawingCenter, dist);
     
-    //axisLine.p2.x = axisLine.p1.x + ((dist))/r;
-    //axisLine.p2.y = axisLine.p1.y + ((dist) * m)/r;
-    
-    //find slope  of line
-    // m = Change  in  y2 - y1/x2-1
-    
-    //float m = (axisLine.p2.y - axisLine.p1.y)/(axisLine.p2.x - axisLine.p1.x);
-    cout << m << endl;
+
     //find equation of line parallele on left
     //https://math.stackexchange.com/questions/656500/given-a-point-slope-and-a-distance-along-that-slope-easily-find-a-second-p
     ofVec3f leftLineCenter = drawingBounds.getBottomLeft();
     
-    //y - y1 = m(x - x1)
-    //y = m(x - x1) + y1
-    
-    
-    //float leftY = (m * x) - (m * leftLineCenter.x) + leftLineCenter.y;
-    
-    //leftLineCenter.y - y = m(leftLineCenter.x - x)
-    //y = leftLineCenter.y - ((m * leftLineCenter.x) + (m * -x))
+
     
     //https://math.stackexchange.com/a/656511/161129
     //make this into util function
@@ -110,9 +172,23 @@ void ofApp::update(){
     leftLine.p1 = leftTop;
     leftLine.p2 = leftBottom;
     
-    cout << mGetAngleOfLine(axisLine.p1, axisLine.p2) << endl;
-    cout << mGetAngleOfLine(leftLine.p1, leftLine.p2) << endl;
-    cout << mGetAngleOfLine(rightLine.p1, rightLine.p2) << endl;
+    float angle = mGetAngleOfLine(axisLine.p1, axisLine.p2);
+    
+    cout << angle << ":" << m << endl;
+    
+    if(angle > 0 && angle < M_PI / 2) {
+        cout << "sector 1" << endl;
+    } else if (angle > M_PI / 2 && angle < M_PI) {
+        cout << "sector 2" << endl;
+    } else if (angle < -M_PI / 2 && angle > -M_PI) {
+        cout << "sector 3" << endl;
+    } else if (angle < 0 && angle > -M_PI / 2) {
+        cout << "sector 4" << endl;
+    }
+    
+    
+    //cout << mGetAngleOfLine(leftLine.p1, leftLine.p2) << endl;
+    //cout << mGetAngleOfLine(rightLine.p1, rightLine.p2) << endl;
     cout << "--------" << endl;
     
     /*********** DRAW RIGHT LINE ************/
@@ -159,6 +235,21 @@ void ofApp::draw(){
     ofDrawLine(axisLine.p1, axisLine.p2);
     ofDrawCircle(axisLine.p1, 2);
     
+    ofPushMatrix();
+        ofTranslate(drawingBounds.getCenter().x, drawingBounds.getCenter().y);
+        ofRotateZ((-angle*180) / M_PI);
+    
+        //https://stackoverflow.com/questions/12516550/openframeworks-rotate-an-image-from-its-center-through-opengl-calls
+        ofPushMatrix();
+            ofTranslate(-drawingBounds.getCenter().x, -drawingBounds.getCenter().y);
+            ofDrawLine(topLeftBoundsPoint, topRightBoundsPoint);
+            ofDrawLine(topRightBoundsPoint, bottomRightBoundsPoint);
+            ofDrawLine(bottomRightBoundsPoint, bottomLeftBoundsPoint);
+            ofDrawLine(bottomLeftBoundsPoint, topLeftBoundsPoint);
+        ofPopMatrix();
+    ofPopMatrix();
+    
+    /*
     //left bounds line
     ofDrawLine(leftLine.p1, leftLine.p2);
     ofDrawCircle(leftLine.p1, 2);
@@ -168,11 +259,31 @@ void ofApp::draw(){
     ofDrawLine(rightLine.p1, rightLine.p2);
     ofDrawCircle(rightLine.p1, 2);
     
+    
     ofSetColor(ofColor::red);
     ofDrawCircle(rightLine.p2, 2);
     ofDrawCircle(leftLine.p2, 2);
     ofDrawCircle(axisLine.p2, 2);
+    */
+    /*
+    ofNoFill();
+    ofSetCircleResolution(50);
+    ofSetColor(ofColor::black);
+    float radius = drawingBounds.getTopLeft().distance(drawingBounds.getCenter());
+    ofDrawCircle(drawingBounds.getCenter(), radius);
+     */
+    /*
+    ofDrawLine(drawingBounds.getBottomLeft(), drawingBounds.getTopRight());
     
+    float angle = mGetAngleOfLine(drawingBounds.getBottomLeft(), drawingBounds.getTopRight());
+    
+    angle += -M_PI / 2;
+    
+    ofVec3f p = mGetPointOnCircle(drawingBounds.getCenter(), 100, angle);
+    
+    ofSetColor(ofColor::red);
+    ofDrawLine(drawingBounds.getCenter(), p);
+    */
     syphon.publishScreen();
 }
 

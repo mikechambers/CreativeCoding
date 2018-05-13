@@ -27,6 +27,8 @@ private:
     map<float, ofColor> colorStops;
     ofImage image;
     float interpolate(float a, float b, float px);
+    ofVec3f transformPoint(ofVec3f p, ofVec3f origin, float theta);
+    ofRectangle getBoundingDimensions(float angle);
     
 public:
     void setBounds(const ofRectangle & bounds);

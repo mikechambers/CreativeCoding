@@ -31,6 +31,8 @@ bool paused = false;
 
 LinearGradient gradient;
 
+ofRectangle gradientBounds;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     utils.enableScreenshot(APP_NAME, 's');
@@ -52,8 +54,8 @@ void ofApp::setup(){
     
     fbo.allocate(bounds.width, bounds.height, GL_RGBA);
 
-    
-    gradient.setBounds(bounds);
+    gradientBounds = mGetBoundsWithPadding(bounds, 100);
+    gradient.setBounds(gradientBounds);
     
     //LINEAR_SQUARED, COS_SQUARED, LINEAR_NOT_SQUARED, COS_NOT_SQUARED
     gradient.setMode(COS_NOT_SQUARED);
@@ -62,9 +64,9 @@ void ofApp::setup(){
     gradient.addStep(ofColor(ofColor::red, 255),  1.0);
     gradient.render();
     
-    fbo.begin();
-    gradient.draw();
-    fbo.end();
+    //fbo.begin();
+    //gradient.draw();
+    //fbo.end();
     
 }
 
@@ -201,8 +203,15 @@ void ofApp::draw(){
         return;
     }
     
+
     //mesh.draw();
-    fbo.draw(0,0);
+    //fbo.draw(0,0);
+    
+    gradient.draw();
+    
+    //ofSetColor(ofColor::black);
+    //ofNoFill();
+    //ofDrawRectangle(gradientBounds);
     
     //gradient.draw();
     
