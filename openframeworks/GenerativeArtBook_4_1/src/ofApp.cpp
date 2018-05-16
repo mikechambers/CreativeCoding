@@ -41,7 +41,7 @@ void ofApp::setup(){
     canvasBounds = ofRectangle(0,0, windowBounds.width * SCALE, windowBounds.height * SCALE);
     center = canvasBounds.getCenter();
     
-    ofColor backgroundColor = ofColor::fromHex(0x424242);
+    ofColor backgroundColor = ofColor::fromHex(0xfc4a1a);
 
     ofSetBackgroundAuto(true);
     ofSetBackgroundColor(backgroundColor);
@@ -70,7 +70,7 @@ void ofApp::init() {
 
 ofPath & ofApp::drawCircle2(ofPath & path) {
     
-    float bRadius = 250;
+    float bRadius = 200;
     float frequency = 2;
     float seed = 0;
     float magnitude = 0.5;
@@ -79,6 +79,7 @@ ofPath & ofApp::drawCircle2(ofPath & path) {
     float samples = floor(2 * bRadius);
     for (int j = 0; j < samples + 1; ++j) {
         float angle = (2 * M_PI * j) / samples;
+        //cout << angle << endl;
         
         // Figure out the x/y coordinates for the given angle
         float x = cos(angle);
