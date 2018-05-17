@@ -58,7 +58,7 @@ void ofApp::setup(){
     gradient.setBounds(gradientBounds);
     
     //LINEAR_SQUARED, COS_SQUARED, LINEAR_NOT_SQUARED, COS_NOT_SQUARED
-    gradient.setMode(COS_NOT_SQUARED);
+    gradient.setMode(COS_SQUARED);
     gradient.addStep(ofColor::yellow,  0.0);
     //gradient.addStep(ofColor(ofColor::green, 128), 0.5);
     gradient.addStep(ofColor(ofColor::red, 255),  1.0);

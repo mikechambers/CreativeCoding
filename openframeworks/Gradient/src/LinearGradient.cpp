@@ -36,7 +36,8 @@ void LinearGradient::addStep(ofColor c1, float stopPosition) {
 
 void LinearGradient::render() {
     
-    float angle = 0.785398;
+    //float angle = 0.785398;
+    float angle = 0;
     ofRectangle drawingBounds = getBoundingDimensions(angle);
     
     cout << drawingBounds.width << " : " << drawingBounds.height << endl;
@@ -80,6 +81,7 @@ void LinearGradient::render() {
         ofColor nextColor = it->second;
 
         float _x = currentPosition * drawingBounds.width;
+        
         ofRectangle section = ofRectangle(_x, 0, (nextPosition * drawingBounds.width) - _x, drawingBounds.height);
         
         int r;
@@ -90,8 +92,9 @@ void LinearGradient::render() {
         float percent = 0;
         
         for(int i = 0; i < section.width; i++) {
-            percent = i / section.width;
-
+            //percent = (i + 1) / section.width;
+            
+            percent = ofMap(i, 0, section.width, 0, 1);
             switch(mode) {
                 case COS_SQUARED:
                     r  = floor(sqrt(interpolate((startColor.r * startColor.r),(nextColor.r * nextColor.r),percent)));
@@ -151,12 +154,13 @@ void LinearGradient::render() {
             
             float dx = x - center.x;
             float dy = y - center.y;
-            
+        
             //newX = cos(angle)*x - sin(angle)*y
             //newY = sin(angle)*x + cos(angle)*y
-            float newX = cos(-angle) * dx - sin(-angle) * dy + (center.x);
-            float newY = cos(-angle) * dy + sin(-angle) * dx + center.y;
 
+            float newX = cos(angle) * dx - sin(angle) * dy + center.x;
+            float newY = cos(angle) * dy + sin(angle) * dx + center.y;
+            
             //rotated.setColor(newX, newY, pixels.getColor(x, y));
             
             rotated.setColor(x, y, pixels.getColor(newX, newY));
