@@ -27,6 +27,9 @@ ofColor mRandomColor();
 
 string mColorToString(ofColor color);
 
+ofVec3f mVectorFromAngle(float angleRads);
+float mAngleFromVector(ofVec3f v);
+
 ofVec3f mGetRandomVelocity(float max = 10);
 
 ofRectangle mGetBoundsWithPadding(const ofRectangle & bounds, float padding);

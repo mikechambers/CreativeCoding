@@ -32,6 +32,20 @@ void MeshUtils::onKeyPressed(ofKeyEventArgs& eventArgs) {
     }
 }
 
+/****************** Vector Utils ******************/
+
+ofVec3f mVectorFromAngle(float angleRads) {
+    ofVec3f v;
+    v.x = cos(angleRads);
+    v.y = sin(angleRads);
+    
+    return v;
+}
+
+float mAngleFromVector(ofVec3f v) {
+    return atan2(v.y, v.x);
+}
+
 /*******************  General Util APIs        *******************/
 
 ofVec3f mGetRandomVelocity(float max) {
