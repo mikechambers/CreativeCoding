@@ -12,7 +12,7 @@ export default class Canvas{
 		this._canvas.height = height;
 		this._canvas.width = width;
 
-		this._ctx = this._canvas.getContext("2d");
+		this._ctx = this._canvas.getContext("2d", { alpha: false });
 
 		container.appendChild(this._canvas);
 
@@ -35,6 +35,8 @@ export default class Canvas{
 	}
 
 	setBackgroundColor(color) {
+
+		//todo: we probably only need to call this once
 		this._ctx.fillStyle = color;
 		this._ctx.fillRect(0, 0, this._bounds.height, this._bounds.width);
 

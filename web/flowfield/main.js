@@ -1,27 +1,30 @@
 /**
 	Mike Chambers
 	https://github.com/mikechambers
-	http://www.mikechambers.// COMBAK:
+	http://www.mikechambers.com
 
 	Released under an MIT License
 	Copyright Mike Chambers 2018
 **/
 
-import Rectangle from "./Rectangle.js"
+import * as mesh from "./mesh.js"
+//import Rectangle from "./Rectangle.js"
 import Vector from "./Vector.js"
 import {noise} from "./noise.js"
 import Color from "./color.js"
 import Particle from "./Particle.js"
-import * as math from "./math.js"
-import Canvas from "./Canvas.js"
-import {createFileName} from "./datautils.js"
+import {random} from "./math.js"
+//import Canvas from "./Canvas.js"
+//import {createFileName} from "./datautils.js"
 
 (function(){
 "use strict";
 
 /************ CONFIG **************/
 
-let config = {
+const config = {
+	/**** required for mesh lib ******/
+	CANVAS_ID:"canvas_container",
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 	CANVAS_HEIGHT:640,
 	CANVAS_WIDTH:640,
@@ -32,6 +35,7 @@ let config = {
 	FPS:30,
 	CLEAR_CANVAS:false,
 
+	/***** app specific *****/
 	SCALE: 20,
 	INCREMENT:0.1,
 	PARTICLE_RADIUS:1,
@@ -42,14 +46,8 @@ let config = {
 
 /************** GLOBAL VARIABLES ************/
 
-let fpsInterval;
-let lastFrameTime;
-let startTime;
-let paused = false;
-
 let ctx;
 let bounds;
-let onFrame;
 let canvas;
 
 let cols;
@@ -61,9 +59,20 @@ let vectors;
 
 /*************** CODE ******************/
 
-const init = function() {
+//three methods to impliment
+// init() (currently )
+
+const init = function(canvas) {
+
+	ctx = canvas.context;
+	bounds = canvas.bounds;
+
+	canvas.clear();
+
 	cols = Math.floor(bounds.width / config.SCALE);
 	rows = Math.floor(bounds.height / config.SCALE);
+
+	zoff  = random(10000);
 
 	vectors = new Array(rows * cols);
 
@@ -74,8 +83,8 @@ const init = function() {
 
 		//move random point to function
 		p.position = new Vector(
-			math.random(bounds.width),
-			math.random(bounds.height)
+			random(bounds.width),
+			random(bounds.height)
 		);
 
 		/*
@@ -92,10 +101,8 @@ const init = function() {
 }
 
 const draw = function() {
+	console.log("draw");
 
-	if(config.CLEAR_CANVAS) {
-		canvas.clear();
-	}
 	//need to clear vector array?
 
 	let yoff = 0;
@@ -146,68 +153,12 @@ const draw = function() {
 	}
 }
 
-onFrame = function() {
+const onFrame = function() {
 	draw();
 }
 
-/************** SETUP / UTILS *************/
-
-const onAnimationFrame = function() {
-	let now = Date.now();
-	let elapsed = now - lastFrameTime;
-
-	if(elapsed > fpsInterval) {
-		lastFrameTime = now - (elapsed % fpsInterval);
-
-		if(onFrame && !paused) {
-			onFrame();
-		}
-	}
-
-	window.requestAnimationFrame(onAnimationFrame);
-}
-
-const onKeyUp = function(event){
-	const key = event.key;
-
-	let n;
-	if(key == "s") {
-		n = createFileName(config.APP_NAME, "png");
-		canvas.downloadPNG(n);
-	} else if(key == "v") {
-		n = createFileName(config.APP_NAME, "webm");
-		canvas.downloadVideo(n);
-	} else if(key == " ") {
-		paused = !paused;
-	}
-}
-
 window.onload = function(){
-	canvas = new Canvas("canvas_container",
-		config.CANVAS_HEIGHT,
-		config.CANVAS_WIDTH,
-		config.CANVAS_BACKGROUND_COLOR);
-
-	ctx = canvas.context;
-	bounds = canvas.bounds;
-
-	document.body.style.background = config.BACKGROUND_COLOR;
-
-	window.addEventListener("keyup", onKeyUp);
-
-	init();
-
-	if(config.ANIMATE) {
-		fpsInterval = 1000 / config.FPS;
-		lastFrameTime = Date.now();
-		startTime = lastFrameTime;
-
-		window.requestAnimationFrame(onAnimationFrame);
-	}
-
-	if(config.RECORD_VIDEO) {
-		canvas.startRecord();
-	}
+	mesh.init(config, init, draw, onFrame);
 }
 
 }());
