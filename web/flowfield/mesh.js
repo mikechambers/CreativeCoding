@@ -6,7 +6,6 @@ import Rectangle from "./Rectangle.js"
 let _config;
 let _init;
 let _draw;
-let _onFrame;
 
 let fpsInterval;
 let lastFrameTime;
@@ -19,12 +18,11 @@ let canvas;
 //let mesh;
 //export default mesh = {};
 
-export function init(config, init, draw, onFrame){
+export function init(config, init, draw){
 
 	_config = config;
 	_init = init;
 	_draw = draw;
-	_onFrame = onFrame;
 
 	document.body.style.background = _config.BACKGROUND_COLOR;
 
@@ -57,12 +55,12 @@ const onAnimationFrame = function() {
 	if(elapsed > fpsInterval) {
 		lastFrameTime = now - (elapsed % fpsInterval);
 
-		if(_onFrame && !paused) {
+		if(_draw && !paused) {
 
 			if(_config.CLEAR_CANVAS) {
 				canvas.clear();
 			}
-			_onFrame();
+			_draw();
 		}
 	}
 

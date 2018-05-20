@@ -153,12 +153,8 @@ const draw = function() {
 	}
 }
 
-const onFrame = function() {
-	draw();
-}
-
 window.onload = function(){
-	mesh.init(config, init, draw, onFrame);
+	mesh.init(config, init, draw);
 }
 
 }());
