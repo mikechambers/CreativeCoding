@@ -13,53 +13,40 @@
 
 #include "ofxSyphonClient.h"
 #include "MeshUtils.h"
-#include "Canvas.h"
-#include "SimpleLinearGradient.h"
-#include "MeshUtils.h"
 
-string SAVE_PATH = ofFilePath::getUserHomeDir() + "/screenshots/";
 string APP_NAME = ofFilePath::getFileName(ofFilePath::getCurrentExePath());
 
 bool paused = false;
 
+MeshUtils utils;
 ofxSyphonServer syphon;
-
-ofRectangle windowBounds;
-ofRectangle canvasBounds;
-
+ofRectangle bounds;
 ofVec3f center;
 
-Canvas canvas;
+ofEasyCam camera;
+ofSpherePrimitive sphere;
 
-SimpleLinearGradient gradient;
+int zIndex = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    utils.enableScreenshot(APP_NAME, 's');
     syphon.setName(APP_NAME);
 
-    windowBounds = ofGetWindowRect();
-    canvasBounds = ofRectangle(0,0, 2560, 1600);
-    center = canvasBounds.getCenter();
+    bounds = ofGetWindowRect();
+    center = bounds.getCenter();
     
-    ofColor backgroundColor = ofColor::fromHex(0xFFFFFF);
-
     ofSetBackgroundAuto(true);
-    ofSetBackgroundColor(backgroundColor);
-
-    canvas.allocate(canvasBounds, backgroundColor);
-
-    gradient = SimpleLinearGradient(ofColor::fromHex(0x00F260), ofColor::fromHex(0x0575E6));
-    gradient.setBounds(canvasBounds);
+    ofSetBackgroundColor(ofColor::black);
     
+    camera.setFov(60); //60 is default
+
     init();
 }
 
 void ofApp::init() {
-    canvas.reset();
-    
-    canvas.begin();
-    gradient.draw();
-    canvas.end();
+    sphere.setRadius(6);
+    sphere.setPosition(0, 0, zIndex);
 }
 
 //--------------------------------------------------------------
@@ -67,7 +54,7 @@ void ofApp::update(){
     if(paused) {
         return;
     }
-    canvas.draw(windowBounds);
+    sphere.setPosition(0, 0, ++zIndex);
 }
 
 //--------------------------------------------------------------
@@ -77,7 +64,9 @@ void ofApp::draw(){
         return;
     }
     
-    canvas.draw(windowBounds);
+    camera.begin();;
+    sphere.draw();
+    camera.end();
     
     syphon.publishScreen();
 }
@@ -86,10 +75,6 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key == ' ') {
         paused = !paused;
-    } else if(key == 's') {
-        canvas.saveImage(SAVE_PATH + APP_NAME);
-    } else if(key == 'n') {
-        init();
     }
 }
 
