@@ -27,9 +27,12 @@ void Mover::update() {
         applyForce(force);
     }
     
-    velocity.limit(maxVelocity);
     velocity += acceleration;
+    
+    velocity.limit(maxVelocity);
     position += velocity;
+    
+    //acceleration *= 0;
     
     updateAngle();
 }

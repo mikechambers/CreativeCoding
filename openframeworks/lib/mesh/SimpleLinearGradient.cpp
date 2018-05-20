@@ -34,7 +34,7 @@ void SimpleLinearGradient::render() {
         
         float percent = ofMap(x, 0, w, 0, 1);
         
-        r  = floor(sqrt(cosInterpolate((_startColor.r * _startColor.r),(_endColor.r * _endColor.r),percent)));
+        r  = floor(sqrt(cosInterpolate((_startColor.r * _startColor.r),(_endColor.r * _endColor.r), percent)));
         g  = floor(sqrt(cosInterpolate((_startColor.g * _startColor.g), (_endColor.g * _endColor.g), percent)));
         b  = floor(sqrt(cosInterpolate((_startColor.b * _startColor.b), (_endColor.b * _endColor.b), percent)));
         a  = floor(sqrt(cosInterpolate((_startColor.a * _startColor.a), (_endColor.a * _endColor.a), percent)));

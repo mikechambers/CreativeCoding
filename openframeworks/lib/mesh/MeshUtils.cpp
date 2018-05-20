@@ -43,7 +43,16 @@ ofVec3f mVectorFromAngle(float angleRads) {
 }
 
 float mAngleFromVector(ofVec3f v) {
-    return atan2(v.y, v.x);
+    
+    float angle = (float)atan2(v.y, v.x);
+    
+    /*
+    if(angle < 0) {
+        angle = (M_PI * 2) + angle;
+    }
+    */
+    
+    return angle;
 }
 
 /*******************  General Util APIs        *******************/

@@ -32,7 +32,6 @@ ofVec3f center;
 Canvas canvas;
 
 SimpleLinearGradient gradient;
-SimpleLinearGradient gradient2;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -49,11 +48,8 @@ void ofApp::setup(){
 
     canvas.allocate(canvasBounds, backgroundColor);
 
-    gradient = SimpleLinearGradient(ofColor::fromHex(0x02AAB0), ofColor::fromHex(0x00CDAC));
-    gradient.setBounds(mGetBoundsWithPadding(canvasBounds, 100));
-    
-    gradient2 = SimpleLinearGradient(ofColor::fromHex(0x00CDAC), ofColor::fromHex(0x02AAB0));
-    gradient2.setBounds(canvasBounds);
+    gradient = SimpleLinearGradient(ofColor::fromHex(0x00F260), ofColor::fromHex(0x0575E6));
+    gradient.setBounds(canvasBounds);
     
     init();
 }
@@ -62,7 +58,6 @@ void ofApp::init() {
     canvas.reset();
     
     canvas.begin();
-    gradient2.draw();
     gradient.draw();
     canvas.end();
 }
