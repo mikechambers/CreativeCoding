@@ -16,8 +16,8 @@ const config = {
 	/**** required for mesh lib ******/
 	CANVAS_ID:"canvas_container",
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
-	CANVAS_HEIGHT:1600,
-	CANVAS_WIDTH:2560,
+	CANVAS_HEIGHT:640,
+	CANVAS_WIDTH:640,
 	BACKGROUND_COLOR:"#000000",
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 	ANIMATE:false,
