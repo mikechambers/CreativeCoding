@@ -1,4 +1,4 @@
-import Rectangle from "./Rectangle.js"
+import Rectangle from "./rectangle.js"
 import {downloadDataUrlAsFile, downloadBlob} from "./datautils.js"
 
 let count = 0;

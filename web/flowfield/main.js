@@ -7,14 +7,13 @@
 	Copyright Mike Chambers 2018
 **/
 
-import * as mesh from "./mesh.js"
-import Vector from "./Vector.js"
-import {noise} from "./noise.js"
-import Color from "./color.js"
-import Particle from "./Particle.js"
-import {random} from "./math.js"
-import {PixelData, loadPixelDataFromPath} from "./pixeldata.js"
-import Gradient from "./gradient.js"
+import * as mesh from "../lib/mesh.js"
+import Vector from "../lib/vector.js"
+import Color from "../lib/color.js"
+import Particle from "../lib/particle.js"
+import {random, noise} from "../lib/math.js"
+import {PixelData, loadPixelDataFromPath} from "../lib/pixeldata.js"
+import Gradient from "../lib/gradient.js"
 
 /************ CONFIG **************/
 

@@ -1,6 +1,6 @@
-import Canvas from "./Canvas.js"
+import Canvas from "./canvas.js"
 import {createFileName} from "./datautils.js"
-import Rectangle from "./Rectangle.js"
+import Rectangle from "./rectangle.js"
 
 let _config;
 let _init;

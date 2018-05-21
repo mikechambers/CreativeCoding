@@ -1,5 +1,5 @@
 import Color from "./color.js"
-import Vector from "./Vector.js"
+import Vector from "./vector.js"
 
 //for some reason i get an error if i try and set this as default export
 export class PixelData {
