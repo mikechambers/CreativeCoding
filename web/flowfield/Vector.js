@@ -1,3 +1,4 @@
+import {random} from "./math.js"
 
 export default class Vector {
 	constructor(x = 0, y = 0){
@@ -83,6 +84,6 @@ export default class Vector {
 	}
 
 	static withRandomVelocity(max = 1) {
-		
+		return new Vector(random(-max, max), random(-max, max));
 	}
 }

@@ -1,5 +1,6 @@
 import Rectangle from "./Rectangle.js"
 import {downloadDataUrlAsFile, downloadBlob} from "./datautils.js"
+
 let count = 0;
 export default class Canvas{
 

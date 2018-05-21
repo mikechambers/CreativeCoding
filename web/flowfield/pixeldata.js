@@ -1,7 +1,9 @@
 import Color from "./color.js"
 import Vector from "./Vector.js"
 
+//for some reason i get an error if i try and set this as default export
 export class PixelData {
+
 	constructor(imageData, cache = true) {
 		this._imageData = imageData;
 

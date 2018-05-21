@@ -1,8 +1,8 @@
 import Color from "./color.js"
-import {map} from "./math.js"
 
-//todo: for some reason I cant export just as PixelData
+//note for some reason I cant import PixelData as default
 import {PixelData} from "./pixeldata.js"
+import {map} from "./math.js"
 
 export default class Gradient {
 	constructor(bounds, type = Gradient.LEFT_TO_RIGHT){

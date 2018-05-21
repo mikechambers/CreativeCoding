@@ -92,13 +92,6 @@ const init = function(canvas) {
 			random(bounds.height)
 		);
 
-		/*
-		p.velocity = new Vector(
-			math.random(-2, 2),
-			math.random(-2, 2)
-		);
-		*/
-
 		particles.push(p);
 	}
 
