@@ -1,4 +1,4 @@
-import Vector from "./vector.js"
+import Vector from "../lib/vector.js"
 
 export default class Particle {
 	constructor(bounds, radius = 2, particleColor = "#000000") {
@@ -41,7 +41,7 @@ export default class Particle {
 
 		let c = pixelData.getColor(this._position);
 		c.a = 0.2;
-		
+
 		ctx.strokeStyle = c.toRGBA();
 		ctx.lineWidth = 0.5;
 		ctx.beginPath();
