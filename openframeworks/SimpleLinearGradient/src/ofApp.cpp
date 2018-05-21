@@ -38,7 +38,7 @@ void ofApp::setup(){
     syphon.setName(APP_NAME);
 
     windowBounds = ofGetWindowRect();
-    canvasBounds = ofRectangle(0,0, 2560, 1600);
+    canvasBounds = ofRectangle(0,0, 640, 640);
     center = canvasBounds.getCenter();
     
     ofColor backgroundColor = ofColor::fromHex(0xFFFFFF);
@@ -48,7 +48,7 @@ void ofApp::setup(){
 
     canvas.allocate(canvasBounds, backgroundColor);
 
-    gradient = SimpleLinearGradient(ofColor::fromHex(0x00F260), ofColor::fromHex(0x0575E6));
+    gradient = SimpleLinearGradient(ofColor::orange, ofColor::yellow);
     gradient.setBounds(canvasBounds);
     
     init();

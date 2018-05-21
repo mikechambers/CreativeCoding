@@ -40,7 +40,7 @@ export default class Canvas{
 		this._ctx.fillStyle = color;
 		this._ctx.fillRect(0, 0, this._bounds.height, this._bounds.width);
 
-		this._canvas.style.background = color;
+		//this._canvas.style.background = color;
 	}
 
 	clear() {

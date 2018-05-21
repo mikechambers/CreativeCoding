@@ -81,4 +81,8 @@ export default class Vector {
 
 		return v;
 	}
+
+	static withRandomVelocity(max = 1) {
+		
+	}
 }

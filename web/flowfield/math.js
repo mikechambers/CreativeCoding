@@ -9,6 +9,11 @@ export function random(min, max) {
 	return Math.random() * (max - min) + min;
 }
 
+export function map(value, inputMin, inputMax, outputMin, outputMax) {
+  return outputMin + (outputMax - outputMin) * ((value - inputMin) / (inputMax - inputMin));
+}
+
+
 /*
 export function randomInclusive(min, max) {
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random

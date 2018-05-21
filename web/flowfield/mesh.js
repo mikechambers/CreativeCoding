@@ -2,7 +2,6 @@ import Canvas from "./Canvas.js"
 import {createFileName} from "./datautils.js"
 import Rectangle from "./Rectangle.js"
 
-
 let _config;
 let _init;
 let _draw;
@@ -10,13 +9,10 @@ let _draw;
 let fpsInterval;
 let lastFrameTime;
 let startTime;
-let paused = false;
+let _paused = false;
 
 //right now only supports creating one canvas
 let canvas;
-
-//let mesh;
-//export default mesh = {};
 
 export function init(config, init, draw){
 
@@ -55,7 +51,7 @@ const onAnimationFrame = function() {
 	if(elapsed > fpsInterval) {
 		lastFrameTime = now - (elapsed % fpsInterval);
 
-		if(_draw && !paused) {
+		if(_draw && !_paused) {
 
 			if(_config.CLEAR_CANVAS) {
 				canvas.clear();
@@ -78,8 +74,8 @@ const onKeyUp = function(event){
 		n = createFileName(_config.APP_NAME, "webm");
 		canvas.downloadVideo(n);
 	} else if(key == " ") {
-		paused = !paused;
+		_paused = !_paused;
 	} else if (key == "i") {
-		_init();
+		_init(canvas);
 	}
 }

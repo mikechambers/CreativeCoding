@@ -8,17 +8,13 @@
 **/
 
 import * as mesh from "./mesh.js"
-//import Rectangle from "./Rectangle.js"
 import Vector from "./Vector.js"
 import {noise} from "./noise.js"
 import Color from "./color.js"
 import Particle from "./Particle.js"
 import {random} from "./math.js"
-//import Canvas from "./Canvas.js"
-//import {createFileName} from "./datautils.js"
-
-(function(){
-"use strict";
+import {PixelData, loadPixelDataFromPath} from "./pixeldata.js"
+import Gradient from "./gradient.js"
 
 /************ CONFIG **************/
 
@@ -57,6 +53,8 @@ let zoff = 0;
 let particles;
 let vectors;
 
+let pixelData;
+
 /*************** CODE ******************/
 
 //three methods to impliment
@@ -68,6 +66,13 @@ const init = function(canvas) {
 	bounds = canvas.bounds;
 
 	canvas.clear();
+
+	let gradient = new Gradient(bounds);
+	gradient.addColorStop(0, "#FF0000");
+	gradient.addColorStop(1, "#0000FF");
+
+	gradient.createGradientFromName("Quepal");
+	pixelData = gradient.getPixelData();
 
 	cols = Math.floor(bounds.width / config.SCALE);
 	rows = Math.floor(bounds.height / config.SCALE);
@@ -101,9 +106,6 @@ const init = function(canvas) {
 }
 
 const draw = function() {
-	console.log("draw");
-
-	//need to clear vector array?
 
 	let yoff = 0;
 	for(let y = 0; y < rows; y++) {
@@ -149,12 +151,10 @@ const draw = function() {
 		p.applyForce(force);
 
 		p.update();
-		p.show(ctx);
+		p.show(ctx, pixelData);
 	}
 }
 
 window.onload = function(){
 	mesh.init(config, init, draw);
 }
-
-}());

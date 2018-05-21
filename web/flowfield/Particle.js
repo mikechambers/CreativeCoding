@@ -37,8 +37,12 @@ export default class Particle {
 		this._acceleration.add(force);
 	}
 
-	show(ctx) {
-		ctx.strokeStyle = this._particleColor;
+	show(ctx, pixelData) {
+
+		let c = pixelData.getColor(this._position);
+		c.a = 0.2;
+		
+		ctx.strokeStyle = c.toRGBA();
 		ctx.lineWidth = 0.5;
 		ctx.beginPath();
 		ctx.moveTo(this._lastPosition.x, this._lastPosition.y);
