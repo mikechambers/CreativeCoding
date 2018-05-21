@@ -2,6 +2,13 @@ import Canvas from "./canvas.js"
 import {createFileName} from "./datautils.js"
 import Rectangle from "./rectangle.js"
 
+//expose a single canvas, which is the fbo, and then we update the display canvas
+//after we call drawImage
+//if we dont animate, we make sure to call draw at least once after _init
+//if both canvas sizes are the same, then we just draw to a single canvas_container
+//when saving screenshots, we capture from Facebook
+//when capturing video, we capture from screen (maybe)
+
 let _config;
 let _init;
 let _draw;

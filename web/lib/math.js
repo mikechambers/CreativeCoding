@@ -13,6 +13,11 @@ export function map(value, inputMin, inputMax, outputMin, outputMax) {
   return outputMin + (outputMax - outputMin) * ((value - inputMin) / (inputMax - inputMin));
 }
 
+//https://stackoverflow.com/a/1186465/10232
+//returns the greatest common divisor of two numbers
+export function greatestCommonDivisor (a, b) {
+    return (b == 0) ? a : greatestCommonDivisor (b, a % b);
+}
 
 /*
 export function randomInclusive(min, max) {
