@@ -112,6 +112,11 @@ Gradient.TOP_TO_BOTTOM = 1;
 Gradient.TOP_RIGHT_TO_BOTTOM_LEFT = 2;
 Gradient.BOTTOM_LEFT_TO_TOP_RIGHT = 3;
 
+/**
+	Named gradients from uigradients.com, used Under
+	an MIT license:
+	https://github.com/ghosh/uiGradients/blob/master/gradients.json
+*/
 let gradients = new Map([
     [
         "Blu",
