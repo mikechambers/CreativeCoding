@@ -83,7 +83,8 @@ export default class Vector {
 		return v;
 	}
 
-	static withRandomVelocity(max = 1) {
+	//todo: maybe add option for min / max range
+	static random(max = 1) {
 		return new Vector(random(-max, max), random(-max, max));
 	}
 }
