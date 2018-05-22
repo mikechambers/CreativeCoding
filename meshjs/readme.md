@@ -10,10 +10,18 @@ The goal is to provide a framework that makes it fast to do creative coding on H
 * Quick and easy to get started.
 * Config object based configuration, making it easy to quickly iterate, and save settings.
 * Built in functionality for saving PNGs (hit "p") and videos (hit "v" when config.RECORD_VIDEO is set to true).
-* Built in support for high resolution off screen canvas rendering (just set in config) which makes it easy for high resolution image and video capture.
+* Automatic support for rendering canvas at high resolution, but displaying at smaller size.
 * APIs to make it easy to grab and use pixel data / colors from images and gradients.
 
 In general, I add new features and APIs as I need them.
+
+### Usage
+
+The project includes a template folder that makes it easy to get started. Just copy and rename the folder, and add your code to `main.js`.
+
+1. Specify configuration settings at the top of `main.js` in the `config` object. You can also add your own settings to the config object.
+2. Add any initialization code to the `init' function. This will be called once at start up (and also re-called any time you press the "i" key).
+3. Add rendering code and logic to the `draw` function. If `config.ANIMATE` is set to false, the draw function will be called once after init is called. If `config.ANIMATE` is true, then draw will be called repeatedly, with the frequency depending on the `config.FPS` setting.
 
 ### Keyboard Shortcuts
 
@@ -21,91 +29,18 @@ The following keyboard shortcuts are built in (currently no way to disable via A
 
 **p** : Save and download current canvas view as a PNG. Note, if using an offscreen canvas, the PNG will be generated from that canvas.  
 
-**v** : If config.RECORD_VIDEO is set to true, will generate and download a "webm" video of the canvas since the page was loaded.  
+**v** : If `config.RECORD_VIDEO` is set to true, will generate and download a "webm" video of the canvas since the page was loaded.  
 
-**SPACE** : Toggles animation (basically whether draw() is called).  
+**SPACE** : Toggles animation (basically whether `draw()` is called).  
 
-**i** : Calls the init() function for the project. Useful if you want to quickly generate new views of a project.
+**i** : Calls the `init()`` function for the project. Useful if you want to quickly generate new views of a project.
 
 ### Project Template
 
-Here is a super simple template for what is required to get started:
+You can find a template for getting started in the `template` folder. Just add code your code to the `init()` and `draw()` methods.
 
-````javascript
+### License
 
-import * as mesh from "../lib/mesh.js"
+Copyright 2018 Mike Chambers
 
-/************ CONFIG **************/
-const config = {
-	/**** required for mesh lib ******/
-
-	//name of container that generated canvas will be created in
-	PARENT_ID:"canvas_container",
-
-	//app name, used for saving files
-	APP_NAME: window.location.pathname.replace(/\//gi, ""),
-
-	//Canvas dimensions on page
-	CANVAS_HEIGHT:640,
-	CANVAS_WIDTH:640,
-
-	//offscreen render settings. If true, drawing will happen offscreen
-	//and then be copied to display canvas. Image and video captures will be
-	//from offscreen renderer.
-	RENDER_OFFSCREEN:true,
-	RENDER_HEIGHT:1280,
-	RENDER_WIDTH:1280,
-
-	//background color of html page
-	BACKGROUND_COLOR:"#000000",
-
-	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
-
-	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:true,
-	FPS:30,
-
-	//Whether video of canvas is recorded
-	RECORD_VIDEO:false,
-
-	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:false
-};
-
-/************** GLOBAL VARIABLES ************/
-
-
-/*************** CODE ******************/
-const init = function(canvas) {
-
-}
-
-const draw = function() {
-
-}
-
-window.onload = function(){
-	mesh.init(config, init, draw);
-}
-````
-
-With the following index.html page:
-
-````html
-<html>
-<head>
-	<script type="module" src="main.js"></script>
-	<style type="text/css">
-		#canvas_container {
-			display:flex;
-			justify-content:center;
-		}
-	</style>
-
-</head>
-<body>
-	<div id="canvas_container"></div>
-</body>
-</html>
-````
+Released under and MIT License

@@ -2,12 +2,11 @@ import Canvas from "./canvas.js"
 import {createFileName} from "./datautils.js"
 import Rectangle from "./rectangle.js"
 
-//expose a single canvas, which is the fbo, and then we update the display canvas
-//after we call drawImage
-//if we dont animate, we make sure to call draw at least once after _init
-//if both canvas sizes are the same, then we just draw to a single canvas_container
-//when saving screenshots, we capture from Facebook
-//when capturing video, we capture from screen (maybe)
+//may eventually allow these to be set via config object
+let _pauseKey = " ";
+let _downloadPngKey = "p";
+let _downloadVideoKey = "v";
+let _initKey = "i";
 
 let _config;
 let _init;
@@ -18,8 +17,7 @@ let lastFrameTime;
 let startTime;
 let _paused = false;
 
-let _displayCanvas;
-let _renderCanvas;
+let _canvas;
 
 export function init(config, initCallback, drawCallback){
 
@@ -38,27 +36,45 @@ export function init(config, initCallback, drawCallback){
 		window.requestAnimationFrame(onAnimationFrame);
 	}
 
-	_displayCanvas = new Canvas(
-		_config.CANVAS_WIDTH,
-		_config.CANVAS_HEIGHT,
+	_canvas = new Canvas(
 		_config.PARENT_ID,
+		_config.RENDER_WIDTH,
+		_config.RENDER_HEIGHT,
 		_config.CANVAS_BACKGROUND_COLOR);
 
-	if(!_config.RENDER_OFFSCREEN) {
-		_renderCanvas = _displayCanvas;
-	} else {
-		_renderCanvas = new Canvas(
-			_config.RENDER_WIDTH,
-			_config.RENDER_HEIGHT,
-			false, //dont attach to dom
-			_config.CANVAS_BACKGROUND_COLOR);
+	if(_config.MAX_DISPLAY_WIDTH != _config.RENDER_WIDTH ||
+		_config.MAX_DISPLAY_HEIGHT != _config.RENDER_HEIGHT) {
+			let  maxW = _config.MAX_DISPLAY_WIDTH;
+			let  maxH = _config.MAX_DISPLAY_HEIGHT;
+			let canvasW = _config.RENDER_WIDTH;
+			let canvasH = _config.RENDER_HEIGHT;
+
+			if (canvasH > maxH || canvasW > maxW) {
+				let ratio = canvasH / canvasW;
+
+				if (canvasW >= maxW && ratio <= 1) {
+					canvasW = maxW;
+					canvasH = canvasW * ratio;
+				} else if (canvasH >= maxH) {
+					canvasH = maxH;
+					canvasW = canvasH / ratio;
+				}
+			}
+
+			let scalex = canvasW / _config.RENDER_WIDTH;
+			let scaley = canvasH / _config.RENDER_HEIGHT;
+
+			let css = `transform-origin:top;
+						transform:scale(${scalex}, ${scaley});`;
+
+			_canvas.canvas.setAttribute("style", css);
 	}
 
 	if(_config.RECORD_VIDEO) {
-		_renderCanvas.startRecord();
+		_canvas.startRecord();
 	}
 
-	_init(_renderCanvas);
+	_init(_canvas);
 
 	if(!_config.ANIMATE) {
 		draw();
@@ -66,42 +82,7 @@ export function init(config, initCallback, drawCallback){
 }
 
 function draw() {
-
-	//todo: should we pass in canvas here?
-	_draw();
-
-	//code to scale down canvas
-	//https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-	//https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-
-	if(_config.RENDER_OFFSCREEN) {
-
-		let maxW = _displayCanvas.bounds.width;
-		let maxH = _displayCanvas.bounds.height;
-
-		let canvasW = _renderCanvas.bounds.width;
-		let canvasH = _renderCanvas.bounds.height;
-
-		if (canvasH > maxH || canvasW > maxW) {
-			let ratio = canvasH / canvasW;
-
-			if (canvasW >= maxW && ratio <= 1) {
-				canvasW = maxW;
-				canvasH = canvasW * ratio;
-			} else if (canvasH >= maxH) {
-				canvasH = maxH;
-				canvasW = canvasH / ratio;
-			}
-		}
-
-		let offsetY = _displayCanvas.bounds.center.y - (canvasH / 2);
-		let offsetX = _displayCanvas.bounds.center.x - (canvasW / 2);
-
-		_displayCanvas.context.drawImage(
-			_renderCanvas.canvas,
-			offsetX, offsetY, canvasW, canvasH);
-			//_displayCanvas.naturalWidth, _displayCanvas.naturalHeight
-	}
+	_draw(_canvas);
 }
 
 const onAnimationFrame = function() {
@@ -115,7 +96,7 @@ const onAnimationFrame = function() {
 		if(_draw && !_paused) {
 
 			if(_config.CLEAR_CANVAS) {
-				_renderCanvas.clear();
+				_canvas.clear();
 			}
 			draw();
 		}
@@ -124,19 +105,20 @@ const onAnimationFrame = function() {
 	window.requestAnimationFrame(onAnimationFrame);
 }
 
+
 const onKeyUp = function(event){
 	const key = event.key;
 
 	let n;
-	if(key == "p") {
+	if(key === _downloadPngKey) {
 		n = createFileName(_config.APP_NAME, "png");
-		_renderCanvas.downloadPNG(n);
-	} else if(key == "v") {
+		_canvas.downloadPNG(n);
+	} else if(key === _downloadVideoKey) {
 		n = createFileName(_config.APP_NAME, "webm");
-		_renderCanvas.downloadVideo(n);
-	} else if(key == " ") {
+		_canvas.downloadVideo(n);
+	} else if(key === _pauseKey) {
 		_paused = !_paused;
-	} else if (key == "i") {
-		_init(_renderCanvas);
+	} else if (key === _initKey) {
+		_init(_canvas);
 	}
 }

@@ -22,16 +22,13 @@ const config = {
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
-	//Canvas dimensions on page
-	CANVAS_HEIGHT:640,
-	CANVAS_WIDTH:640,
-
-	//offscreen render settings. If true, drawing will happen offscreen
-	//and then be copied to display canvas. Image and video captures will be
-	//from offscreen renderered.
-	RENDER_OFFSCREEN:false,
+	//Dimensions that canvas will be rendered at
 	RENDER_HEIGHT:1080,
 	RENDER_WIDTH:1080,
+
+	//Dimension canvas will be display at on page
+	MAX_DISPLAY_HEIGHT:640,
+	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
 	BACKGROUND_COLOR:"#000000",
@@ -40,7 +37,7 @@ const config = {
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:false,
+	ANIMATE:true,
 	FPS:30,
 
 	//Where video of canvas is recorded
@@ -51,7 +48,7 @@ const config = {
 
 	/*********** APP Specific Settings ************/
 
-	SCALE:2
+	SCALE:8
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -62,6 +59,7 @@ let bounds;
 let cols;
 let rows;
 let inc = 0.01;
+let zinc = 0.05;
 let zoff;
 
 /*************** CODE ******************/
@@ -94,7 +92,7 @@ const draw = function() {
 		yoff += inc;
 	}
 
-	zoff  += inc;
+	zoff  += zinc;
 
 }
 

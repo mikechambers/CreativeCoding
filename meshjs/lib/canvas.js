@@ -4,7 +4,7 @@ import {downloadDataUrlAsFile, downloadBlob} from "./datautils.js"
 let count = 0;
 export default class Canvas{
 
-	constructor(width, height, parentId, backgroundColor = "#FFFFFF") {
+	constructor(parentId, width, height, backgroundColor = "#FFFFFF") {
 
 		this._canvas = document.createElement('canvas');
 
@@ -14,10 +14,8 @@ export default class Canvas{
 
 		this._ctx = this._canvas.getContext("2d");
 
-		if(parentId) {
-			let container = document.getElementById(parentId);
-			container.appendChild(this._canvas);
-		}
+		let container = document.getElementById(parentId);
+		container.appendChild(this._canvas);
 
 		this._backgroundColor = backgroundColor;
 		this._bounds = new Rectangle(0, 0, width, height);

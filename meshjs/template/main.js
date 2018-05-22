@@ -20,16 +20,13 @@ const config = {
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
-	//Canvas dimensions on page
-	CANVAS_HEIGHT:640,
-	CANVAS_WIDTH:640,
-
-	//offscreen render settings. If true, drawing will happen offscreen
-	//and then be copied to display canvas. Image and video captures will be
-	//from offscreen renderered.
-	RENDER_OFFSCREEN:false,
+	//Dimensions that canvas will be rendered at
 	RENDER_HEIGHT:1080,
 	RENDER_WIDTH:1080,
+
+	//Dimension canvas will be display at on page
+	MAX_DISPLAY_HEIGHT:640,
+	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
 	BACKGROUND_COLOR:"#000000",
@@ -63,7 +60,7 @@ const init = function(canvas) {
 	bounds = canvas.bounds;
 }
 
-const draw = function() {
+const draw = function(canvas) {
 }
 
 window.onload = function(){
