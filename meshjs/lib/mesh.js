@@ -67,6 +67,7 @@ export function init(config, initCallback, drawCallback){
 
 function draw() {
 
+	//todo: should we pass in canvas here?
 	_draw();
 
 	//code to scale down canvas

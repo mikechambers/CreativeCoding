@@ -34,193 +34,558 @@ export function randomInclusive(min, max) {
 }
 */
 
-/**
-	Adapted from Processing.js
-	https://github.com/processing-js/processing-js/blob/master/src/P5Functions/Math.js
+// noise1234
+//
+// Author: Stefan Gustavson, 2003-2005
+// Contact: stefan.gustavson@liu.se
+//
+// This code was GPL licensed until February 2011.
+// As the original author of this code, I hereby
+// release it into the public domain.
+// Please feel free to use it for whatever you want.
+// Credit is appreciated where appropriate, and I also
+// appreciate being told where this code finds any use,
+// but you may do as you like.
 
-	Processing.js
-	Copyright (C) 2008 John Resig
-	Copyright (C) 2009-2011; see the AUTHORS file for authors and
-	copyright holders.
-
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files (the
-	"Software"), to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify, merge, publish,
-	distribute, sublicense, and/or sell copies of the Software, and to
-	permit persons to whom the Software is furnished to do so, subject to
-	the following conditions:
-
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-	LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-	tinylog lite JavaScript library
-	Copyright (C) 2010 Eli Grey
-	https://github.com/eligrey/tinylog
-**/
-
-let undef = undefined;
-var internalRandomGenerator = function() { return Math.random(); };
+//Ported to JavaScript by Mike mikechambers
+//http://www.mikechambers.com
+//
+// Note, all return values are scaled to be between 0 and 1
+//
+//From original C at:
+//https://github.com/stegu/perlin-noise
+//https://github.com/stegu/perlin-noise/blob/master/src/noise1234.c
 
 /*
-//this was included twice but wasnt being called. commenting out.
-function lerp(value1, value2, amt) {
-	return ((value2 - value1) * amt) + value1;
-};
+ * This implementation is "Improved Noise" as presented by
+ * Ken Perlin at Siggraph 2002. The 3D function is a direct port
+ * of his Java reference code which was once publicly available
+ * on www.noisemachine.com (although I cleaned it up, made it
+ * faster and made the code more readable), but the 1D, 2D and
+ * 4D functions were implemented from scratch by me.
+ *
+ * This is a backport to C of my improved noise class in C++
+ * which was included in the Aqsis renderer project.
+ * It is highly reusable without source code modifications.
+ *
+ */
+
+// This is the new and improved, C(2) continuous interpolant
+function fade(t) {
+	return ( t * t * t * ( t * ( t * 6 - 15 ) + 10 ) );
+}
+
+function lerp(t, a, b) {
+	return ((a) + (t)*((b)-(a)));
+}
+
+
+//---------------------------------------------------------------------
+// Static data
+
+/*
+ * Permutation table. This is just a random jumble of all numbers 0-255,
+ * repeated twice to avoid wrapping the index at 255 for each lookup.
+ * This needs to be exactly the same for all instances on all platforms,
+ * so it's easiest to just keep it as static explicit data.
+ * This also removes the need for any initialisation of this class.
+ *
+ * Note that making this an int[] instead of a char[] might make the
+ * code run faster on platforms with a high penalty for unaligned single
+ * byte addressing. Intel x86 is generally single-byte-friendly, but
+ * some other CPUs are faster with 4-aligned reads.
+ * However, a char[] is smaller, which avoids cache trashing, and that
+ * is probably the most important aspect on most architectures.
+ * This array is accessed a *lot* by the noise functions.
+ * A vector-valued noise over 3D accesses it 96 times, and a
+ * float-valued 4D noise 64 times. We want this to fit in the cache!
+ */
+const perm = [151,160,137,91,90,15,
+  131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+  190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+  88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+  77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+  102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+  135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+  5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+  223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+  129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+  251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+  49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+  138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180,
+  151,160,137,91,90,15,
+  131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+  190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+  88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+  77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+  102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+  135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+  5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+  223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+  129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+  251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+  49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+  138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
+];
+
+//---------------------------------------------------------------------
+
+/*
+ * Helper functions to compute gradients-dot-residualvectors (1D to 4D)
+ * Note that these generate gradients of more than unit length. To make
+ * a close match with the value range of classic Perlin noise, the final
+ * noise values need to be rescaled. To match the RenderMan noise in a
+ * statistical sense, the approximate scaling values (empirically
+ * determined from test renderings) are:
+ * 1D noise needs rescaling with 0.188
+ * 2D noise needs rescaling with 0.507
+ * 3D noise needs rescaling with 0.936
+ * 4D noise needs rescaling with 0.87
+ */
+
+function grad1( hash, x ) {
+    let h = hash & 15;
+    let grad = 1.0 + (h & 7);  // Gradient value 1.0, 2.0, ..., 8.0
+    if (h&8) grad = -grad;         // and a random sign for the gradient
+    return ( grad * x );           // Multiply the gradient with the distance
+}
+
+function grad2(  hash,  x,  y ) {
+    let h = hash & 7;      // Convert low 3 bits of hash code
+    let u = h<4 ? x : y;  // into 8 simple gradient directions,
+    let v = h<4 ? y : x;  // and compute the dot product with (x,y).
+    return ((h&1)? -u : u) + ((h&2)? -2.0*v : 2.0*v);
+}
+
+function grad3(  hash,  x,  y ,  z ) {
+    let h = hash & 15;     // Convert low 4 bits of hash code into 12 simple
+    let u = h<8 ? x : y; // gradient directions, and compute dot product.
+    let v = h<4 ? y : h==12||h==14 ? x : z; // Fix repeats at h = 12 to 15
+    return ((h&1)? -u : u) + ((h&2)? -v : v);
+}
+
+function grad4(  hash,  x,  y,  z,  t ) {
+    let h = hash & 31;      // Convert low 5 bits of hash code into 32 simple
+    let u = h<24 ? x : y; // gradient directions, and compute dot product.
+    let v = h<16 ? y : z;
+    let w = h<8 ? z : t;
+    return ((h&1)? -u : u) + ((h&2)? -v : v) + ((h&4)? -w : w);
+}
+
+//---------------------------------------------------------------------
+/** 1D float Perlin noise, SL "noise()"
+ */
+function noise1(  x )
+{
+    let ix0, ix1;
+    let fx0, fx1;
+    let s, n0, n1;
+
+    ix0 = Math.floor( x ); // Integer part of x
+    fx0 = x - ix0;       // Fractional part of x
+    fx1 = fx0 - 1.0;
+    ix1 = ( ix0+1 ) & 0xff;
+    ix0 = ix0 & 0xff;    // Wrap to 0..255
+
+    s = fade( fx0 );
+
+    n0 = grad1( perm[ ix0 ], fx0 );
+    n1 = grad1( perm[ ix1 ], fx1 );
+    return scale(0.188 * ( lerp( s, n0, n1 ) ));
+}
+
+//---------------------------------------------------------------------
+/** 1D float Perlin periodic noise, SL "pnoise()"
+ */
+ /*
+function pnoise1(  x,  px )
+{
+    let ix0, ix1;
+    let fx0, fx1;
+    let s, n0, n1;
+
+    ix0 = Math.floor( x ); // Integer part of x
+    fx0 = x - ix0;       // Fractional part of x
+    fx1 = fx0 - 1.0;
+    ix1 = (( ix0 + 1 ) % px) & 0xff; // Wrap to 0..px-1 *and* wrap to 0..255
+    ix0 = ( ix0 % px ) & 0xff;      // (because px might be greater than 256)
+
+    s = fade( fx0 );
+
+    n0 = grad1( perm[ ix0 ], fx0 );
+    n1 = grad1( perm[ ix1 ], fx1 );
+    return scale(0.188 * ( lerp( s, n0, n1 ) ));
+}
 */
 
 
-// Pseudo-random generator
-function Marsaglia(i1, i2) {
-	// from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
-	var z=i1 || 362436069, w= i2 || 521288629;
-	var intGenerator = function() {
-		z=(36969*(z&65535)+(z>>>16)) & 0xFFFFFFFF;
-		w=(18000*(w&65535)+(w>>>16)) & 0xFFFFFFFF;
-		return (((z&0xFFFF)<<16) | (w&0xFFFF)) & 0xFFFFFFFF;
-	};
+//---------------------------------------------------------------------
+/** 2D float Perlin noise.
+ */
+function noise2( x, y )
+{
+    let ix0, iy0, ix1, iy1;
+    let fx0, fy0, fx1, fy1;
+    let s, t, nx0, nx1, n0, n1;
 
-	this.doubleGenerator = function() {
-		var i = intGenerator() / 4294967296;
-		return i < 0 ? 1 + i : i;
-	};
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    ix1 = (ix0 + 1) & 0xff;  // Wrap to 0..255
+    iy1 = (iy0 + 1) & 0xff;
+    ix0 = ix0 & 0xff;
+    iy0 = iy0 & 0xff;
 
-	this.intGenerator = intGenerator;
+    t = fade( fy0 );
+    s = fade( fx0 );
+
+    nx0 = grad2(perm[ix0 + perm[iy0]], fx0, fy0);
+    nx1 = grad2(perm[ix0 + perm[iy1]], fx0, fy1);
+    n0 = lerp( t, nx0, nx1 );
+
+    nx0 = grad2(perm[ix1 + perm[iy0]], fx1, fy0);
+    nx1 = grad2(perm[ix1 + perm[iy1]], fx1, fy1);
+    n1 = lerp(t, nx0, nx1);
+
+    return scale(0.507 * ( lerp( s, n0, n1 ) ));
 }
 
-Marsaglia.createRandomized = function() {
-	var now = new Date();
-	return new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF);
-};
+//---------------------------------------------------------------------
+/** 2D float Perlin periodic noise.
+ */
+ /*
+function pnoise2(  x,  y,  px,  py )
+{
+    let ix0, iy0, ix1, iy1;
+    let fx0, fy0, fx1, fy1;
+    let s, t, nx0, nx1, n0, n1;
 
-// Noise functions and helpers
-function PerlinNoise(seed) {
-	var rnd = seed !== undef ? new Marsaglia(seed, (seed<<16)+(seed>>16)) : Marsaglia.createRandomized();
-	var i, j;
-	// http://www.noisemachine.com/talk1/17b.html
-	// http://mrl.nyu.edu/~perlin/noise/
-	// generate permutation
-	var perm = new Uint8Array(512);
-	for(i=0;i<256;++i) { perm[i] = i; }
-	for(i=0;i<256;++i) {
-		// NOTE: we can only do this because we've made sure the Marsaglia generator
-		//			 gives us numbers where the last byte in a pseudo-random number is
-		//			 still pseudo-random. If no 2nd argument is passed in the constructor,
-		//			 that is no longer the case and this pair swap will always run identically.
-		var t = perm[j = rnd.intGenerator() & 0xFF];
-		perm[j] = perm[i];
-		perm[i] = t;
-	}
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    ix1 = (( ix0 + 1 ) % px) & 0xff;  // Wrap to 0..px-1 and wrap to 0..255
+    iy1 = (( iy0 + 1 ) % py) & 0xff;  // Wrap to 0..py-1 and wrap to 0..255
+    ix0 = ( ix0 % px ) & 0xff;
+    iy0 = ( iy0 % py ) & 0xff;
 
-	// copy to avoid taking mod in perm[0];
-	for(i=0;i<256;++i) { perm[i + 256] = perm[i]; }
+    t = fade( fy0 );
+    s = fade( fx0 );
 
-	function grad3d(i,x,y,z) {
-		let h = i & 15; // convert into 12 gradient directions
-		let u = h<8 ? x : y,
-			v = h<4 ? y : h===12||h===14 ? x : z;
-		return ((h&1) === 0 ? u : -u) + ((h&2) === 0 ? v : -v);
-	}
+    nx0 = grad2(perm[ix0 + perm[iy0]], fx0, fy0);
+    nx1 = grad2(perm[ix0 + perm[iy1]], fx0, fy1);
+    n0 = lerp( t, nx0, nx1 );
 
-	function grad2d(i,x,y) {
-		var v = (i & 1) === 0 ? x : y;
-		return (i&2) === 0 ? -v : v;
-	}
+    nx0 = grad2(perm[ix1 + perm[iy0]], fx1, fy0);
+    nx1 = grad2(perm[ix1 + perm[iy1]], fx1, fy1);
+    n1 = lerp(t, nx0, nx1);
 
-	function grad1d(i,x) {
-		return (i&1) === 0 ? -x : x;
-	}
+    return scale(0.507 * ( lerp( s, n0, n1 ) ));
+}
+*/
 
-	function lerp(t,a,b) { return a + t * (b - a); }
+//---------------------------------------------------------------------
+/** 3D float Perlin noise.
+ */
+function noise3(  x,  y,  z )
+{
+    let ix0, iy0, ix1, iy1, iz0, iz1;
+    let fx0, fy0, fz0, fx1, fy1, fz1;
+    let s, t, r;
+    let nxy0, nxy1, nx0, nx1, n0, n1;
 
-	// this.noise3d = function(x, y, z) {
-	// 	let X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
-	// 	x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-	// 	let fx = (3-2*x)*x*x, fy = (3-2*y)*y*y, fz = (3-2*z)*z*z;
-	// 	let p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + 1] + Z,
-	// 		p1 = perm[X + 1] + Y, p10 = perm[p1] + Z, p11 = perm[p1 + 1] + Z;
-	// 	return lerp(fz,
-	// 	lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x-1, y, z)),
-	// 			 lerp(fx, grad3d(perm[p01], x, y-1, z), grad3d(perm[p11], x-1, y-1,z))),
-	// 	lerp(fy, lerp(fx, grad3d(perm[p00 + 1], x, y, z-1), grad3d(perm[p10 + 1], x-1, y, z-1)),
-	// 			 lerp(fx, grad3d(perm[p01 + 1], x, y-1, z-1), grad3d(perm[p11 + 1], x-1, y-1,z-1))));
-	// };
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    iz0 = Math.floor( z ); // Integer part of z
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fz0 = z - iz0;        // Fractional part of z
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    fz1 = fz0 - 1.0;
+    ix1 = ( ix0 + 1 ) & 0xff; // Wrap to 0..255
+    iy1 = ( iy0 + 1 ) & 0xff;
+    iz1 = ( iz0 + 1 ) & 0xff;
+    ix0 = ix0 & 0xff;
+    iy0 = iy0 & 0xff;
+    iz0 = iz0 & 0xff;
 
-	this.noise3d = function(x, y, z) {
-		let X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
-		x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+    r = fade( fz0 );
+    t = fade( fy0 );
+    s = fade( fx0 );
 
-		let fx = (3-2*x)*x*x, fy = (3-2*y)*y*y, fz = (3-2*z)*z*z;
-		let p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + 1] + Z,
-			p1 = perm[X + 1] + Y, p10 = perm[p1] + Z, p11 = perm[p1 + 1] + Z;
-		return lerp(fz,
-		lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x-1, y, z)),
-				 lerp(fx, grad3d(perm[p01], x, y-1, z), grad3d(perm[p11], x-1, y-1,z))),
-		lerp(fy, lerp(fx, grad3d(perm[p00 + 1], x, y, z-1), grad3d(perm[p10 + 1], x-1, y, z-1)),
-				 lerp(fx, grad3d(perm[p01 + 1], x, y-1, z-1), grad3d(perm[p11 + 1], x-1, y-1,z-1))));
-	};
+    nxy0 = grad3(perm[ix0 + perm[iy0 + perm[iz0]]], fx0, fy0, fz0);
+    nxy1 = grad3(perm[ix0 + perm[iy0 + perm[iz1]]], fx0, fy0, fz1);
+    nx0 = lerp( r, nxy0, nxy1 );
 
-	this.noise2d = function(x, y) {
-		var X = Math.floor(x)&255, Y = Math.floor(y)&255;
-		x -= Math.floor(x); y -= Math.floor(y);
-		var fx = (3-2*x)*x*x, fy = (3-2*y)*y*y;
-		var p0 = perm[X]+Y, p1 = perm[X + 1] + Y;
-		return lerp(fy,
-		lerp(fx, grad2d(perm[p0], x, y), grad2d(perm[p1], x-1, y)),
-		lerp(fx, grad2d(perm[p0 + 1], x, y-1), grad2d(perm[p1 + 1], x-1, y-1)));
-	};
+    nxy0 = grad3(perm[ix0 + perm[iy1 + perm[iz0]]], fx0, fy1, fz0);
+    nxy1 = grad3(perm[ix0 + perm[iy1 + perm[iz1]]], fx0, fy1, fz1);
+    nx1 = lerp( r, nxy0, nxy1 );
 
-	this.noise1d = function(x) {
-		var X = Math.floor(x)&255;
-		x -= Math.floor(x);
-		var fx = (3-2*x)*x*x;
-		return lerp(fx, grad1d(perm[X], x), grad1d(perm[X+1], x-1));
-	};
+    n0 = lerp( t, nx0, nx1 );
+
+    nxy0 = grad3(perm[ix1 + perm[iy0 + perm[iz0]]], fx1, fy0, fz0);
+    nxy1 = grad3(perm[ix1 + perm[iy0 + perm[iz1]]], fx1, fy0, fz1);
+    nx0 = lerp( r, nxy0, nxy1 );
+
+    nxy0 = grad3(perm[ix1 + perm[iy1 + perm[iz0]]], fx1, fy1, fz0);
+    nxy1 = grad3(perm[ix1 + perm[iy1 + perm[iz1]]], fx1, fy1, fz1);
+    nx1 = lerp( r, nxy0, nxy1 );
+
+    n1 = lerp( t, nx0, nx1 );
+
+    return scale(0.936 * ( lerp( s, n0, n1 ) ));
 }
 
-// processing defaults
-var noiseProfile = { generator: undef, octaves: 4, fallout: 0.5, seed: undef};
+//---------------------------------------------------------------------
+/** 3D float Perlin periodic noise.
+ */
+ /*
+function pnoise3(  x,  y,  z,  px,  py,  pz )
+{
+    let ix0, iy0, ix1, iy1, iz0, iz1;
+    let fx0, fy0, fz0, fx1, fy1, fz1;
+    let s, t, r;
+    let nxy0, nxy1, nx0, nx1, n0, n1;
 
-export function noise(x, y, z) {
-	if(noiseProfile.generator === undef) {
-		// caching
-		noiseProfile.generator = new PerlinNoise(noiseProfile.seed);
-	}
-	var generator = noiseProfile.generator;
-	var effect = 1, k = 1, sum = 0;
-	for(var i=0; i<noiseProfile.octaves; ++i) {
-		effect *= noiseProfile.fallout;
-		switch (arguments.length) {
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    iz0 = Math.floor( z ); // Integer part of z
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fz0 = z - iz0;        // Fractional part of z
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    fz1 = fz0 - 1.0;
+    ix1 = (( ix0 + 1 ) % px ) & 0xff; // Wrap to 0..px-1 and wrap to 0..255
+    iy1 = (( iy0 + 1 ) % py ) & 0xff; // Wrap to 0..py-1 and wrap to 0..255
+    iz1 = (( iz0 + 1 ) % pz ) & 0xff; // Wrap to 0..pz-1 and wrap to 0..255
+    ix0 = ( ix0 % px ) & 0xff;
+    iy0 = ( iy0 % py ) & 0xff;
+    iz0 = ( iz0 % pz ) & 0xff;
+
+    r = fade( fz0 );
+    t = fade( fy0 );
+    s = fade( fx0 );
+
+    nxy0 = grad3(perm[ix0 + perm[iy0 + perm[iz0]]], fx0, fy0, fz0);
+    nxy1 = grad3(perm[ix0 + perm[iy0 + perm[iz1]]], fx0, fy0, fz1);
+    nx0 = lerp( r, nxy0, nxy1 );
+
+    nxy0 = grad3(perm[ix0 + perm[iy1 + perm[iz0]]], fx0, fy1, fz0);
+    nxy1 = grad3(perm[ix0 + perm[iy1 + perm[iz1]]], fx0, fy1, fz1);
+    nx1 = lerp( r, nxy0, nxy1 );
+
+    n0 = lerp( t, nx0, nx1 );
+
+    nxy0 = grad3(perm[ix1 + perm[iy0 + perm[iz0]]], fx1, fy0, fz0);
+    nxy1 = grad3(perm[ix1 + perm[iy0 + perm[iz1]]], fx1, fy0, fz1);
+    nx0 = lerp( r, nxy0, nxy1 );
+
+    nxy0 = grad3(perm[ix1 + perm[iy1 + perm[iz0]]], fx1, fy1, fz0);
+    nxy1 = grad3(perm[ix1 + perm[iy1 + perm[iz1]]], fx1, fy1, fz1);
+    nx1 = lerp( r, nxy0, nxy1 );
+
+    n1 = lerp( t, nx0, nx1 );
+
+    return scale(0.936 * ( lerp( s, n0, n1 ) ));
+}
+*/
+
+//---------------------------------------------------------------------
+/** 4D float Perlin noise.
+ */
+
+function noise4(  x,  y,  z,  w )
+{
+    let ix0, iy0, iz0, iw0, ix1, iy1, iz1, iw1;
+    let fx0, fy0, fz0, fw0, fx1, fy1, fz1, fw1;
+    let s, t, r, q;
+    let nxyz0, nxyz1, nxy0, nxy1, nx0, nx1, n0, n1;
+
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    iz0 = Math.floor( z ); // Integer part of y
+    iw0 = Math.floor( w ); // Integer part of w
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fz0 = z - iz0;        // Fractional part of z
+    fw0 = w - iw0;        // Fractional part of w
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    fz1 = fz0 - 1.0;
+    fw1 = fw0 - 1.0;
+    ix1 = ( ix0 + 1 ) & 0xff;  // Wrap to 0..255
+    iy1 = ( iy0 + 1 ) & 0xff;
+    iz1 = ( iz0 + 1 ) & 0xff;
+    iw1 = ( iw0 + 1 ) & 0xff;
+    ix0 = ix0 & 0xff;
+    iy0 = iy0 & 0xff;
+    iz0 = iz0 & 0xff;
+    iw0 = iw0 & 0xff;
+
+    q = fade( fw0 );
+    r = fade( fz0 );
+    t = fade( fy0 );
+    s = fade( fx0 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy0 + perm[iz0 + perm[iw0]]]], fx0, fy0, fz0, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy0 + perm[iz0 + perm[iw1]]]], fx0, fy0, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy0 + perm[iz1 + perm[iw0]]]], fx0, fy0, fz1, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy0 + perm[iz1 + perm[iw1]]]], fx0, fy0, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx0 = lerp ( r, nxy0, nxy1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy1 + perm[iz0 + perm[iw0]]]], fx0, fy1, fz0, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy1 + perm[iz0 + perm[iw1]]]], fx0, fy1, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy1 + perm[iz1 + perm[iw0]]]], fx0, fy1, fz1, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy1 + perm[iz1 + perm[iw1]]]], fx0, fy1, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx1 = lerp ( r, nxy0, nxy1 );
+
+    n0 = lerp( t, nx0, nx1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy0 + perm[iz0 + perm[iw0]]]], fx1, fy0, fz0, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy0 + perm[iz0 + perm[iw1]]]], fx1, fy0, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy0 + perm[iz1 + perm[iw0]]]], fx1, fy0, fz1, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy0 + perm[iz1 + perm[iw1]]]], fx1, fy0, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx0 = lerp ( r, nxy0, nxy1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy1 + perm[iz0 + perm[iw0]]]], fx1, fy1, fz0, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy1 + perm[iz0 + perm[iw1]]]], fx1, fy1, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy1 + perm[iz1 + perm[iw0]]]], fx1, fy1, fz1, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy1 + perm[iz1 + perm[iw1]]]], fx1, fy1, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx1 = lerp ( r, nxy0, nxy1 );
+
+    n1 = lerp( t, nx0, nx1 );
+
+    return scale(0.87 * ( lerp( s, n0, n1 ) ));
+}
+
+//---------------------------------------------------------------------
+/** 4D float Perlin periodic noise.
+ */
+/*
+function pnoise4(  x,  y,  z,  w,
+                             px,  py,  pz,  pw )
+{
+    let ix0, iy0, iz0, iw0, ix1, iy1, iz1, iw1;
+    let fx0, fy0, fz0, fw0, fx1, fy1, fz1, fw1;
+    let s, t, r, q;
+    let nxyz0, nxyz1, nxy0, nxy1, nx0, nx1, n0, n1;
+
+    ix0 = Math.floor( x ); // Integer part of x
+    iy0 = Math.floor( y ); // Integer part of y
+    iz0 = Math.floor( z ); // Integer part of y
+    iw0 = Math.floor( w ); // Integer part of w
+    fx0 = x - ix0;        // Fractional part of x
+    fy0 = y - iy0;        // Fractional part of y
+    fz0 = z - iz0;        // Fractional part of z
+    fw0 = w - iw0;        // Fractional part of w
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    fz1 = fz0 - 1.0;
+    fw1 = fw0 - 1.0;
+    ix1 = (( ix0 + 1 ) % px ) & 0xff;  // Wrap to 0..px-1 and wrap to 0..255
+    iy1 = (( iy0 + 1 ) % py ) & 0xff;  // Wrap to 0..py-1 and wrap to 0..255
+    iz1 = (( iz0 + 1 ) % pz ) & 0xff;  // Wrap to 0..pz-1 and wrap to 0..255
+    iw1 = (( iw0 + 1 ) % pw ) & 0xff;  // Wrap to 0..pw-1 and wrap to 0..255
+    ix0 = ( ix0 % px ) & 0xff;
+    iy0 = ( iy0 % py ) & 0xff;
+    iz0 = ( iz0 % pz ) & 0xff;
+    iw0 = ( iw0 % pw ) & 0xff;
+
+    q = fade( fw0 );
+    r = fade( fz0 );
+    t = fade( fy0 );
+    s = fade( fx0 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy0 + perm[iz0 + perm[iw0]]]], fx0, fy0, fz0, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy0 + perm[iz0 + perm[iw1]]]], fx0, fy0, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy0 + perm[iz1 + perm[iw0]]]], fx0, fy0, fz1, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy0 + perm[iz1 + perm[iw1]]]], fx0, fy0, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx0 = lerp ( r, nxy0, nxy1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy1 + perm[iz0 + perm[iw0]]]], fx0, fy1, fz0, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy1 + perm[iz0 + perm[iw1]]]], fx0, fy1, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix0 + perm[iy1 + perm[iz1 + perm[iw0]]]], fx0, fy1, fz1, fw0);
+    nxyz1 = grad4(perm[ix0 + perm[iy1 + perm[iz1 + perm[iw1]]]], fx0, fy1, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx1 = lerp ( r, nxy0, nxy1 );
+
+    n0 = lerp( t, nx0, nx1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy0 + perm[iz0 + perm[iw0]]]], fx1, fy0, fz0, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy0 + perm[iz0 + perm[iw1]]]], fx1, fy0, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy0 + perm[iz1 + perm[iw0]]]], fx1, fy0, fz1, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy0 + perm[iz1 + perm[iw1]]]], fx1, fy0, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx0 = lerp ( r, nxy0, nxy1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy1 + perm[iz0 + perm[iw0]]]], fx1, fy1, fz0, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy1 + perm[iz0 + perm[iw1]]]], fx1, fy1, fz0, fw1);
+    nxy0 = lerp( q, nxyz0, nxyz1 );
+
+    nxyz0 = grad4(perm[ix1 + perm[iy1 + perm[iz1 + perm[iw0]]]], fx1, fy1, fz1, fw0);
+    nxyz1 = grad4(perm[ix1 + perm[iy1 + perm[iz1 + perm[iw1]]]], fx1, fy1, fz1, fw1);
+    nxy1 = lerp( q, nxyz0, nxyz1 );
+
+    nx1 = lerp ( r, nxy0, nxy1 );
+
+    n1 = lerp( t, nx0, nx1 );
+
+    return scale(0.87 * ( lerp( s, n0, n1 ) ));
+}
+*/
+
+function scale(n) {
+	return (1 + n) / 2;
+}
+
+export function noise(x, y, z, w) {
+
+	switch(arguments.length) {
 		case 1:
-			sum += effect * (1 + generator.noise1d(k*x))/2; break;
+		  return noise1(x); //todo: move these to perlin functions
+		break;
 		case 2:
-			sum += effect * (1 + generator.noise2d(k*x, k*y))/2; break;
+		  return noise2(x, y); //todo: move these to perlin functions
+		break;
 		case 3:
-			sum += effect * (1 + generator.noise3d(k*x, k*y, k*z))/2; break;
-		}
-		k *= 2;
+		  return noise3(x, y, z);
+	  case 3:
+		return noise4(x, y, z, w);
+		break;
 	}
-	return sum;
-};
+}
 
-/* currently these are not exposed outside of the module */
-function noiseDetail(octaves, fallout) {
-	noiseProfile.octaves = octaves;
-	if(fallout !== undef) {
-		noiseProfile.fallout = fallout;
-	}
-};
-
-function noiseSeed(seed) {
-	noiseProfile.seed = seed;
-	noiseProfile.generator = undef;
-};
+//---------------------------------------------------------------------

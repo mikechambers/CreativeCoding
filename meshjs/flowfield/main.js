@@ -11,7 +11,7 @@ import * as mesh from "../lib/mesh.js"
 import Vector from "../lib/vector.js"
 import Color from "../lib/color.js"
 import Particle from "./particle.js"
-import {random, noise} from "../lib/math.js"
+import {noise, random} from "../lib/math.js"
 import {PixelData, loadPixelDataFromPath} from "../lib/pixeldata.js"
 import Gradient from "../lib/gradient.js"
 

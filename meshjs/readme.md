@@ -70,7 +70,7 @@ const config = {
 	RECORD_VIDEO:false,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:false,
+	CLEAR_CANVAS:false
 };
 
 /************** GLOBAL VARIABLES ************/

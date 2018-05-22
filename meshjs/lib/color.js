@@ -1,6 +1,12 @@
 
 export default class Color {
 	constructor(r = 0, g = 0, b = 0, a = 1.0) {
+
+		if(arguments.length === 1) {
+			g = r;
+			b = r;
+		}
+
 		this._r = r;
 		this._g = g;
 		this._b = b;

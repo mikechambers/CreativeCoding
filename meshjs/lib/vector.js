@@ -84,6 +84,8 @@ export default class Vector {
 	}
 
 	//todo: maybe add option for min / max range
+	//todo: should this just be a standalone function and not a static
+	//method?
 	static random(max = 1) {
 		return new Vector(random(-max, max), random(-max, max));
 	}
