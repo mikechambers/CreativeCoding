@@ -51,7 +51,7 @@ const config = {
 
 	//offscreen render settings. If true, drawing will happen offscreen
 	//and then be copied to display canvas. Image and video captures will be
-	//from offscreen renderered.
+	//from offscreen renderer.
 	RENDER_OFFSCREEN:true,
 	RENDER_HEIGHT:1280,
 	RENDER_WIDTH:1280,
@@ -66,7 +66,7 @@ const config = {
 	ANIMATE:true,
 	FPS:30,
 
-	//Where video of canvas is recorded
+	//Whether video of canvas is recorded
 	RECORD_VIDEO:false,
 
 	//whether canvas should be cleared prior to each call to draw
