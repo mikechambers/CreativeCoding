@@ -8,7 +8,7 @@
 **/
 
 import * as mesh from "../lib/mesh.js"
-import {noise} from "../lib/math.js"
+import noise from "../lib/noise.js"
 import Color from  "../lib/color.js"
 
 /************ CONFIG **************/
