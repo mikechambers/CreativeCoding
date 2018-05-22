@@ -4,6 +4,7 @@ import Vector from "./vector.js"
 //for some reason i get an error if i try and set this as default export
 export class PixelData {
 
+	//note caching pixels can be really expensive
 	constructor(imageData, cache = true) {
 		this._imageData = imageData;
 
@@ -14,6 +15,8 @@ export class PixelData {
 		}
 	}
 
+	//note caching pixels can be really expensive
+	//could consider adding lazy caching
 	cachePixels() {
 
 		let w = this._imageData.width;

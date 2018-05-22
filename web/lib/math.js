@@ -71,9 +71,12 @@ export function randomInclusive(min, max) {
 let undef = undefined;
 var internalRandomGenerator = function() { return Math.random(); };
 
+/*
+//this was included twice but wasnt being called. commenting out.
 function lerp(value1, value2, amt) {
 	return ((value2 - value1) * amt) + value1;
 };
+*/
 
 
 // Pseudo-random generator
@@ -122,8 +125,8 @@ function PerlinNoise(seed) {
 	for(i=0;i<256;++i) { perm[i + 256] = perm[i]; }
 
 	function grad3d(i,x,y,z) {
-		var h = i & 15; // convert into 12 gradient directions
-		var u = h<8 ? x : y,
+		let h = i & 15; // convert into 12 gradient directions
+		let u = h<8 ? x : y,
 			v = h<4 ? y : h===12||h===14 ? x : z;
 		return ((h&1) === 0 ? u : -u) + ((h&2) === 0 ? v : -v);
 	}
@@ -139,11 +142,25 @@ function PerlinNoise(seed) {
 
 	function lerp(t,a,b) { return a + t * (b - a); }
 
+	// this.noise3d = function(x, y, z) {
+	// 	let X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
+	// 	x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+	// 	let fx = (3-2*x)*x*x, fy = (3-2*y)*y*y, fz = (3-2*z)*z*z;
+	// 	let p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + 1] + Z,
+	// 		p1 = perm[X + 1] + Y, p10 = perm[p1] + Z, p11 = perm[p1 + 1] + Z;
+	// 	return lerp(fz,
+	// 	lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x-1, y, z)),
+	// 			 lerp(fx, grad3d(perm[p01], x, y-1, z), grad3d(perm[p11], x-1, y-1,z))),
+	// 	lerp(fy, lerp(fx, grad3d(perm[p00 + 1], x, y, z-1), grad3d(perm[p10 + 1], x-1, y, z-1)),
+	// 			 lerp(fx, grad3d(perm[p01 + 1], x, y-1, z-1), grad3d(perm[p11 + 1], x-1, y-1,z-1))));
+	// };
+
 	this.noise3d = function(x, y, z) {
-		var X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
+		let X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
 		x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-		var fx = (3-2*x)*x*x, fy = (3-2*y)*y*y, fz = (3-2*z)*z*z;
-		var p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + 1] + Z,
+
+		let fx = (3-2*x)*x*x, fy = (3-2*y)*y*y, fz = (3-2*z)*z*z;
+		let p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + 1] + Z,
 			p1 = perm[X + 1] + Y, p10 = perm[p1] + Z, p11 = perm[p1 + 1] + Z;
 		return lerp(fz,
 		lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x-1, y, z)),
@@ -195,6 +212,7 @@ export function noise(x, y, z) {
 	return sum;
 };
 
+/* currently these are not exposed outside of the module */
 function noiseDetail(octaves, fallout) {
 	noiseProfile.octaves = octaves;
 	if(fallout !== undef) {

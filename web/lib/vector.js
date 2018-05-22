@@ -87,4 +87,11 @@ export default class Vector {
 	static random(max = 1) {
 		return new Vector(random(-max, max), random(-max, max));
 	}
+
+	clone() {
+		return new Vector(
+			this._x,
+			this._y
+		);
+	}
 }

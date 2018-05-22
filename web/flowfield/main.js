@@ -19,24 +19,46 @@ import Gradient from "../lib/gradient.js"
 
 const config = {
 	/**** required for mesh lib ******/
-	CANVAS_ID:"canvas_container",
+
+	//name of container that generated canvas will be created in
+	PARENT_ID:"canvas_container",
+
+	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
+
+	//Canvas dimensions on page
 	CANVAS_HEIGHT:640,
 	CANVAS_WIDTH:640,
+
+	//offscreen render settings. If true, drawing will happen offscreen
+	//and then be copied to display canvas. Image and video captures will be
+	//from offscreen renderered.
+	RENDER_OFFSCREEN:true,
+	RENDER_HEIGHT:1280,
+	RENDER_WIDTH:1280,
+
+	//background color of html page
 	BACKGROUND_COLOR:"#000000",
+
+	//background color for display and offscreen canvas
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+
+	//whether a single frame is rendered, or draw is called based on FPS setting
 	ANIMATE:true,
-	RECORD_VIDEO:false,
 	FPS:30,
+
+	//Where video of canvas is recorded
+	RECORD_VIDEO:false,
+
+	//whether canvas should be cleared prior to each call to draw
 	CLEAR_CANVAS:false,
 
 	/***** app specific *****/
 	SCALE: 20,
 	INCREMENT:0.1,
-	PARTICLE_RADIUS:1,
-	PARTICLE_COUNT:1000,
-	PARTICLE_COLOR:Color.getRGBA(0, 0, 0, 0.1),
-	DRAW_VECTORS:false
+	PARTICLE_COUNT:5000,
+	DRAW_VECTORS:false,
+	OPACITY: 0.2
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -83,7 +105,7 @@ const init = function(canvas) {
 	particles = [];
 
 	for(let i = 0; i < config.PARTICLE_COUNT; i++) {
-		let p = new Particle(bounds, config.PARTICLE_RADIUS, config.PARTICLE_COLOR);
+		let p = new Particle(bounds, config.OPACITY);
 
 		//move random point to function
 		p.position = new Vector(
@@ -93,8 +115,6 @@ const init = function(canvas) {
 
 		particles.push(p);
 	}
-
-	draw();
 }
 
 const draw = function() {

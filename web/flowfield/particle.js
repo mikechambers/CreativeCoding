@@ -1,19 +1,17 @@
 import Vector from "../lib/vector.js"
 
 export default class Particle {
-	constructor(bounds, radius = 2, particleColor = "#000000") {
+	constructor(bounds, opacity = 1.0) {
 		this._position = new Vector();
 		this._velocity = new Vector();
 		this._acceleration = new Vector();
 
 		this._maxVelocity = 4;
 
-		this._radius = radius;
 		this._bounds = bounds;
 
 		this._lastPosition = this._position;
-
-		this._particleColor = particleColor;
+		this._opacity = opacity;
 	}
 
 	update() {
@@ -40,7 +38,7 @@ export default class Particle {
 	show(ctx, pixelData) {
 
 		let c = pixelData.getColor(this._position);
-		c.a = 0.2;
+		c.a = this._opacity;
 
 		ctx.strokeStyle = c.toRGBA();
 		ctx.lineWidth = 0.5;
@@ -48,14 +46,6 @@ export default class Particle {
 		ctx.moveTo(this._lastPosition.x, this._lastPosition.y);
 		ctx.lineTo(this._position.x, this._position.y);
 		ctx.stroke();
-
-
-		/*
-		ctx.fillStyle = this._particleColor;
-		ctx.beginPath();
-		ctx.arc(this._position.x, this._position.y, this._radius, 0, Math.PI * 2);
-		ctx.fill();
-		*/
 	}
 
 	checkEdges() {

@@ -89,7 +89,7 @@ export default class Gradient {
 		this._ctx.fillStyle = this._gradient;
 		this._ctx.fillRect(x, y, w, h);
 
-		this._pixelData = new PixelData(this._ctx.getImageData(x, y, w, h));
+		this._pixelData = new PixelData(this._ctx.getImageData(x, y, w, h), false);
 
 		return this._canvas;
 	}

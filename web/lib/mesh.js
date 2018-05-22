@@ -18,14 +18,14 @@ let lastFrameTime;
 let startTime;
 let _paused = false;
 
-//right now only supports creating one canvas
-let canvas;
+let _displayCanvas;
+let _renderCanvas;
 
-export function init(config, init, draw){
+export function init(config, initCallback, drawCallback){
 
 	_config = config;
-	_init = init;
-	_draw = draw;
+	_init = initCallback;
+	_draw = drawCallback;
 
 	document.body.style.background = _config.BACKGROUND_COLOR;
 
@@ -38,16 +38,69 @@ export function init(config, init, draw){
 		window.requestAnimationFrame(onAnimationFrame);
 	}
 
-	canvas = new Canvas(_config.CANVAS_ID,
-		config.CANVAS_HEIGHT,
-		config.CANVAS_WIDTH,
-		config.CANVAS_BACKGROUND_COLOR);
+	_displayCanvas = new Canvas(
+		_config.CANVAS_WIDTH,
+		_config.CANVAS_HEIGHT,
+		_config.PARENT_ID,
+		_config.CANVAS_BACKGROUND_COLOR);
 
-	if(_config.RECORD_VIDEO) {
-		canvas.startRecord();
+	if(!_config.RENDER_OFFSCREEN) {
+		_renderCanvas = _displayCanvas;
+	} else {
+		_renderCanvas = new Canvas(
+			_config.RENDER_WIDTH,
+			_config.RENDER_HEIGHT,
+			false, //dont attach to dom
+			_config.CANVAS_BACKGROUND_COLOR);
 	}
 
-	_init(canvas);
+	if(_config.RECORD_VIDEO) {
+		_renderCanvas.startRecord();
+	}
+
+	_init(_renderCanvas);
+
+	if(!_config.ANIMATE) {
+		draw();
+	}
+}
+
+function draw() {
+
+	_draw();
+
+	//code to scale down canvas
+	//https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+	//https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+
+	if(_config.RENDER_OFFSCREEN) {
+
+		let maxW = _displayCanvas.bounds.width;
+		let maxH = _displayCanvas.bounds.height;
+
+		let canvasW = _renderCanvas.bounds.width;
+		let canvasH = _renderCanvas.bounds.height;
+
+		if (canvasH > maxH || canvasW > maxW) {
+			let ratio = canvasH / canvasW;
+
+			if (canvasW >= maxW && ratio <= 1) {
+				canvasW = maxW;
+				canvasH = canvasW * ratio;
+			} else if (canvasH >= maxH) {
+				canvasH = maxH;
+				canvasW = canvasH / ratio;
+			}
+		}
+
+		let offsetY = _displayCanvas.bounds.center.y - (canvasH / 2);
+		let offsetX = _displayCanvas.bounds.center.x - (canvasW / 2);
+
+		_displayCanvas.context.drawImage(
+			_renderCanvas.canvas,
+			offsetX, offsetY, canvasW, canvasH);
+			//_displayCanvas.naturalWidth, _displayCanvas.naturalHeight
+	}
 }
 
 const onAnimationFrame = function() {
@@ -61,9 +114,9 @@ const onAnimationFrame = function() {
 		if(_draw && !_paused) {
 
 			if(_config.CLEAR_CANVAS) {
-				canvas.clear();
+				_renderCanvas.clear();
 			}
-			_draw();
+			draw();
 		}
 	}
 
@@ -76,13 +129,13 @@ const onKeyUp = function(event){
 	let n;
 	if(key == "p") {
 		n = createFileName(_config.APP_NAME, "png");
-		canvas.downloadPNG(n);
+		_renderCanvas.downloadPNG(n);
 	} else if(key == "v") {
 		n = createFileName(_config.APP_NAME, "webm");
-		canvas.downloadVideo(n);
+		_renderCanvas.downloadVideo(n);
 	} else if(key == " ") {
 		_paused = !_paused;
 	} else if (key == "i") {
-		_init(canvas);
+		_init(_renderCanvas);
 	}
 }

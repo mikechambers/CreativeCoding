@@ -16,7 +16,7 @@ const config = {
 	/**** required for mesh lib ******/
 
 	//name of container that generated canvas will be created in
-	CANVAS_ID:"canvas_container",
+	PARENT_ID:"canvas_container",
 
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
@@ -28,9 +28,9 @@ const config = {
 	//offscreen render settings. If true, drawing will happen offscreen
 	//and then be copied to display canvas. Image and video captures will be
 	//from offscreen renderered.
-	OFFSCREEN_RENDER:false,
-	RENDER_HEIGHT:640,
-	RENDER_WIDTH:640,
+	RENDER_OFFSCREEN:true,
+	RENDER_HEIGHT:1080,
+	RENDER_WIDTH:1920,
 
 	//background color of html page
 	BACKGROUND_COLOR:"#000000",
@@ -77,7 +77,6 @@ let pixelData;
 const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds;
-	draw();
 }
 
 const draw = function() {
