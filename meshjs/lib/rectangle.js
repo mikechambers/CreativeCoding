@@ -12,11 +12,16 @@ export default class Rectangle {
 	}
 
 	_updateCenter(){
-		this._center = new Vector(this._width / 2, this._height / 2);
+
+		if(!this._center) {
+			this._center = new Vector();
+		}
+
+		this._center.x = this._width / 2;
+		this._center.y = this._height / 2;
 	}
 
 	get center() {
-		//note, we could consider caching this
 		return this._center;
 	}
 

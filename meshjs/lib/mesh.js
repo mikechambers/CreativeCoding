@@ -18,6 +18,7 @@ let startTime;
 let _paused = false;
 
 let _canvas;
+let _frameCount = 0;
 
 export function init(config, initCallback, drawCallback){
 
@@ -82,11 +83,11 @@ export function init(config, initCallback, drawCallback){
 }
 
 function draw() {
-	_draw(_canvas);
+	_frameCount++;
+	_draw(_canvas, _frameCount);
 }
 
 const onAnimationFrame = function() {
-
 	let now = Date.now();
 	let elapsed = now - lastFrameTime;
 
@@ -94,7 +95,6 @@ const onAnimationFrame = function() {
 		lastFrameTime = now - (elapsed % fpsInterval);
 
 		if(_draw && !_paused) {
-
 			if(_config.CLEAR_CANVAS) {
 				_canvas.clear();
 			}

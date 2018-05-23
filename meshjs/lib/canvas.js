@@ -45,6 +45,9 @@ export default class Canvas{
 	}
 
 	clear() {
+
+		//todo: we might not actually need to call clearRect, since we redraw the background
+		//rect
 		this._ctx.clearRect(0, 0, this._bounds.width, this._bounds.height);
 		this.setBackgroundColor(this._backgroundColor);
 	}

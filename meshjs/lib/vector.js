@@ -36,6 +36,12 @@ export default class Vector {
 		return Math.atan2(this._y, this._x);
 	}
 
+	distance(vector) {
+		let x = vector.x - this._x;
+		let y = vector.y - this._y;
+		return Math.sqrt(x*x + y*y );
+	}
+
 	normalize(){
 		let m = this.magnitude;
 

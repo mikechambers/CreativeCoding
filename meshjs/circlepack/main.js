@@ -8,6 +8,10 @@
 **/
 
 import * as mesh from "../lib/mesh.js"
+import Circle from "./circle.js"
+import {randomPointsInBounds, pointIsInCircle, randomPointInBounds} from "../lib/utils.js"
+import Vector from "../lib/vector.js"
+import Color from "../lib/color.js"
 
 /************ CONFIG **************/
 
@@ -35,35 +39,95 @@ const config = {
 	BACKGROUND_COLOR:"#000000",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+	CANVAS_BACKGROUND_COLOR:"#000000",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:false,
-	FPS:30,
+	ANIMATE:true,
+	FPS:60,
 
 	//Where video of canvas is recorded
-	RECORD_VIDEO:false,
+	RECORD_VIDEO:true,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:false
+	CLEAR_CANVAS:true,
 
 	/*********** APP Specific Settings ************/
 
+	RADIUS:4,
+	BOUNDS_PADDING:0,
+	STROKE_COLOR:new Color(0),
+	STROKE_SIZE:2
 };
 
 /************** GLOBAL VARIABLES ************/
 
 let ctx;
 let bounds;
+let circles;
+
+let pAmount;
 
 /*************** CODE ******************/
 
 const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds;
+
+	circles = [];
+
+	let c = new Circle(bounds.center, 100);
+	c.fillColor = new Color(0);
+	c.strokeColor = new Color(0);
+	c.shouldGrow = false;
+
+	circles.push(c);
+
+	pAmount = 1;
 }
 
-const draw = function(canvas) {
+
+const draw = function(canvas, frameCount) {
+
+	let points = [];
+
+	if(circles.length > 10 || !(frameCount % 100)) {
+		points = randomPointsInBounds(bounds, pAmount);
+	}
+
+	if(circles.length > 10 && !(frameCount % 120)) {
+		pAmount++;
+
+		if(pAmount > 100) {
+			pAmount = 100;
+		}
+	}
+
+	for(let p of points) {
+
+		let found = false;
+		for(let i = 0; i < circles.length; i++) {
+			let c = circles[i];
+			//todo: change function to also take a circle
+			if(pointIsInCircle(c.position, (c.radius + config.RADIUS/2), p)) {
+				found = true;
+			}
+		}
+
+		if(!found) {
+			let c = new Circle(p, config.RADIUS);
+			c.boundsPadding = config.BOUNDS_PADDING;
+			c.strokeColor = config.STROKE_COLOR;
+			c.strokeSize = config.STROKE_SIZE;
+			circles.push(c);
+		}
+	}
+
+	for(let c of circles) {
+		c.checkCollisions(bounds, circles);
+		c.grow();
+		c.draw(ctx);
+	}
+
 }
 
 window.onload = function(){
