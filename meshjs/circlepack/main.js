@@ -42,7 +42,7 @@ const config = {
 	BACKGROUND_COLOR:"#FFFFFF",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#000000",
+	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
 	ANIMATE:true,
@@ -59,10 +59,10 @@ const config = {
 	RADIUS:4,
 	BOUNDS_PADDING:0,
 	CIRCLE_BOUNDS_PADDING:4,
-	STROKE_COLOR:"#000000",
+	STROKE_COLOR:"#FFFFFF",
 	FILL_COLOR:"#FFFFFF",
 	USE_COLOR_PALLETE:true,
-	STROKE_SIZE:2,
+	STROKE_SIZE:4,
 	DRAW_BY_DEFAULT:false, //hit d key to toggle whether frames are rendered
 	INIT_AFTER_COMPLETE:true
 };
@@ -91,6 +91,8 @@ const init = function(canvas) {
 	_completed = false;
 	_completedCaptured = false;
 	_doDraw = config.DRAW_BY_DEFAULT;
+
+	mesh.setPaused(false);
 
 	pallete = getRandomColorPallete();
 

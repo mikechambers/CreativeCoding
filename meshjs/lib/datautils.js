@@ -28,7 +28,7 @@ export function downloadBlob(blob, fileName) {
 	a.click();
 	a.remove();
 
-	console.log(`Downloading File : ${filename}`);
+	console.log(`Downloading File : ${fileName}`);
 }
 
 //we could see if the string is base 64 encoded, if not, assume its is a string

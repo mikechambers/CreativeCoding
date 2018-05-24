@@ -22,6 +22,11 @@ export default class Circle {
 		this._strokeColor = "#000000";
 
 		this._cachedCanvas = undefined;
+		this._shouldCache = false;
+	}
+
+	enableCaching(shouldCache) {
+		this._shouldCache = shouldCache;
 	}
 
 	set shouldGrow(b) {
@@ -86,6 +91,11 @@ export default class Circle {
 	}
 
 	cache() {
+
+		if(!this._shouldCache) {
+				return;
+		}
+
 		let bounds = this.bounds;
 
 		let canvas = document.createElement('canvas');
