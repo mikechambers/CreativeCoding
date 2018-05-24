@@ -121,6 +121,7 @@ export default class Circle {
 			return;
 		}
 
+		//todo: need to account for stroke size
 		if(this._position.x + this._radius >= bounds.width ||
 			this._position.x - this._radius <= bounds.x ||
 			this._position.y + this._radius >= bounds.height ||

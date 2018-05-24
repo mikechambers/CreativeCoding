@@ -7,18 +7,25 @@
 	Copyright Mike Chambers 2018
 **/
 
-import * as mesh from "../lib/mesh.js"
+import mesh from "../lib/mesh.js"
 import Circle from "./circle.js"
 import {downloadSVG} from "../lib/datautils.js"
-import {randomPointsInBounds, pointIsInCircle, randomPointInBounds, pointOnCircle} from "../lib/utils.js"
+import * as utils from "../lib/utils.js"
 import Vector from "../lib/vector.js"
 import Color from "../lib/color.js"
-import {getRandomColorPallete, getColorPallete} from "../lib/colorpallete.js"
+import {randomColorPallete, getColorPallete} from "../lib/colorpallete.js"
 import {randomInt} from "../lib/math.js"
+import Gradient from "../lib/gradient.js"
 
 /************ CONFIG **************/
 
-const config = {
+let colorSource = {
+	PALLETE:"PALLETE",
+	GRADIENT:"GRADIENT",
+	FILL:"FILL"
+};
+
+let config = {
 	/**** required for mesh lib ******/
 
 	//name of container that generated canvas will be created in
@@ -28,8 +35,8 @@ const config = {
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1600,
-	RENDER_WIDTH:2560,
+	RENDER_HEIGHT:1080,//1600,
+	RENDER_WIDTH:1080,//2560,
 
 	//Max dimension canvas will be display at on page
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
@@ -61,10 +68,11 @@ const config = {
 	CIRCLE_BOUNDS_PADDING:8,
 	STROKE_COLOR:"#FFFFFF",
 	FILL_COLOR:"#FFFFFF",
-	USE_COLOR_PALLETE:true,
+	COLOR_SOURCE:colorSource.GRADIENT,// PALLETE, GRADIENT, FILL
 	STROKE_SIZE:8,
-	DRAW_BY_DEFAULT:false, //hit d key to toggle whether frames are rendered
-	INIT_AFTER_COMPLETE:true
+	DRAW_BY_DEFAULT:true, //hit d key to toggle whether frames are rendered
+	INIT_AFTER_COMPLETE:true,
+	DOWNLOAD_PNG_ON_COMPLETE:true
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -81,20 +89,28 @@ let _doDraw;
 let _completed;
 let _completedCaptured;
 
+let gradient;
+
 /*************** CODE ******************/
 
 const init = function(canvas) {
+
 	ctx = canvas.context;
 	bounds = canvas.bounds.withPadding(config.BOUNDS_PADDING);
 
-	pixels = [];
+	pixels = new Array(bounds.width * bounds.height);
 	_completed = false;
 	_completedCaptured = false;
 	_doDraw = config.DRAW_BY_DEFAULT;
 
 	mesh.setPaused(false);
 
-	pallete = getRandomColorPallete();
+	if(config.COLOR_SOURCE == colorSource.PALLETE) {
+		pallete = randomColorPallete();
+	} else if(config.COLOR_SOURCE == colorSource.GRADIENT){
+		gradient = Gradient.fromName("Bluelagoo", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
+		gradient.create();
+	}
 
 	circles = [];
 
@@ -108,45 +124,18 @@ const init = function(canvas) {
 		}
 	}
 
-	shuffle(pixels);
+	utils.shuffleArray(pixels);
 
 	pAmount = 1;
-}
-
-function shuffle (array) {
-  var i = 0
-    , j = 0
-    , temp = null
-
-  for (i = array.length - 1; i > 0; i -= 1) {
-    j = Math.floor(Math.random() * (i + 1))
-    temp = array[i]
-    array[i] = array[j]
-    array[j] = temp
-  }
-}
-
-const getRandomPoints = function(count) {
-
-	if(pixels.length == 0) {
-		console.log("done");
-		mesh.setPaused(true);
-		_doDraw = true;
-		_completed = true;
-		return [];
-	}
-
-	if(pixels.length < count) {
-		count = pixels.length;
-	}
-
-	return pixels.splice(-count, count);
 }
 
 const draw = function(canvas, frameCount) {
 
 	if(!(frameCount % 60)) {
-		console.log(pixels.length, circles.length);
+		let total = bounds.height * bounds.width;
+		let current = pixels.length;
+		let per = 100 - Math.round((current/total) * 100);
+		console.log(`${per}%`, pixels.length, circles.length);
 	}
 
 	let count = 0;
@@ -185,7 +174,7 @@ const draw = function(canvas, frameCount) {
 			//todo: we could change this to see if the new circle will overlap with an
 			//existing one, but then that requires we create a circle instance first
 
-			if(pointIsInCircle(c.position, (c.radius + config.RADIUS / 2 +
+			if(utils.pointIsInCircle(c.position, (c.radius + config.RADIUS / 2 +
 					config.STROKE_SIZE), p)) {
 				found = true;
 			}
@@ -197,8 +186,7 @@ const draw = function(canvas, frameCount) {
 			c.strokeColor = Color.fromHex(config.STROKE_COLOR);
 			c.strokeSize = config.STROKE_SIZE;
 
-			c.fillColor = (config.USE_COLOR_PALLETE)?
-				pallete.getNextColor():Color.fromHex(config.FILL_COLOR);
+			c.fillColor = getColor(p);
 			circles.push(c);
 		}
 	}
@@ -213,13 +201,54 @@ const draw = function(canvas, frameCount) {
 	}
 
 	if(_completed & !_completedCaptured) {
-		mesh.downloadPng();
+		if(config.DOWNLOAD_PNG_ON_COMPLETE) {
+			mesh.downloadPng();
+		}
+
 		_completedCaptured = true;
 
 		if(config.INIT_AFTER_COMPLETE) {
 			init(canvas);
 		}
 	}
+}
+
+const getColor = function(point) {
+
+	let c;
+	switch(config.COLOR_SOURCE) {
+		case colorSource.PALLETE:
+			c = pallete.getNextColor();
+			break;
+		case colorSource.GRADIENT:
+			c = gradient.getColor(point);
+		 	break;
+		case colorSource.FILL:
+			c = Color.fromHex(config.FILL_COLOR);
+			break;
+		default:
+			console.log(`Warning: config.COLOR_SOURCE not recgonized : ${config.COLOR_SOURCE}`);
+	}
+
+	return c;
+}
+
+const getRandomPoints = function(count) {
+
+	if(pixels.length == 0) {
+		console.log("render complete");
+		mesh.setPaused(true);
+		_doDraw = true;
+		_completed = true;
+		return [];
+	}
+
+	if(pixels.length < count) {
+		count = pixels.length;
+	}
+
+	//remove from the end of the array
+	return pixels.splice(-count, count);
 }
 
 const createDiamondMask = function() {
