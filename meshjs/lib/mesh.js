@@ -86,7 +86,7 @@ function draw() {
 
 export function setPaused(paused) {
 	_paused = paused;
-	console.log(_paused?"paused":"resumed");
+	console.log(_paused?"paused":"running");
 }
 
 const onAnimationFrame = function() {
