@@ -27,6 +27,8 @@ export function downloadBlob(blob, fileName) {
 	a.href = window.URL.createObjectURL(blob);
 	a.click();
 	a.remove();
+
+	console.log(`Downloading File : ${filename}`);
 }
 
 //we could see if the string is base 64 encoded, if not, assume its is a string

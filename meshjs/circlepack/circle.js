@@ -1,4 +1,5 @@
 import Vector from "../lib/vector.js"
+import Rectangle from "../lib/rectangle.js"
 
 
 export default class Circle {
@@ -19,6 +20,8 @@ export default class Circle {
 		this._boundsPadding  = 0;
 		this._fillColor = "#FFFFFF";
 		this._strokeColor = "#000000";
+
+		this._cachedCanvas = undefined;
 	}
 
 	set shouldGrow(b) {
@@ -43,6 +46,11 @@ export default class Circle {
 
 	draw(ctx) {
 
+		if(this._cachedCanvas) {
+			ctx.drawImage(this._cachedCanvas, this._position.x - this._radius, this._position.y - this._radius, this._cachedCanvas.width, this._cachedCanvas.height);
+			return;
+		}
+
 		//todo: once it stops growing we could cache the graphic
 		ctx.strokeStyle = this._strokeColor;
 		ctx.fillStyle = this._fillColor;
@@ -59,6 +67,16 @@ export default class Circle {
 				fill="${this._fillColor}" stroke-width="${this._strokeSize}"/>\n`;
 	}
 
+	get bounds() {
+		let out = new Rectangle();
+		out.x = this._position.x - this._radius;
+		out.y = this._position.y - this._radius;
+		out.width = this._radius * 2  + this._strokeSize;
+		out.height = this._radius * 2 + this._strokeSize;
+
+		return out;
+	}
+
 	grow() {
 		if(this._hasCollided) {
 			return;
@@ -67,12 +85,38 @@ export default class Circle {
 		this._radius++;
 	}
 
+	cache() {
+		let bounds = this.bounds;
+
+		let canvas = document.createElement('canvas');
+		canvas.height = bounds.height;
+		canvas.width = bounds.width;
+
+		let ctx = canvas.getContext("2d");
+
+		ctx.strokeStyle = this._strokeColor;
+		ctx.fillStyle = this._fillColor;
+		ctx.lineWidth = this._strokeSize;
+		ctx.beginPath();
+		ctx.arc(bounds.center.x, bounds.center.y, this._radius, 0, Math.PI * 2);
+		ctx.stroke();
+		ctx.fill();
+
+		this._cachedCanvas = canvas;
+	}
+
 	checkCollisions(bounds, circles) {
+
+		if(this._hasCollided) {
+			return;
+		}
+
 		if(this._position.x + this._radius >= bounds.width ||
 			this._position.x - this._radius <= bounds.x ||
 			this._position.y + this._radius >= bounds.height ||
 			this._position.y - this._radius <= bounds.y) {
 
+			this.cache();
 			this._hasCollided = true;
 			return;
 		}
@@ -84,6 +128,7 @@ export default class Circle {
 
 			if(c.radius + this._radius >= c.position.distance(this._position) +
 				this._boundsPadding - this._strokeSize) {
+				this.cache();
 				this._hasCollided = true;
 				return;
 			}

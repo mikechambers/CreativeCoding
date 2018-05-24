@@ -2,7 +2,6 @@ import Vector from "./vector.js"
 
 export default class Rectangle {
 
-	//todo: check if it should be h / w or w / h (canvas clear)
 	constructor(x, y, width, height) {
 		this._x = x;
 		this._y = y;
@@ -102,8 +101,8 @@ export default class Rectangle {
 		return new Rectangle(
 			this._x,
 			this._y,
-			this._height,
-			this._width
+			this._width,
+			this._height
 		);
 	}
 }

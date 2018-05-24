@@ -45,33 +45,27 @@ export function init(config, initCallback, drawCallback){
 
 	if(_config.MAX_DISPLAY_WIDTH != _config.RENDER_WIDTH ||
 		_config.MAX_DISPLAY_HEIGHT != _config.RENDER_HEIGHT) {
-			let  maxW = _config.MAX_DISPLAY_WIDTH;
-			let  maxH = _config.MAX_DISPLAY_HEIGHT;
-			let canvasW = _config.RENDER_WIDTH;
-			let canvasH = _config.RENDER_HEIGHT;
 
-			if (canvasH > maxH || canvasW > maxW) {
-				let ratio = canvasH / canvasW;
+		let maxW = _config.MAX_DISPLAY_WIDTH;
+		let maxH = _config.MAX_DISPLAY_HEIGHT;
 
-				if (canvasW >= maxW && ratio <= 1) {
-					canvasW = maxW;
-					canvasH = canvasW * ratio;
-				} else if (canvasH >= maxH) {
-					canvasH = maxH;
-					canvasW = canvasH / ratio;
-				}
+		let canvasW = _config.RENDER_WIDTH;
+		let canvasH = _config.RENDER_HEIGHT;
+
+		if (canvasH > maxH || canvasW > maxW) {
+			let ratio = canvasH / canvasW;
+
+			if (canvasW >= maxW && ratio <= 1) {
+				canvasW = maxW;
+				canvasH = canvasW * ratio;
+			} else if (canvasH >= maxH) {
+				canvasH = maxH;
+				canvasW = canvasH / ratio;
 			}
+		}
 
-			/*
-			let scalex = canvasW / _config.RENDER_WIDTH;
-			let scaley = canvasH / _config.RENDER_HEIGHT;
-
-			let css = `transform-origin:top;
-						transform:scale(${scalex}, ${scaley});`;
-			*/
-
-			let css = `width:${canvasW}; height:${canvasH};`;
-			_canvas.canvas.setAttribute("style", css);
+		_canvas.canvas.style.height = canvasH;
+		_canvas.canvas.style.width = canvasW;
 	}
 
 	if(_config.RECORD_VIDEO) {
@@ -88,6 +82,11 @@ export function init(config, initCallback, drawCallback){
 function draw() {
 	_frameCount++;
 	_draw(_canvas, _frameCount);
+}
+
+export function setPaused(paused) {
+	_paused = paused;
+	console.log(_paused?"paused":"resumed");
 }
 
 const onAnimationFrame = function() {
@@ -108,19 +107,25 @@ const onAnimationFrame = function() {
 	window.requestAnimationFrame(onAnimationFrame);
 }
 
+export function downloadPng() {
+	let n = createFileName(_config.APP_NAME, "png");
+	_canvas.downloadPNG(n);
+}
+
+export function downloadVideo() {
+	let n = createFileName(_config.APP_NAME, "webm");
+	_canvas.downloadVideo(n);
+}
 
 const onKeyUp = function(event){
 	const key = event.key;
 
-	let n;
 	if(key === _downloadPngKey) {
-		n = createFileName(_config.APP_NAME, "png");
-		_canvas.downloadPNG(n);
+		downloadPng();
 	} else if(key === _downloadVideoKey) {
-		n = createFileName(_config.APP_NAME, "webm");
-		_canvas.downloadVideo(n);
+		downloadVideo();
 	} else if(key === _pauseKey) {
-		_paused = !_paused;
+		setPaused(!_paused);
 	} else if (key === _initKey) {
 		_init(_canvas);
 	}

@@ -5,7 +5,6 @@ let count = 0;
 export default class Canvas{
 
 	constructor(parentId, width, height, backgroundColor = "#FFFFFF") {
-
 		this._canvas = document.createElement('canvas');
 
 		this._canvas.id = Canvas._createName();;
@@ -36,10 +35,9 @@ export default class Canvas{
 	}
 
 	setBackgroundColor(color) {
-
 		//todo: we probably only need to call this once
 		this._ctx.fillStyle = color;
-		this._ctx.fillRect(0, 0, this._bounds.height, this._bounds.width);
+		this._ctx.fillRect(0, 0, this._bounds.width, this._bounds.height);
 
 		//this._canvas.style.background = color;
 	}
