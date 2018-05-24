@@ -2,7 +2,6 @@ let downloadCount = 0;
 const suffix = Date.now();
 
 export function downloadJSON(data, appName) {
-	console.log(appName);
 	let path = createFileName(appName, "json");
 	var url = "data:application/json;utf8," + btoa(JSON.stringify(data, null, "\t"));
 	downloadDataUrlAsFile(url, path);
@@ -15,7 +14,7 @@ export function downloadSVG(svg, appName) {
 }
 
 export function createFileName(appName, extension) {
-	return appName + "_example_" + suffix + "_" + (++downloadCount) + "." + extension;
+	return appName + "_meshjs_example_" + suffix + "_" + (++downloadCount) + "." + extension;
 };
 
 export function downloadBlob(blob, fileName) {
