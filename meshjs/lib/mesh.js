@@ -1,5 +1,5 @@
 import Canvas from "./canvas.js"
-import {createFileName} from "./datautils.js"
+import {createFileName, downloadJSON} from "./datautils.js"
 import Rectangle from "./rectangle.js"
 
 class MeshJS {
@@ -9,6 +9,7 @@ class MeshJS {
 		this._downloadPngKey = "p";
 		this._downloadVideoKey = "v";
 		this._initKey = "i";
+		this._downloadConfigJson = "j";
 
 		this._config;
 		this._init;
@@ -123,6 +124,10 @@ class MeshJS {
 		this._canvas.downloadVideo(n);
 	}
 
+	downloadJson() {
+		downloadJSON(this._config, `${this._config.APP_NAME}_config`);
+	}
+
 	onKeyUp(event){
 
 		const key = event.key;
@@ -133,6 +138,8 @@ class MeshJS {
 			this.downloadVideo();
 		} else if(key === this._pauseKey) {
 			this.setPaused(!this._paused);
+		} else if(key === this._downloadConfigJson) {
+			this.downloadJson();
 		} else if (key === this._initKey) {
 			this._init(this._canvas);
 		}
