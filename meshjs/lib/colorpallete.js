@@ -76,7 +76,7 @@ export function getColorPallete(name) {
 	return undefined;
 }
 
-export function getRandomColorPallete() {
+export function randomColorPallete() {
 	let index = randomInt(0, palletes.length);
 	return createPallete(palletes[index]);
 }
