@@ -9,9 +9,11 @@
 
 import * as mesh from "../lib/mesh.js"
 import Circle from "./circle.js"
-import {randomPointsInBounds, pointIsInCircle, randomPointInBounds} from "../lib/utils.js"
+import {downloadSVG} from "../lib/datautils.js"
+import {randomPointsInBounds, pointIsInCircle, randomPointInBounds, pointOnCircle} from "../lib/utils.js"
 import Vector from "../lib/vector.js"
 import Color from "../lib/color.js"
+import {getRandomColorPallete} from "../lib/colorpallete.js"
 
 /************ CONFIG **************/
 
@@ -39,7 +41,7 @@ const config = {
 	BACKGROUND_COLOR:"#000000",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#000000",
+	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
 	ANIMATE:true,
@@ -55,7 +57,7 @@ const config = {
 
 	RADIUS:4,
 	BOUNDS_PADDING:0,
-	STROKE_COLOR:new Color(0),
+	STROKE_COLOR:"#FFFFFF",
 	STROKE_SIZE:2
 };
 
@@ -66,6 +68,7 @@ let bounds;
 let circles;
 
 let pAmount;
+let pallete;
 
 /*************** CODE ******************/
 
@@ -73,14 +76,9 @@ const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds;
 
+	pallete = getRandomColorPallete();
+
 	circles = [];
-
-	let c = new Circle(bounds.center, 100);
-	c.fillColor = new Color(0);
-	c.strokeColor = new Color(0);
-	c.shouldGrow = false;
-
-	circles.push(c);
 
 	pAmount = 1;
 }
@@ -90,6 +88,7 @@ const draw = function(canvas, frameCount) {
 
 	let points = [];
 
+/*
 	if(circles.length > 10 || !(frameCount % 100)) {
 		points = randomPointsInBounds(bounds, pAmount);
 	}
@@ -101,6 +100,18 @@ const draw = function(canvas, frameCount) {
 			pAmount = 100;
 		}
 	}
+*/
+
+	let count = 1;
+	if(circles.length > 10) {
+		if(circles.length > 50) {
+			count = 50;
+		} else {
+			count = 2;
+		}
+	}
+
+	points = randomPointsInBounds(bounds.withPadding(100), 2);
 
 	for(let p of points) {
 
@@ -108,7 +119,13 @@ const draw = function(canvas, frameCount) {
 		for(let i = 0; i < circles.length; i++) {
 			let c = circles[i];
 			//todo: change function to also take a circle
-			if(pointIsInCircle(c.position, (c.radius + config.RADIUS/2), p)) {
+			//todo: still getting some overlap
+			//if(pointIsInCircle(c.position, (c.radius + config.RADIUS/2), p)) {
+
+			//todo: we could change this to see if the new circle will overlap with an
+			//existing one, but then that requires we create a circle instance first
+
+			if(pointIsInCircle(c.position, (c.radius + config.RADIUS / 2 + config.STROKE_SIZE), p)) {
 				found = true;
 			}
 		}
@@ -116,8 +133,9 @@ const draw = function(canvas, frameCount) {
 		if(!found) {
 			let c = new Circle(p, config.RADIUS);
 			c.boundsPadding = config.BOUNDS_PADDING;
-			c.strokeColor = config.STROKE_COLOR;
+			c.strokeColor = Color.fromHex(config.STROKE_COLOR);
 			c.strokeSize = config.STROKE_SIZE;
+			c.fillColor = pallete.getNextColor();
 			circles.push(c);
 		}
 	}
@@ -127,9 +145,81 @@ const draw = function(canvas, frameCount) {
 		c.grow();
 		c.draw(ctx);
 	}
+}
 
+const initDiamond = function() {
+
+	let r = bounds.width / 2;
+
+	let tmp = [];
+	tmp.push(new Circle(bounds.topLeft, r));
+	tmp.push(new Circle(bounds.topRight, r));
+	tmp.push(new Circle(bounds.bottomRight, r));
+	tmp.push(new Circle(bounds.bottomLeft, r));
+
+	for(let c of tmp) {
+		c.fillColor = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
+		c.strokeColor = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
+		c.shouldGrow = false;
+	}
+
+	circles.push(...tmp);
+}
+
+const initDonut = function() {
+
+	let color = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
+	let c = new Circle(bounds.center, 100);
+	c.fillColor = color;
+	c.strokeColor = color;
+	c.shouldGrow = false;
+
+	circles.push(c);
+
+
+	let stepSize = (Math.PI * 2) / 40;
+	for(let i = 0; i < Math.PI * 2; i += stepSize) {
+
+		//get point on circle
+
+		let center = pointOnCircle(bounds.center, 700, i);
+
+		let c2 = new Circle(center, 200);
+		c2.fillColor = color;
+		c2.strokeColor = color;
+		c2.shouldGrow = false;
+
+		circles.push(c2);
+	}
+}
+
+const createSVG = function() {
+	let svg = `<?xml version="1.0" standalone="no"?>\n
+		<svg width="${config.RENDER_WIDTH}" height="${config.RENDER_HEIGHT}"
+		version="1.1" xmlns="http://www.w3.org/2000/svg">\n`
+
+	svg = svg + `<rect x="0" y="0" width="${config.RENDER_WIDTH}"
+				height="${config.RENDER_HEIGHT}"
+				fill="${config.BACKGROUND_COLOR}"/>`;
+
+		for(let c of circles) {
+			svg = svg + c.toSVG();
+		}
+
+	svg = svg + "</svg>";
+
+	return svg;
+}
+
+const onKeyUp = function(event) {
+	if(event.key === "s") {
+		let svg = createSVG();
+		downloadSVG(svg, config.APP_NAME);
+	}
 }
 
 window.onload = function(){
 	mesh.init(config, init, draw);
+
+	window.addEventListener("keyup", onKeyUp);
 }

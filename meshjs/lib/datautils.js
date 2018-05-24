@@ -1,6 +1,19 @@
 let downloadCount = 0;
 const suffix = Date.now();
 
+export function downloadJSON(data, appName) {
+	console.log(appName);
+	let path = createFileName(appName, "json");
+	var url = "data:application/json;utf8," + btoa(JSON.stringify(data, null, "\t"));
+	downloadDataUrlAsFile(url, path);
+}
+
+export function downloadSVG(svg, appName) {
+	let path = createFileName(appName, "svg");
+	let url = "data:image/svg+xml;utf8," + btoa(svg);
+	downloadDataUrlAsFile(url, path);
+}
+
 export function createFileName(appName, extension) {
 	return appName + "_example_" + suffix + "_" + (++downloadCount) + "." + extension;
 };
@@ -10,7 +23,7 @@ export function downloadBlob(blob, fileName) {
 
 	//http://html5-demos.appspot.com/static/a.download.html
 	//https://developer.mozilla.org/en-US/docs/Web/API/Blob
-	var a = document.createElement('a');
+	let a = document.createElement('a');
 	a.download = fileName;
 	a.href = window.URL.createObjectURL(blob);
 	a.click();
@@ -22,28 +35,28 @@ export function downloadBlob(blob, fileName) {
 export function dataURItoBlob(dataURI) {
 	// convert base64 to raw binary data held in a string
 	// doesn't handle URLEncoded DataURIs
-	var byteString = atob(dataURI.split(',')[1]);
+	let byteString = atob(dataURI.split(',')[1]);
 
 	// separate out the mime component
-	var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+	let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
 	// write the bytes of the string to an ArrayBuffer
-	var ab = new ArrayBuffer(byteString.length);
-	var ia = new Uint8Array(ab);
+	let ab = new ArrayBuffer(byteString.length);
+	let ia = new Uint8Array(ab);
 
-	var len = byteString.length;
+	let len = byteString.length;
 
-	var i;
+	let i;
 	for (i = 0; i < len; i++) {
 		ia[i] = byteString.charCodeAt(i);
 	}
 
 	// write the ArrayBuffer to a blob, and you're done
-	var bb = new Blob([ab], {type: mimeString});
+	let bb = new Blob([ab], {type: mimeString});
 	return bb;
 };
 
 export function downloadDataUrlAsFile(url, fileName) {
-	var bb = dataURItoBlob(url);
+	let bb = dataURItoBlob(url);
 	downloadBlob(bb, fileName);
 };

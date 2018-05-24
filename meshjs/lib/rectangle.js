@@ -30,7 +30,7 @@ export default class Rectangle {
 	}
 
 	set height(height) {
-		this._height = value;
+		this._height = height;
 		this._updateCenter();
 	}
 
@@ -61,11 +61,41 @@ export default class Rectangle {
 		this._updateCenter();
 	}
 
+	get topLeft() {
+		return new Vector(this._x, this._y);
+	}
+
+	get topRight() {
+		return new Vector(this._width, this._y);
+	}
+
+	get bottomRight() {
+		return new Vector(this._width, this._height);
+	}
+
+	get bottomLeft() {
+		return new Vector(this._x, this._height);
+	}
+
 	//scales the rectangle by included amout. note, if you want to make a copy
 	//first call clone : r.clone().scale(2);
 	scale(scale) {
 		this._height *= scale;
 		this._width += scale;
+	}
+
+	//returns a new instance of Rectangle, with dimensions based on existing
+	//instance with padding applied to all 4 sides
+	withPadding(padding) {
+		let r = this.clone();
+
+		r.x += padding;
+		r.width -= (padding * 2);
+
+		r.y += padding;
+		r.height -= (padding * 2);
+
+		return r;
 	}
 
 	clone() {

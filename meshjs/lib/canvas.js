@@ -101,7 +101,7 @@ export default class Canvas{
 	video/x-matroska;codecs=avc1
 
 	*/
-	startRecord(mimeString="video/webm;codecs=h264", frameRate=30.0) {
+	startRecord(mimeString="video/webm;codecs=h264", frameRate=60.0) {
 
 		this._chunks = [];
 		let o = this;

@@ -42,6 +42,8 @@ export default class Circle {
 	}
 
 	draw(ctx) {
+
+		//todo: once it stops growing we could cache the graphic
 		ctx.strokeStyle = this._strokeColor;
 		ctx.fillStyle = this._fillColor;
 		ctx.lineWidth = this._strokeSize;
@@ -49,6 +51,12 @@ export default class Circle {
 		ctx.arc(this._position.x, this._position.y, this._radius, 0, Math.PI * 2);
 		ctx.stroke();
 		ctx.fill();
+	}
+
+	toSVG() {
+		return `<circle cx="${this._position.x}" cy="${this._position.y}"
+				r="${this._radius}" stroke="${this._strokeColor}"
+				fill="${this._fillColor}" stroke-width="${this._strokeSize}"/>\n`;
 	}
 
 	grow() {
@@ -80,6 +88,10 @@ export default class Circle {
 				return;
 			}
 		}
+	}
+
+	containsPoint(vector) {
+		return (this._center.distance(vector) < this._radius);
 	}
 
 	set position(vector) {

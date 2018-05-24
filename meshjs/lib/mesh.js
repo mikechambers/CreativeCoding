@@ -62,12 +62,15 @@ export function init(config, initCallback, drawCallback){
 				}
 			}
 
+			/*
 			let scalex = canvasW / _config.RENDER_WIDTH;
 			let scaley = canvasH / _config.RENDER_HEIGHT;
 
 			let css = `transform-origin:top;
 						transform:scale(${scalex}, ${scaley});`;
+			*/
 
+			let css = `width:${canvasW}; height:${canvasH};`;
 			_canvas.canvas.setAttribute("style", css);
 	}
 

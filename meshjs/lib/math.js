@@ -1,4 +1,6 @@
 
+//returns a random floating point number from min (inclusive) to max (exclusive)
+// value >= min && value < max
 export function random(min, max) {
 
 	if(!max) {
@@ -7,6 +9,18 @@ export function random(min, max) {
 	}
 
 	return Math.random() * (max - min) + min;
+}
+
+//returns a random int from min (inclusive) to max (exclusive)
+// value >= min && value < max
+export function randomInt(min, max) {
+
+	if(!max) {
+		max = min;
+		min = 0;
+	}
+
+	return Math.floor(Math.random() * (max - min) + min);
 }
 
 export function map(value, inputMin, inputMax, outputMin, outputMax) {
