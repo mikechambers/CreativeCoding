@@ -8,7 +8,7 @@
 **/
 
 import Gradient from "../lib/gradient.js"
-import * as mesh from "../lib/mesh.js"
+import mesh from "../lib/mesh.js"
 
 /************ CONFIG **************/
 
@@ -80,10 +80,10 @@ const init = function(canvas) {
 }
 
 const draw = function() {
-	let gradient = new Gradient(bounds);
-	let c = gradient.createGradientFromName("Rainbow Blue");
+	let gradient = Gradient.fromName("Rainbow Blue", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
+	gradient.create();
 
-	ctx.drawImage(c, bounds.x, bounds.y, bounds.width, bounds.height);
+	ctx.drawImage(gradient.canvas, bounds.x, bounds.y, bounds.width, bounds.height);
 }
 
 window.onload = function(){

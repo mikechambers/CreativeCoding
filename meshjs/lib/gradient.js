@@ -1,4 +1,5 @@
 import Color from "./color.js"
+import {randomInt} from "./math.js"
 
 //note for some reason I cant import PixelData as default
 import {PixelData} from "./pixeldata.js"
@@ -9,6 +10,7 @@ export default class Gradient {
 		this._bounds = bounds;
 		this._type = type;
 
+		//todo: could move this to create
 		this._canvas = document.createElement("canvas");
 		this._canvas.width = this._bounds.width;
 		this._canvas.height = this._bounds.height;
@@ -60,25 +62,6 @@ export default class Gradient {
 		this._gradient.addColorStop(offset, color);
 	}
 
-	createGradientFromName(gradientName) {
-		let colors = gradients.get(gradientName);
-
-		if(!colors) {
-			console.log('Gradient.createGradientFromName : unknown name : {$gradientName}');
-			return undefined;
-		}
-
-		let len = colors.length;
-		for(let i = 0; i < len; i++) {
-			//create map function between 0 and 1
-			let offset = map(i, 0, len - 1, 0, 1);
-
-			this.addColorStop(offset, colors[i]);
-		}
-
-		return this.create();
-	}
-
 	create() {
 
 		let x = this._bounds.x;
@@ -94,7 +77,7 @@ export default class Gradient {
 		return this._canvas;
 	}
 
-	getCanvas() {
+	get canvas() {
 		return this._canvas;
 	}
 
@@ -104,6 +87,34 @@ export default class Gradient {
 
 	getColor(x, y, alpha) {
 		return this._pixelData.getColor(x, y, alpha);
+	}
+
+	static random(bounds, type) {
+		let keys = Array.from(GRADIENTS.keys());
+		let name = keys[randomInt(0, keys.length)];
+
+		return Gradient.fromName(name, bounds, type);
+	}
+
+	static fromName(gradientName, bounds, type) {
+
+		let g = new Gradient(bounds, type);
+		let colors = GRADIENTS.get(gradientName);
+
+		if(!colors) {
+			console.log('Gradient.createGradientFromName : unknown name : {$gradientName}');
+			return undefined;
+		}
+
+		let len = colors.length;
+		for(let i = 0; i < len; i++) {
+			//create map function between 0 and 1
+			let offset = map(i, 0, len - 1, 0, 1);
+
+			g.addColorStop(offset, colors[i]);
+		}
+
+		return g;
 	}
 }
 
@@ -117,7 +128,7 @@ Gradient.BOTTOM_LEFT_TO_TOP_RIGHT = 3;
 	an MIT license:
 	https://github.com/ghosh/uiGradients/blob/master/gradients.json
 */
-let gradients = new Map([
+const GRADIENTS = new Map([
     [
         "Blu",
 		["#00416A", "#E4E5E6"]
