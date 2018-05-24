@@ -27,3 +27,18 @@ export function pointOnCircle(center, radius, angleInRadians) {
 
     return new Vector(x, y);
 }
+
+//https://www.frankmitchell.org/2015/01/fisher-yates/
+export function shuffleArray (array) {
+	let i = 0
+		, j = 0
+		, temp = null;
+
+	let len = array.length;
+	for (i = len - 1; i > 0; i -= 1) {
+		j = Math.floor(Math.random() * (i + 1))
+		temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+}
