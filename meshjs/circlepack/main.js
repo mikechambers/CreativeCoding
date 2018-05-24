@@ -58,11 +58,11 @@ const config = {
 
 	RADIUS:4,
 	BOUNDS_PADDING:0,
-	CIRCLE_BOUNDS_PADDING:4,
+	CIRCLE_BOUNDS_PADDING:8,
 	STROKE_COLOR:"#FFFFFF",
 	FILL_COLOR:"#FFFFFF",
 	USE_COLOR_PALLETE:true,
-	STROKE_SIZE:4,
+	STROKE_SIZE:8,
 	DRAW_BY_DEFAULT:false, //hit d key to toggle whether frames are rendered
 	INIT_AFTER_COMPLETE:true
 };
