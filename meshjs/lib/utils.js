@@ -40,6 +40,11 @@ export function pointOnCircle(center, radius, angleInRadians) {
 export function shuffleArray (arr) {
 
 	let len = arr.length;
+
+	if(len <= 1) {
+		return arr;
+	}
+
 	for (let i = len - 1; i > 0; i -= 1) {
 		let j = Math.floor(Math.random() * (i + 1))
 		let temp = arr[i];
