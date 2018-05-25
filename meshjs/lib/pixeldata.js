@@ -81,7 +81,18 @@ export class PixelData {
 		return c;
 	}
 
+	//pass in a comparison function or a color
+	//returns an array of vectors of positions that match
+	//the mask
 	mask(func) {
+
+		if(func instanceof Color) {
+			let filterColor = func;
+			func = function(_c) {
+				return filterColor.isEqual(_c);
+			}
+		}
+
 		let out = [];
 
 		let w = this._imageData.width;
