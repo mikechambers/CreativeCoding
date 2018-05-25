@@ -1,6 +1,7 @@
 import Canvas from "./canvas.js"
 import {createFileName, downloadJSON} from "./datautils.js"
 import Rectangle from "./rectangle.js"
+import Vector from "./vector.js"
 
 class MeshJS {
 	constructor() {
@@ -22,6 +23,13 @@ class MeshJS {
 
 		this._canvas;
 		this._frameCount = 0;
+		this._trackMouse = false;
+
+		this._mousePosition = undefined;
+
+		this._canvasScaleX = 1;
+		this._canvasScaleY = 1;
+		this._canvasBoundingRect = undefined;
 	}
 
 	init(config, initCallback, drawCallback){
@@ -72,6 +80,11 @@ class MeshJS {
 
 			this._canvas.canvas.style.height = canvasH;
 			this._canvas.canvas.style.width = canvasW;
+
+			//note, we cache these for performance for mouse events.
+			this._canvasBoundingRect = this._canvas.canvas.getBoundingClientRect();
+			this._canvasScaleX = config.RENDER_WIDTH / canvasW;
+			this._canvasScaleY = config.RENDER_HEIGHT / canvasH;
 		}
 
 		if(this._config.RECORD_VIDEO) {
@@ -91,6 +104,49 @@ class MeshJS {
 		this._draw(this._canvas, this._frameCount);
 	}
 
+	onMouseMove(event) {
+		this._mousePosition.x = (
+			event.clientX - this._canvasBoundingRect.left) * this._canvasScaleX;
+		this._mousePosition.y = (
+			event.clientY - this._canvasBoundingRect.top) * this._canvasScaleY;
+	}
+
+	_updateTrackMouse() {
+		if(this._trackMouse) {
+			if(!this._mousePosition) {
+				this._mousePosition = new Vector();
+			}
+			this._canvas.canvas.addEventListener("mousemove", this.onMouseMove.bind(this));
+		} else {
+			this._mousePosition = undefined;
+			this._canvas.canvas.removeEventListener("mousemove", this.onMouseMove);
+		}
+		//register / deregister for mouse event
+		//store in global variable
+		//pass to draw function? or make it a property on mesh?
+		//mousePosition
+		//window.addEventListener("keyup", this.onKeyUp.bind(this));
+	}
+
+	get mousePosition() {
+		//todo: should we return a copy?
+		return this._mousePosition;
+	}
+
+	set trackMouse(value) {
+		if(this._trackMouse === value) {
+			return;
+		}
+
+		this._trackMouse = value;
+
+		this._updateTrackMouse();
+	}
+
+	get trackMouse() {
+		return this._trackMouse;
+	}
+
 	setPaused(paused) {
 		this._paused = paused;
 		console.log(this._paused?"paused":"running");
@@ -107,6 +163,7 @@ class MeshJS {
 				if(this._config.CLEAR_CANVAS) {
 					this._canvas.clear();
 				}
+
 				this.draw();
 			}
 		}
