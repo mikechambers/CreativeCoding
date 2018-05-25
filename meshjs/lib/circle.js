@@ -15,8 +15,17 @@ export default class Circle {
 
 		this._radius = r;
 
-		this._strokeSize = 2;
-		this._fillColor = "#FFFFFF";
+		//todo: could change defaults to undefined, then if not set, dont make
+		//the drawing calls
+		//rename to line width?
+		this._strokeSize = 1.0;
+
+		//rename to fillStyle? which would all to specify a gradient
+		//todo: should default these to be specified as a color and convert when
+		//drawing
+		this._fillColor = "#000000";
+
+		//rename to strokeStyle?
 		this._strokeColor = "#000000";
 
 		this._cachedCanvas = undefined;
@@ -57,24 +66,27 @@ export default class Circle {
 			return;
 		}
 
-		//todo: once it stops growing we could cache the graphic
-		ctx.strokeStyle = this._strokeColor;
+		if(this._strokeSize) {
+			ctx.strokeStyle = this._strokeColor;
+			ctx.lineWidth = this._strokeSize;
+		}
+
 		ctx.fillStyle = this._fillColor;
 
-		ctx.lineWidth = this._strokeSize;
 		ctx.beginPath();
 		ctx.arc(this._center.x, this._center.y, this._radius, 0, Math.PI * 2);
 
 		if(this._strokeSize) {
 			ctx.stroke();
 		}
+
 		ctx.fill();
 	}
 
 	toSVG() {
 		return `<circle cx="${this._center.x}" cy="${this._center.y}"
 				r="${this._radius}" stroke="${this._strokeColor}"
-				fill="${this._fillColor}" stroke-width="${this._strokeSize}"/>\n`;
+				fill="${this._fillColor}" stroke-width="${this._strokeSize}"/>`;
 	}
 
 	get bounds() {
@@ -93,21 +105,13 @@ export default class Circle {
 				return;
 		}
 
-		let bounds = this.bounds;
-
 		let canvas = document.createElement('canvas');
 		canvas.height = bounds.height;
 		canvas.width = bounds.width;
 
 		let ctx = canvas.getContext("2d");
 
-		ctx.strokeStyle = this._strokeColor;
-		ctx.fillStyle = this._fillColor;
-		ctx.lineWidth = this._strokeSize;
-		ctx.beginPath();
-		ctx.arc(bounds.center.x, bounds.center.y, this._radius, 0, Math.PI * 2);
-		ctx.stroke();
-		ctx.fill();
+		this.draw(ctx);
 
 		this._cachedCanvas = canvas;
 	}
