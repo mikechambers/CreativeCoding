@@ -8,7 +8,7 @@
 **/
 
 import mesh from "../lib/mesh.js"
-import Circle from "./circle.js"
+import PCircle from "./pcircle.js"
 import {downloadSVG} from "../lib/datautils.js"
 import * as utils from "../lib/utils.js"
 import Vector from "../lib/vector.js"
@@ -98,7 +98,7 @@ const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds.withPadding(config.BOUNDS_PADDING);
 
-	pixels = new Array(bounds.width * bounds.height);
+	pixels = new Array();
 	_completed = false;
 	_completedCaptured = false;
 	_doDraw = config.DRAW_BY_DEFAULT;
@@ -174,14 +174,14 @@ const draw = function(canvas, frameCount) {
 			//todo: we could change this to see if the new circle will overlap with an
 			//existing one, but then that requires we create a circle instance first
 
-			if(utils.pointIsInCircle(c.position, (c.radius + config.RADIUS / 2 +
+			if(utils.circleContainsPoint(c.center, (c.radius + config.RADIUS / 2 +
 					config.STROKE_SIZE), p)) {
 				found = true;
 			}
 		}
 
 		if(!found) {
-			let c = new Circle(p, config.RADIUS);
+			let c = new PCircle(p, config.RADIUS);
 			c.boundsPadding = config.CIRCLE_BOUNDS_PADDING;
 			c.strokeColor = Color.fromHex(config.STROKE_COLOR);
 			c.strokeSize = config.STROKE_SIZE;
@@ -234,7 +234,6 @@ const getColor = function(point) {
 }
 
 const getRandomPoints = function(count) {
-
 	if(pixels.length == 0) {
 		console.log("render complete");
 		mesh.setPaused(true);
@@ -244,6 +243,7 @@ const getRandomPoints = function(count) {
 	}
 
 	if(pixels.length < count) {
+
 		count = pixels.length;
 	}
 
@@ -256,10 +256,10 @@ const createDiamondMask = function() {
 	let r = bounds.width / 2;
 
 	let tmp = [];
-	tmp.push(new Circle(bounds.topLeft, r));
-	tmp.push(new Circle(bounds.topRight, r));
-	tmp.push(new Circle(bounds.bottomRight, r));
-	tmp.push(new Circle(bounds.bottomLeft, r));
+	tmp.push(new PCircle(bounds.topLeft, r));
+	tmp.push(new PCircle(bounds.topRight, r));
+	tmp.push(new PCircle(bounds.bottomRight, r));
+	tmp.push(new PCircle(bounds.bottomLeft, r));
 
 	for(let c of tmp) {
 		c.fillColor = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
@@ -273,7 +273,7 @@ const createDiamondMask = function() {
 const createDonotMask = function() {
 
 	let color = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
-	let c = new Circle(bounds.center, 100);
+	let c = new PCircle(bounds.center, 100);
 	c.fillColor = color;
 	c.strokeColor = color;
 	c.shouldGrow = false;
@@ -288,7 +288,7 @@ const createDonotMask = function() {
 
 		let center = pointOnCircle(bounds.center, 700, i);
 
-		let c2 = new Circle(center, 200);
+		let c2 = new PCircle(center, 200);
 		c2.fillColor = color;
 		c2.strokeColor = color;
 		c2.shouldGrow = false;

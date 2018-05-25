@@ -1,5 +1,6 @@
 import {random} from "./math.js"
 import Vector from "./vector.js"
+import Circle from "./circle.js"
 
 export function randomPointInBounds(bounds) {
 	return new Vector(random(bounds.x, bounds.x + bounds.width),
@@ -17,7 +18,14 @@ export function randomPointsInBounds(bounds, count) {
 }
 
 //todo: rename circleContainerPoint (or just move to circle?)
-export function pointIsInCircle(center, radius, point) {
+export function circleContainsPoint(center, radius, point) {
+
+	if(center instanceof Circle) {
+		center = center.center;
+		point = radius;
+		radius = center.radius;
+	}
+
 	return center.distance(point) < radius;
 }
 
@@ -29,16 +37,13 @@ export function pointOnCircle(center, radius, angleInRadians) {
 }
 
 //https://www.frankmitchell.org/2015/01/fisher-yates/
-export function shuffleArray (array) {
-	let i = 0
-		, j = 0
-		, temp = null;
+export function shuffleArray (arr) {
 
-	let len = array.length;
-	for (i = len - 1; i > 0; i -= 1) {
-		j = Math.floor(Math.random() * (i + 1))
-		temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
+	let len = arr.length;
+	for (let i = len - 1; i > 0; i -= 1) {
+		let j = Math.floor(Math.random() * (i + 1))
+		let temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
 	}
 }
