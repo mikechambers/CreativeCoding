@@ -45,8 +45,30 @@ export default class Color {
 		this._a = a;
 	}
 
+	isEqual(color, ignoreAlpha = true) {
+		let isEqual = (this.r === color.r && this.g === color.g && this.b === color.b);
+
+		if(!ignoreAlpha) {
+			isEqual = isEqual && this.a === color.a;
+		}
+
+		return isEqual;
+	}
+
 	toRGBA() {
 		return Color.getRGBA(this._r, this._g, this._b, this._a);
+	}
+
+	clone() {
+		return new Color(this._r, this._g, this._b, this._a);
+	}
+
+	static get BLACK(){
+		return new Color(0).clone();
+	}
+
+	static get WHITE(){
+		return new Color(255).clone();
 	}
 
 	static fromHex(value) {
@@ -59,6 +81,7 @@ export default class Color {
 }
 
 //https://stackoverflow.com/a/5624139/10232
+//todo: need to add support for RGBA
 function hexToRgb(hex) {
 
 	//todo: need to check if a number is being passed in:
