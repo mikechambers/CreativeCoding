@@ -65,7 +65,6 @@ let config = {
 	/*********** APP Specific Settings ************/
 
 	RADIUS:4,
-	BOUNDS_PADDING:0,
 	CIRCLE_BOUNDS_PADDING:8,
 	STROKE_COLOR:"#000000",
 	FILL_COLOR:"#FFFFFF",
@@ -75,7 +74,6 @@ let config = {
 	INIT_AFTER_COMPLETE:false,
 	DOWNLOAD_PNG_ON_COMPLETE:true,
 	TEMPLATE:"mask.gif",
-	USE_TEMPLATE:true
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -101,7 +99,7 @@ let originalPixels = [];
 const init = function(canvas) {
 
 	ctx = canvas.context;
-	bounds = canvas.bounds.withPadding(config.BOUNDS_PADDING);
+	bounds = canvas.bounds;
 
 	pixels = [...originalPixels];
 	_completed = false;
@@ -220,7 +218,6 @@ const getRandomPoints = function(count) {
 	}
 
 	if(pixels.length < count) {
-
 		count = pixels.length;
 	}
 
@@ -257,23 +254,17 @@ const onKeyUp = function(event) {
 
 window.onload = function(){
 
-	if(config.USE_TEMPLATE) {
-		loadPixelDataFromPath(
-			config.TEMPLATE,
-			function(pd) {
-				originalPixels = pd.mask(function(color) {
-					return (color.r == 255 && color.g == 255 && color.b == 255);
-				});
-				console.log(pixels);
-				mesh.init(config, init, draw);
-			},
-			false
-		);
-	} else {
-		mesh.init(config, init, draw);
-	}
-
-
+	loadPixelDataFromPath(
+		config.TEMPLATE,
+		function(pd) {
+			originalPixels = pd.mask(function(color) {
+				return (color.r == 255 && color.g == 255 && color.b == 255);
+			});
+			console.log(pixels);
+			mesh.init(config, init, draw);
+		},
+		false
+	);
 
 	window.addEventListener("keyup", onKeyUp);
 }
