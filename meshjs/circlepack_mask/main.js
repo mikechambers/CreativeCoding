@@ -132,7 +132,6 @@ const draw = function(canvas, frameCount) {
 	}
 
 	let count = 40;
-
 	if(circles.length > 300) {
 		count = 1000;
 	}
@@ -144,10 +143,6 @@ const draw = function(canvas, frameCount) {
 		let found = false;
 		for(let i = 0; i < circles.length; i++) {
 			let c = circles[i];
-			//todo: change function to also take a circle
-
-			//todo: we could change this to see if the new circle will overlap with an
-			//existing one, but then that requires we create a circle instance first
 
 			if(utils.circleContainsPoint(c.center, (c.radius + config.RADIUS / 2 +
 					config.STROKE_SIZE), p)) {
@@ -232,10 +227,10 @@ const createSVG = function() {
 
 	svg = svg + `<rect x="0" y="0" width="${config.RENDER_WIDTH}"
 				height="${config.RENDER_HEIGHT}"
-				fill="${config.BACKGROUND_COLOR}"/>`;
+				fill="${config.BACKGROUND_COLOR}"/>\n`;
 
 		for(let c of circles) {
-			svg = svg + c.toSVG();
+			svg = svg + c.toSVG() + "\n";
 		}
 
 	svg = svg + "</svg>";
