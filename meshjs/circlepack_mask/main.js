@@ -16,7 +16,9 @@ import Color from "../lib/color.js"
 import {randomColorPallete, getColorPallete} from "../lib/colorpallete.js"
 import {randomInt} from "../lib/math.js"
 import Gradient from "../lib/gradient.js"
-import {loadPixelDataFromPath} from "../lib/pixeldata.js"
+import {loadPixelDataFromPathWithBounds} from "../lib/pixeldata.js"
+import ColorPallete from "../lib/colorpallete.js"
+import Rectangle from "../lib/rectangle.js"
 
 /************ CONFIG **************/
 
@@ -36,8 +38,8 @@ let config = {
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1080,//1600,
-	RENDER_WIDTH:1080,//2560,
+	RENDER_HEIGHT:1275,//1600,
+	RENDER_WIDTH:1875,//2560,
 
 	//Max dimension canvas will be display at on page
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
@@ -69,11 +71,13 @@ let config = {
 	STROKE_COLOR:"#000000",
 	FILL_COLOR:"#FFFFFF",
 	COLOR_SOURCE:colorSource.PALLETE,// PALLETE, GRADIENT, FILL
-	STROKE_SIZE:8,
+	STROKE_SIZE:4,
 	DRAW_BY_DEFAULT:true, //hit d key to toggle whether frames are rendered
 	INIT_AFTER_COMPLETE:false,
 	DOWNLOAD_PNG_ON_COMPLETE:true,
 	TEMPLATE:"mask.gif",
+
+	DEFAULT_RADIUS:20
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -109,7 +113,16 @@ const init = function(canvas) {
 	mesh.setPaused(false);
 
 	if(config.COLOR_SOURCE == colorSource.PALLETE) {
-		pallete = randomColorPallete();
+		//pallete = randomColorPallete();
+		pallete = new ColorPallete();
+		pallete.colors = [new Color(209,242,165),
+				new Color(239,250,180),
+				new Color(255,196,140),
+				new Color(255,159,128),
+				new Color(245,105,145)
+			];
+
+
 	} else if(config.COLOR_SOURCE == colorSource.GRADIENT){
 		gradient = Gradient.random();
 		gradient.create();
@@ -131,7 +144,7 @@ const draw = function(canvas, frameCount) {
 		console.log(`${per}%`, pixels.length, circles.length);
 	}
 
-	let count = 40;
+	let count = config.DEFAULT_RADIUS;
 	if(circles.length > 300) {
 		count = 1000;
 	}
@@ -249,13 +262,16 @@ const onKeyUp = function(event) {
 
 window.onload = function(){
 
-	loadPixelDataFromPath(
+	loadPixelDataFromPathWithBounds(
 		config.TEMPLATE,
 		function(pd) {
+
+			//todo: we could combine cache and mask into one call / loop
+			pd.cache();
 			originalPixels = pd.mask(Color.BLACK);
 			mesh.init(config, init, draw);
 		},
-		false
+		new Rectangle(0,0, config.RENDER_WIDTH, config.RENDER_HEIGHT)
 	);
 
 	window.addEventListener("keyup", onKeyUp);

@@ -58,6 +58,10 @@ export default class Circle {
 
 	draw(ctx) {
 
+		if(!ctx) {
+			console.log("Error: Circle.draw : canvas context is undefined.");
+		}
+
 		if(this._cachedCanvas) {
 			ctx.drawImage(this._cachedCanvas,
 				this._center.x - this._radius,
@@ -67,7 +71,7 @@ export default class Circle {
 		}
 
 		if(this._strokeSize) {
-			ctx.strokeStyle = this._strokeColor;
+			ctx.lineStyle = this._strokeColor;
 			ctx.lineWidth = this._strokeSize;
 		}
 

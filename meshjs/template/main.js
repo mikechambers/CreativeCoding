@@ -63,7 +63,7 @@ const init = function(canvas) {
 	bounds = canvas.bounds;
 }
 
-const draw = function(canvas) {
+const draw = function(canvas, frameCount) {
 }
 
 window.onload = function(){

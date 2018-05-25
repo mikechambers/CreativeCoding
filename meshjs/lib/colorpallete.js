@@ -1,7 +1,7 @@
 import Color from "./color.js"
 import {randomInt} from "./math.js"
 
-export class ColorPallete {
+export default class ColorPallete {
 	constructor(colors, name) {
 		this._colors = colors;
 		this._index = -1;
