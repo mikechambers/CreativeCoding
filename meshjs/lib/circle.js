@@ -60,10 +60,14 @@ export default class Circle {
 		//todo: once it stops growing we could cache the graphic
 		ctx.strokeStyle = this._strokeColor;
 		ctx.fillStyle = this._fillColor;
+
 		ctx.lineWidth = this._strokeSize;
 		ctx.beginPath();
 		ctx.arc(this._center.x, this._center.y, this._radius, 0, Math.PI * 2);
-		ctx.stroke();
+
+		if(this._strokeSize) {
+			ctx.stroke();
+		}
 		ctx.fill();
 	}
 

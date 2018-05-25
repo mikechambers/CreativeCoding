@@ -81,6 +81,24 @@ export class PixelData {
 		return c;
 	}
 
+	mask(func) {
+		let out = [];
+
+		let w = this._imageData.width;
+		let h = this._imageData.height;
+
+		for(let y = 0; y < h; y++){
+			for(let x = 0; x < w; x++) {
+				let c = this.getColor(x, y);
+				if(func(c)) {
+					out.push(new Vector(x, y));
+				}
+			}
+		}
+
+		return out;
+	}
+
 	getImageData() {
 		return this._imageData;
 	}
