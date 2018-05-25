@@ -257,10 +257,7 @@ window.onload = function(){
 	loadPixelDataFromPath(
 		config.TEMPLATE,
 		function(pd) {
-			originalPixels = pd.mask(function(color) {
-				return (color.r == 255 && color.g == 255 && color.b == 255);
-			});
-			console.log(pixels);
+			originalPixels = pd.mask(Color.BLACK);
 			mesh.init(config, init, draw);
 		},
 		false
