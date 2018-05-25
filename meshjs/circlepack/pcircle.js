@@ -1,4 +1,4 @@
-import Circle from "./circle.js"
+import Circle from "../lib/circle.js"
 
 export default class PCircle extends Circle {
 	constructor(x, y_r, r) {

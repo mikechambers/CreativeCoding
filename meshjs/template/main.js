@@ -7,7 +7,7 @@
 	Copyright Mike Chambers 2018
 **/
 
-import * as mesh from "../lib/mesh.js"
+import mesh from "../lib/mesh.js"
 
 /************ CONFIG **************/
 
@@ -39,7 +39,7 @@ const config = {
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
 	ANIMATE:false,
-	FPS:30,
+	FPS:60,
 
 	//Where video of canvas is recorded
 	RECORD_VIDEO:false,

@@ -7,7 +7,7 @@
 	Copyright Mike Chambers 2018
 **/
 
-import * as mesh from "../lib/mesh.js"
+import mesh from "../lib/mesh.js"
 import noise from "../lib/noise.js"
 import Color from  "../lib/color.js"
 

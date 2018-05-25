@@ -7,7 +7,7 @@
 	Copyright Mike Chambers 2018
 **/
 
-import * as mesh from "../lib/mesh.js"
+import mesh from "../lib/mesh.js"
 import Vector from "../lib/vector.js"
 import Color from "../lib/color.js"
 import Particle from "./particle.js"
@@ -89,8 +89,8 @@ const init = function(canvas) {
 	let gradient = new Gradient(bounds);
 	gradient.addColorStop(0, "#FF0000");
 	gradient.addColorStop(1, "#0000FF");
+	gradient.create();
 
-	gradient.createGradientFromName("Quepal");
 	pixelData = gradient.getPixelData();
 
 	cols = Math.floor(bounds.width / config.SCALE);
