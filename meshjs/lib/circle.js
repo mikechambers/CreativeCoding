@@ -1,5 +1,6 @@
 import Vector from "../lib/vector.js"
 import Rectangle from "../lib/rectangle.js"
+import Color from "../lib/color.js"
 
 
 export default class Circle {
@@ -23,10 +24,10 @@ export default class Circle {
 		//rename to fillStyle? which would all to specify a gradient
 		//todo: should default these to be specified as a color and convert when
 		//drawing
-		this._fillColor = "#000000";
+		this._fillColor = Color.WHITE;
 
 		//rename to strokeStyle?
-		this._strokeColor = "#000000";
+		this._strokeColor = Color.BLACK;
 
 		this._cachedCanvas = undefined;
 		this._shouldCache = false;
@@ -49,11 +50,11 @@ export default class Circle {
 	}
 
 	set fillColor(c) {
-		this._fillColor = c.toRGBA();
+		this._fillColor = c;
 	}
 
 	set strokeColor(c) {
-		this._strokeColor = c.toRGBA();
+		this._strokeColor = c;
 	}
 
 	draw(ctx) {
@@ -71,11 +72,11 @@ export default class Circle {
 		}
 
 		if(this._strokeSize) {
-			ctx.lineStyle = this._strokeColor;
+			ctx.lineStyle = this._strokeColor.toRGBA();
 			ctx.lineWidth = this._strokeSize;
 		}
 
-		ctx.fillStyle = this._fillColor;
+		ctx.fillStyle = this._fillColor.toRGBA();
 
 		ctx.beginPath();
 		ctx.arc(this._center.x, this._center.y, this._radius, 0, Math.PI * 2);
@@ -88,9 +89,14 @@ export default class Circle {
 	}
 
 	toSVG() {
+
+		//note, we dont use rgba for colors, but use hex amd exlpicit opacity
+		//in order to maintain support with illustrator
 		return `<circle cx="${this._center.x}" cy="${this._center.y}"
-				r="${this._radius}" stroke="${this._strokeColor}"
-				fill="${this._fillColor}" stroke-width="${this._strokeSize}"/>`;
+				r="${this._radius}" stroke="${this._strokeColor.toHex()}"
+				fill-opacity="${this._fillColor.a}"
+				stroke-opacity="${this._strokeColor.a}"
+				fill="${this._fillColor.toHex()}" stroke-width="${this._strokeSize}"/>`;
 	}
 
 	get bounds() {

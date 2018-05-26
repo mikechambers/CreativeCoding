@@ -61,6 +61,11 @@ export default class Color {
 		return Color.getRGBA(this._r, this._g, this._b, this._a);
 	}
 
+	//todo: include alpha output support?
+	toHex() {
+		return "#" + numberToHexString(this._r) + numberToHexString(this._g) + numberToHexString(this._b);
+	}
+
 	clone() {
 		return new Color(this._r, this._g, this._b, this._a);
 	}
@@ -80,6 +85,16 @@ export default class Color {
 	static getRGBA(r, g, b, a) {
 		return `rgba(${r}, ${g}, ${b}, ${a})`;
 	}
+}
+
+function numberToHexString(num) {
+	let hex = num.toString(16);
+
+	if(hex.length == 1) {
+		hex = `0${hex}`;
+	}
+
+	return hex
 }
 
 //https://stackoverflow.com/a/5624139/10232
