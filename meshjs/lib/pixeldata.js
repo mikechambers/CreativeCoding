@@ -20,6 +20,7 @@ export default class PixelData {
 	//note caching pixels can be really expensive
 	//could consider adding lazy caching
 	cache() {
+		
 		if(this._colors) {
 			return;
 		}

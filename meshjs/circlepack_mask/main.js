@@ -263,6 +263,28 @@ const onKeyUp = function(event) {
 
 window.onload = function(){
 
+	let r;
+	let p = new Promise(function(resolve, reject){
+		r = resolve;
+	});
+
+	mesh.init(config, init, draw, p);
+
+	loadPixelDataFromPathWithBounds(
+		config.TEMPLATE,
+		function(pd) {
+			originalPixels = pd.mask(Color.BLACK);
+			r();
+		},
+		mesh.canvas.bounds
+	);
+
+	window.addEventListener("keyup", onKeyUp);
+}
+
+/*
+window.onload = function(){
+
 	let b = new Rectangle(0,0, config.RENDER_WIDTH, config.RENDER_HEIGHT);
 
 	loadPixelDataFromPathWithBounds(
@@ -279,3 +301,4 @@ window.onload = function(){
 
 	window.addEventListener("keyup", onKeyUp);
 }
+*/

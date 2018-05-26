@@ -32,7 +32,7 @@ class MeshJS {
 		this._canvasBoundingRect = undefined;
 	}
 
-	init(config, initCallback, drawCallback){
+	init(config, initCallback, drawCallback, promise){
 
 		this._config = config;
 		this._init = initCallback;
@@ -91,14 +91,26 @@ class MeshJS {
 			this._canvas.startRecord();
 		}
 
-		//this may get called in a weird scope now
-		this._init(this._canvas);
+		let f  = function() {
+			this._init(this._canvas);
 
-		if(!this._config.ANIMATE) {
-			this.draw();
+			if(!this._config.ANIMATE) {
+				this.draw();
+			}
+		}.bind(this);
+
+		//if a promise is passed in, we wont call init and draw until the
+		//promise resolves
+		if(promise) {
+			promise.then(f, (err) => {console.log("mesh.init promise failed", err)});
+		} else {
+			f();
 		}
 	}
 
+	get canvas() {
+		return this._canvas;
+	}
 	draw() {
 		this._frameCount++;
 		this._draw(this._canvas, this._frameCount);

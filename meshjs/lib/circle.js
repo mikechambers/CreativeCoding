@@ -112,7 +112,7 @@ export default class Circle {
 	cache() {
 
 		if(!this._shouldCache) {
-				return;
+			return;
 		}
 
 		let canvas = document.createElement('canvas');
