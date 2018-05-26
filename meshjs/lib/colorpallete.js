@@ -100,6 +100,36 @@ export function randomColorPallete() {
 //http://www.colourlovers.com/api
 let palletes = [
 	{
+		"name": "Melon Ball Surprise",
+		"colors": [
+			{
+				"r": 209,
+				"g": 242,
+				"b": 165
+			},
+			{
+				"r": 239,
+				"g": 250,
+				"b": 180
+			},
+			{
+				"r": 255,
+				"g": 196,
+				"b": 140
+			},
+			{
+				"r": 255,
+				"g": 159,
+				"b": 128
+			},
+			{
+				"r": 245,
+				"g": 105,
+				"b": 145
+			}
+		]
+	},
+	{
 		"name": "Giant Goldfish",
 		"colors": [
 			{

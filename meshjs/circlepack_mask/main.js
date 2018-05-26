@@ -45,8 +45,8 @@ let config = {
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
 	//ratio to these properties.
 	//Canvas display will be scaled to maintain aspect ratio
-	MAX_DISPLAY_HEIGHT:1080,
-	MAX_DISPLAY_WIDTH:1080,
+	MAX_DISPLAY_HEIGHT:640,
+	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
 	BACKGROUND_COLOR:"#EEEEEE",
@@ -71,13 +71,14 @@ let config = {
 	STROKE_COLOR:"#000000",
 	FILL_COLOR:"#FFFFFF",
 	COLOR_SOURCE:colorSource.PALLETE,// PALLETE, GRADIENT, FILL
+	PALLETE_NAME:"Melon Ball Surprise",
 	STROKE_SIZE:4,
 	DRAW_BY_DEFAULT:true, //hit d key to toggle whether frames are rendered
 	INIT_AFTER_COMPLETE:false,
 	DOWNLOAD_PNG_ON_COMPLETE:true,
 	TEMPLATE:"mask.gif",
 
-	DEFAULT_COUNT:1
+	DEFAULT_COUNT:20
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -106,7 +107,6 @@ const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds;
 	pointBounds = bounds.withPadding(config.STROKE_SIZE + config.CIRCLE_BOUNDS_PADDING);
-	console.log(pointBounds);
 
 	pixels = [...originalPixels];
 	_completed = false;
@@ -116,16 +116,7 @@ const init = function(canvas) {
 	mesh.setPaused(false);
 
 	if(config.COLOR_SOURCE == colorSource.PALLETE) {
-		//pallete = randomColorPallete();
-		pallete = new ColorPallete();
-		pallete.colors = [new Color(209,242,165),
-				new Color(239,250,180),
-				new Color(255,196,140),
-				new Color(255,159,128),
-				new Color(245,105,145)
-			];
-
-
+		pallete = getColorPallete(config.PALLETE_NAME);
 	} else if(config.COLOR_SOURCE == colorSource.GRADIENT){
 		gradient = Gradient.random();
 		gradient.create();
