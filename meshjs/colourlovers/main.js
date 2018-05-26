@@ -95,9 +95,9 @@ const onJsonLoad =  function(request) {
 		for(let c of p.colors) {
 			let _c = Color.fromHex(c);
 			tmp.push({
-				r:_c.r,
-				g:_c.g,
-				b:_c.b
+				r:_c.red,
+				g:_c.green,
+				b:_c.blue
 			});
 		}
 

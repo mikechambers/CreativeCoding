@@ -28,12 +28,13 @@ export default class ColorPallete {
 		return this._colors.length;
 	}
 
-	getColorAtIndex(index){
+	colorAtIndex(index){
 	    return this._colors[index];
 	}
 
-	getRandomColor(){
+	randomColor(){
 
+		//make sure we dont return same color twice in a row
 	    let index = this._index;
 	    let rIndex = index;
 	    while(rIndex == index) {
@@ -43,7 +44,7 @@ export default class ColorPallete {
 	    return this.getColorAtIndex(index);
 	}
 
-	getNextColor(){
+	nextColor(){
 
 	    this._index++;
 
@@ -51,7 +52,7 @@ export default class ColorPallete {
 	        this._index = 0;
 	    }
 
-	    return this.getColorAtIndex(this._index);
+	    return this.colorAtIndex(this._index);
 	}
 }
 
@@ -76,12 +77,25 @@ export function getColorPallete(name) {
 	return undefined;
 }
 
+let lastPalleteIndex = -1;
 export function randomColorPallete() {
-	let index = randomInt(0, palletes.length);
+
+	if(palletes.length <= 1) {
+		lastPalleteIndex = 0;
+		return createPallete(palletes[0]);
+	}
+
+	let index = lastPalleteIndex;
+	while(index == lastPalleteIndex) {
+		index = randomInt(0, palletes.length);
+	}
+
+	lastPalleteIndex = index;
+
 	return createPallete(palletes[index]);
 }
 
-//pallete from colourlovers.com
+//palletes from colourlovers.com
 //http://www.colourlovers.com/api/palettes/top?format=json&numResults=100
 //http://www.colourlovers.com/api
 let palletes = [

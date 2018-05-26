@@ -31,10 +31,10 @@ export default class PCircle extends Circle {
 		}
 
 		//todo: need to account for stroke size
-		if(this._center.x + this._radius >= bounds.width ||
-			this._center.x - this._radius <= bounds.x ||
-			this._center.y + this._radius >= bounds.height ||
-			this._center.y - this._radius <= bounds.y) {
+		if(this._center.x + this._radius + (this._strokeSize / 2) >= bounds.width ||
+			this._center.x - this._radius - (this._strokeSize / 2) <= bounds.x ||
+			this._center.y + this._radius + (this._strokeSize / 2) >= bounds.height ||
+			this._center.y - this._radius - (this._strokeSize / 2) <= bounds.y) {
 
 			this.cache();
 			this._hasCollided = true;

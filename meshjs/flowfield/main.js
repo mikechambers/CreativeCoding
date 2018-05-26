@@ -13,7 +13,7 @@ import Color from "../lib/color.js"
 import Particle from "./particle.js"
 import {random} from "../lib/math.js"
 import noise from "../lib/noise.js"
-import {PixelData, loadPixelDataFromPath} from "../lib/pixeldata.js"
+import PixelData, {loadPixelDataFromPath} from "../lib/pixeldata.js"
 import Gradient from "../lib/gradient.js"
 
 /************ CONFIG **************/
@@ -91,7 +91,7 @@ const init = function(canvas) {
 	gradient.addColorStop(1, "#0000FF");
 	gradient.create();
 
-	pixelData = gradient.getPixelData();
+	pixelData = gradient.pixelData;
 
 	cols = Math.floor(bounds.width / config.SCALE);
 	rows = Math.floor(bounds.height / config.SCALE);

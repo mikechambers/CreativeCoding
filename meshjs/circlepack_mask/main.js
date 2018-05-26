@@ -38,18 +38,18 @@ let config = {
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1275,//1600,
-	RENDER_WIDTH:1875,//2560,
+	RENDER_HEIGHT:1080,//1600,
+	RENDER_WIDTH:1080,//2560,
 
 	//Max dimension canvas will be display at on page
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
 	//ratio to these properties.
 	//Canvas display will be scaled to maintain aspect ratio
-	MAX_DISPLAY_HEIGHT:640,
-	MAX_DISPLAY_WIDTH:640,
+	MAX_DISPLAY_HEIGHT:1080,
+	MAX_DISPLAY_WIDTH:1080,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#FFFFFF",
+	BACKGROUND_COLOR:"#EEEEEE",
 
 	//background color for display and offscreen canvas
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
@@ -77,7 +77,7 @@ let config = {
 	DOWNLOAD_PNG_ON_COMPLETE:true,
 	TEMPLATE:"mask.gif",
 
-	DEFAULT_RADIUS:20
+	DEFAULT_COUNT:1
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -97,6 +97,7 @@ let _completedCaptured;
 let gradient;
 
 let originalPixels = [];
+let pointBounds;
 
 /*************** CODE ******************/
 
@@ -104,6 +105,8 @@ const init = function(canvas) {
 
 	ctx = canvas.context;
 	bounds = canvas.bounds;
+	pointBounds = bounds.withPadding(config.STROKE_SIZE + config.CIRCLE_BOUNDS_PADDING);
+	console.log(pointBounds);
 
 	pixels = [...originalPixels];
 	_completed = false;
@@ -144,7 +147,7 @@ const draw = function(canvas, frameCount) {
 		console.log(`${per}%`, pixels.length, circles.length);
 	}
 
-	let count = config.DEFAULT_RADIUS;
+	let count = config.DEFAULT_COUNT;
 	if(circles.length > 300) {
 		count = 1000;
 	}
@@ -153,13 +156,20 @@ const draw = function(canvas, frameCount) {
 
 	for(let p of points) {
 
+		if(p.x < pointBounds.x || p.x > pointBounds.x + pointBounds.width ||
+			p.y < pointBounds.y || p.y > pointBounds.y  + pointBounds.height
+		) {
+			continue;
+		}
+
 		let found = false;
 		for(let i = 0; i < circles.length; i++) {
-			let c = circles[i];
 
+			let c = circles[i];
 			if(utils.circleContainsPoint(c.center, (c.radius + config.RADIUS / 2 +
 					config.STROKE_SIZE), p)) {
 				found = true;
+				continue;
 			}
 		}
 
@@ -201,7 +211,7 @@ const getColor = function(point) {
 	let c;
 	switch(config.COLOR_SOURCE) {
 		case colorSource.PALLETE:
-			c = pallete.getNextColor();
+			c = pallete.nextColor();
 			break;
 		case colorSource.GRADIENT:
 			c = gradient.getColor(point);
@@ -262,6 +272,8 @@ const onKeyUp = function(event) {
 
 window.onload = function(){
 
+	let b = new Rectangle(0,0, config.RENDER_WIDTH, config.RENDER_HEIGHT);
+
 	loadPixelDataFromPathWithBounds(
 		config.TEMPLATE,
 		function(pd) {
@@ -271,7 +283,7 @@ window.onload = function(){
 			originalPixels = pd.mask(Color.BLACK);
 			mesh.init(config, init, draw);
 		},
-		new Rectangle(0,0, config.RENDER_WIDTH, config.RENDER_HEIGHT)
+		b
 	);
 
 	window.addEventListener("keyup", onKeyUp);

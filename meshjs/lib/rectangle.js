@@ -97,6 +97,21 @@ export default class Rectangle {
 		return r;
 	}
 
+	randomPoint() {
+		return new Vector(random(this._x, this._x + this._width),
+			random(this._y, this._y + this._height));
+	}
+
+	randomPoints(count) {
+		let out = new Array(count);
+
+		for(let i = 0; i < count; i++) {
+			out[i] = this.randomPoint();
+		}
+
+		return out;
+	}
+
 	clone() {
 		return new Rectangle(
 			this._x,

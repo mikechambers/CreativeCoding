@@ -2,21 +2,6 @@ import {random} from "./math.js"
 import Vector from "./vector.js"
 import Circle from "./circle.js"
 
-export function randomPointInBounds(bounds) {
-	return new Vector(random(bounds.x, bounds.x + bounds.width),
-		random(bounds.y, bounds.y + bounds.height));
-}
-
-export function randomPointsInBounds(bounds, count) {
-	let out = new Array(count);
-
-	for(let i = 0; i < count; i++) {
-		out[i] = randomPointInBounds(bounds);
-	}
-
-	return out;
-}
-
 //todo: rename circleContainerPoint (or just move to circle?)
 export function circleContainsPoint(center, radius, point) {
 

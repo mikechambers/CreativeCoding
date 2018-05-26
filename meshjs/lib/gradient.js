@@ -2,9 +2,10 @@ import Color from "./color.js"
 import {randomInt} from "./math.js"
 
 //note for some reason I cant import PixelData as default
-import {PixelData} from "./pixeldata.js"
+import PixelData from "./pixeldata.js"
 import {map} from "./math.js"
 
+//todo: for some reason, I cant set this export as default
 export default class Gradient {
 	constructor(bounds, type = Gradient.LEFT_TO_RIGHT){
 		this._bounds = bounds;
@@ -81,7 +82,7 @@ export default class Gradient {
 		return this._canvas;
 	}
 
-	getPixelData() {
+	get pixelData() {
 		return this._pixelData;
 	}
 
@@ -95,33 +96,33 @@ export default class Gradient {
 
 		return Gradient.fromName(name, bounds, type);
 	}
-
-	static fromName(gradientName, bounds, type) {
-
-		let g = new Gradient(bounds, type);
-		let colors = GRADIENTS.get(gradientName);
-
-		if(!colors) {
-			console.log('Gradient.createGradientFromName : unknown name : {$gradientName}');
-			return undefined;
-		}
-
-		let len = colors.length;
-		for(let i = 0; i < len; i++) {
-			//create map function between 0 and 1
-			let offset = map(i, 0, len - 1, 0, 1);
-
-			g.addColorStop(offset, colors[i]);
-		}
-
-		return g;
-	}
 }
 
 Gradient.LEFT_TO_RIGHT = 0;
 Gradient.TOP_TO_BOTTOM = 1;
 Gradient.TOP_RIGHT_TO_BOTTOM_LEFT = 2;
 Gradient.BOTTOM_LEFT_TO_TOP_RIGHT = 3;
+
+export function gradientFromName(gradientName, bounds, type) {
+
+	let g = new Gradient(bounds, type);
+	let colors = GRADIENTS.get(gradientName);
+
+	if(!colors) {
+		console.log('Gradient.createGradientFromName : unknown name : {$gradientName}');
+		return undefined;
+	}
+
+	let len = colors.length;
+	for(let i = 0; i < len; i++) {
+		//create map function between 0 and 1
+		let offset = map(i, 0, len - 1, 0, 1);
+
+		g.addColorStop(offset, colors[i]);
+	}
+
+	return g;
+}
 
 /**
 	Named gradients from uigradients.com, used Under

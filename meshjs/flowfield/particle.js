@@ -38,7 +38,7 @@ export default class Particle {
 	show(ctx, pixelData) {
 
 		let c = pixelData.getColor(this._position);
-		c.a = this._opacity;
+		c.alpha = this._opacity;
 
 		ctx.strokeStyle = c.toRGBA();
 		ctx.lineWidth = 0.5;

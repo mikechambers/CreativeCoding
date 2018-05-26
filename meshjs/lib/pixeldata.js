@@ -2,7 +2,7 @@ import Color from "./color.js"
 import Vector from "./vector.js"
 
 //for some reason i get an error if i try and set this as default export
-export class PixelData {
+export default class PixelData {
 
 	//note caching pixels can be really expensive
 	constructor(imageData, cache = false) {
@@ -126,8 +126,7 @@ export class PixelData {
 }
 
 //add options to align differently
-//also option to skew
-export function pixelDataFromImage(img, bounds, allowSkew) {
+export function pixelDataFromImage(img, bounds, allowSkew = false) {
 	let imgW = img.naturalWidth;
 	let imgH = img.naturalHeight;
 	let targetW = imgW;
@@ -219,31 +218,3 @@ export function loadImageFromPath(path, onload) {
 
 	img.src = path;
 }
-
-//todo: add option to scale image to w / h
-/*
-export function loadPixelDataFromPath(path, onload, cache = true) {
-	let img = new Image();
-
-	img.onload = function(event) {
-		let w = img.naturalWidth;
-		let h = img.naturalHeight;
-
-		let c = document.createElement("canvas");
-		c.width = w;
-		c.height = w;
-
-		let ctx = c.getContext("2d");
-		ctx.drawImage(img, 0, 0);
-
-		var imageData = ctx.getImageData(0, 0, w, h);
-		let pd = new PixelData(imageData, cache);
-
-		if(onload) {
-			onload(pd, img);
-		}
-	}
-
-	img.src = path;
-}
-*/

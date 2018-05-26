@@ -13,43 +13,45 @@ export default class Color {
 		this._a = a;
 	}
 
-	get r() {
+	get red() {
 		return this._r;
 	}
 
-	set r(r) {
+	set red(r) {
 		this._r = r;
 	}
 
-	get g() {
+	get green() {
 		return this._g;
 	}
 
-	set g(g) {
+	set green(g) {
 		this._g = r;
 	}
 
-	get b() {
+	get blue() {
 		return this._b;
 	}
 
-	set b(b) {
+	set blue(b) {
 		this._b = b;
 	}
 
-	get a() {
+	get alpha() {
 		return this._a;
 	}
 
-	set a(a) {
+	set alpha(a) {
 		this._a = a;
 	}
 
 	isEqual(color, ignoreAlpha = true) {
-		let isEqual = (this.r === color.r && this.g === color.g && this.b === color.b);
+		let isEqual = (this._r === color.red &&
+				this._g === color.green &&
+				this._b === color.blue);
 
 		if(!ignoreAlpha) {
-			isEqual = isEqual && this.a === color.a;
+			isEqual = isEqual && this._a === color.alpha;
 		}
 
 		return isEqual;

@@ -32,7 +32,7 @@ const config = {
 	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#000000",
+	BACKGROUND_COLOR:"#EEEEEE",
 
 	//background color for display and offscreen canvas
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",

@@ -7,7 +7,7 @@
 	Copyright Mike Chambers 2018
 **/
 
-import Gradient from "../lib/gradient.js"
+import Gradient, {gradientFromName} from "../lib/gradient.js"
 import mesh from "../lib/mesh.js"
 
 /************ CONFIG **************/
@@ -80,7 +80,7 @@ const init = function(canvas) {
 }
 
 const draw = function() {
-	let gradient = Gradient.fromName("Rainbow Blue", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
+	let gradient = gradientFromName("Rainbow Blue", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
 	gradient.create();
 
 	ctx.drawImage(gradient.canvas, bounds.x, bounds.y, bounds.width, bounds.height);

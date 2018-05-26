@@ -15,7 +15,7 @@ import Vector from "../lib/vector.js"
 import Color from "../lib/color.js"
 import {randomColorPallete, getColorPallete} from "../lib/colorpallete.js"
 import {randomInt} from "../lib/math.js"
-import Gradient from "../lib/gradient.js"
+import Gradient, {gradientFromName} from "../lib/gradient.js"
 
 /************ CONFIG **************/
 
@@ -46,7 +46,7 @@ let config = {
 	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#FFFFFF",
+	BACKGROUND_COLOR:"#EEEEEE",
 
 	//background color for display and offscreen canvas
 	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
@@ -65,13 +65,13 @@ let config = {
 
 	RADIUS:4,
 	BOUNDS_PADDING:0,
-	CIRCLE_BOUNDS_PADDING:8,
+	CIRCLE_BOUNDS_PADDING:0,
 	STROKE_COLOR:"#FFFFFF",
 	FILL_COLOR:"#FFFFFF",
-	COLOR_SOURCE:colorSource.GRADIENT,// PALLETE, GRADIENT, FILL
-	STROKE_SIZE:8,
+	COLOR_SOURCE:colorSource.PALLETE,// PALLETE, GRADIENT, FILL
+	STROKE_SIZE:4,
 	DRAW_BY_DEFAULT:true, //hit d key to toggle whether frames are rendered
-	INIT_AFTER_COMPLETE:true,
+	INIT_AFTER_COMPLETE:false,
 	DOWNLOAD_PNG_ON_COMPLETE:true
 };
 
@@ -90,6 +90,7 @@ let _completed;
 let _completedCaptured;
 
 let gradient;
+let pointBounds;
 
 /*************** CODE ******************/
 
@@ -97,6 +98,7 @@ const init = function(canvas) {
 
 	ctx = canvas.context;
 	bounds = canvas.bounds.withPadding(config.BOUNDS_PADDING);
+	pointBounds = bounds.withPadding(config.RADIUS + config.STROKE_SIZE);
 
 	pixels = new Array();
 	_completed = false;
@@ -108,7 +110,7 @@ const init = function(canvas) {
 	if(config.COLOR_SOURCE == colorSource.PALLETE) {
 		pallete = randomColorPallete();
 	} else if(config.COLOR_SOURCE == colorSource.GRADIENT){
-		gradient = Gradient.fromName("Bluelagoo", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
+		gradient = gradientFromName("Bluelagoo", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
 		gradient.create();
 	}
 
@@ -118,8 +120,8 @@ const init = function(canvas) {
 	//createDonotMask();
 	//createDiamondMask();
 
-	for(let y = bounds.y; y < bounds.y + bounds.height; y++) {
-		for(let x = bounds.x; x < bounds.x +  bounds.width; x++) {
+	for(let y = pointBounds.y; y < pointBounds.y + pointBounds.height; y++) {
+		for(let x = pointBounds.x; x < pointBounds.x +  pointBounds.width; x++) {
 			pixels.push(new Vector(x, y));
 		}
 	}
@@ -162,21 +164,17 @@ const draw = function(canvas, frameCount) {
 		points = getRandomPoints(count);
 	}
 
+	let buffer = config.RADIUS / 2;
 	for(let p of points) {
 
 		let found = false;
 		for(let i = 0; i < circles.length; i++) {
 			let c = circles[i];
-			//todo: change function to also take a circle
-			//todo: still getting some overlap
-			//if(pointIsInCircle(c.position, (c.radius + config.RADIUS/2), p)) {
-
-			//todo: we could change this to see if the new circle will overlap with an
-			//existing one, but then that requires we create a circle instance first
 
 			if(utils.circleContainsPoint(c.center, (c.radius + config.RADIUS / 2 +
 					config.STROKE_SIZE), p)) {
 				found = true;
+				continue;
 			}
 		}
 
@@ -218,7 +216,7 @@ const getColor = function(point) {
 	let c;
 	switch(config.COLOR_SOURCE) {
 		case colorSource.PALLETE:
-			c = pallete.getNextColor();
+			c = pallete.nextColor();
 			break;
 		case colorSource.GRADIENT:
 			c = gradient.getColor(point);
