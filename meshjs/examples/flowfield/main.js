@@ -7,14 +7,14 @@
 	Copyright Mike Chambers 2018
 **/
 
-import mesh from "../lib/mesh.js"
-import Vector from "../lib/vector.js"
-import Color from "../lib/color.js"
-import Particle from "./particle.js"
-import {random} from "../lib/math.js"
-import noise from "../lib/noise.js"
-import PixelData, {loadPixelDataFromPath} from "../lib/pixeldata.js"
-import Gradient from "../lib/gradient.js"
+import mesh from "../../lib/mesh.js";
+import Vector from "../../lib/vector.js";
+import Color from "../../lib/color.js";
+import Particle from "./particle.js";
+import { random } from "../../lib/math.js";
+import noise from "../../lib/noise.js";
+import PixelData, { loadPixelDataFromPath } from "../../lib/pixeldata.js";
+import Gradient from "../../lib/gradient.js";
 
 /************ CONFIG **************/
 
@@ -22,40 +22,40 @@ const config = {
 	/**** required for mesh lib ******/
 
 	//name of container that generated canvas will be created in
-	PARENT_ID:"canvas_container",
+	PARENT_ID: "canvas_container",
 
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1080,
-	RENDER_WIDTH:1080,
+	RENDER_HEIGHT: 1080,
+	RENDER_WIDTH: 1080,
 
 	//Dimension canvas will be display at on page
-	MAX_DISPLAY_HEIGHT:640,
-	MAX_DISPLAY_WIDTH:640,
+	MAX_DISPLAY_HEIGHT: 640,
+	MAX_DISPLAY_WIDTH: 640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#000000",
+	BACKGROUND_COLOR: "#000000",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+	CANVAS_BACKGROUND_COLOR: "#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:true,
-	FPS:30,
+	ANIMATE: true,
+	FPS: 30,
 
 	//Where video of canvas is recorded
-	RECORD_VIDEO:false,
+	RECORD_VIDEO: false,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:false,
+	CLEAR_CANVAS: false,
 
 	/***** app specific *****/
 	SCALE: 20,
-	INCREMENT:0.1,
-	PARTICLE_COUNT:5000,
-	DRAW_VECTORS:false,
+	INCREMENT: 0.1,
+	PARTICLE_COUNT: 5000,
+	DRAW_VECTORS: false,
 	OPACITY: 0.2
 };
 
@@ -80,7 +80,6 @@ let pixelData;
 // init() (currently )
 
 const init = function(canvas) {
-
 	ctx = canvas.context;
 	bounds = canvas.bounds;
 
@@ -96,32 +95,28 @@ const init = function(canvas) {
 	cols = Math.floor(bounds.width / config.SCALE);
 	rows = Math.floor(bounds.height / config.SCALE);
 
-	zoff  = random(10000);
+	zoff = random(10000);
 
 	vectors = new Array(rows * cols);
 
 	particles = [];
 
-	for(let i = 0; i < config.PARTICLE_COUNT; i++) {
+	for (let i = 0; i < config.PARTICLE_COUNT; i++) {
 		let p = new Particle(bounds, config.OPACITY);
 
 		//move random point to function
-		p.position = new Vector(
-			random(bounds.width),
-			random(bounds.height)
-		);
+		p.position = new Vector(random(bounds.width), random(bounds.height));
 
 		particles.push(p);
 	}
-}
+};
 
 const draw = function() {
-
 	let yoff = 0;
-	for(let y = 0; y < rows; y++) {
+	for (let y = 0; y < rows; y++) {
 		let xoff = 0;
-		for(let x = 0; x < cols; x++) {
-			let index = (x + y * cols);
+		for (let x = 0; x < cols; x++) {
+			let index = x + y * cols;
 
 			let angle = noise(xoff, yoff, zoff) * (Math.PI * 2);
 
@@ -132,7 +127,7 @@ const draw = function() {
 
 			ctx.save();
 
-			if(config.DRAW_VECTORS) {
+			if (config.DRAW_VECTORS) {
 				ctx.translate(x * config.SCALE, y * config.SCALE);
 				ctx.rotate(v.heading);
 
@@ -150,8 +145,7 @@ const draw = function() {
 	}
 	zoff += 0.01;
 
-	for(const [i, p] of particles.entries()) {
-
+	for (const [i, p] of particles.entries()) {
 		let x = Math.floor(p.position.x / config.SCALE);
 		let y = Math.floor(p.position.y / config.SCALE);
 		let index = x + y * cols;
@@ -163,8 +157,8 @@ const draw = function() {
 		p.update();
 		p.show(ctx, pixelData);
 	}
-}
+};
 
-window.onload = function(){
+window.onload = function() {
 	mesh.init(config, init, draw);
-}
+};

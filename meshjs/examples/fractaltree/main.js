@@ -7,11 +7,11 @@
 	Copyright Mike Chambers 2018
 **/
 
-import mesh from "../lib/mesh.js"
-import Vector from "../lib/vector.js"
-import Circle from "../lib/circle.js"
-import Color from "../lib/color.js"
-import {map} from "../lib/math.js"
+import mesh from "../../lib/mesh.js";
+import Vector from "../../lib/vector.js";
+import Circle from "../../lib/circle.js";
+import Color from "../../lib/color.js";
+import { map } from "../../lib/math.js";
 
 /************ CONFIG **************/
 
@@ -19,42 +19,42 @@ const config = {
 	/**** required for mesh lib ******/
 
 	//name of container that generated canvas will be created in
-	PARENT_ID:"canvas_container",
+	PARENT_ID: "canvas_container",
 
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1080,
-	RENDER_WIDTH:1080,
+	RENDER_HEIGHT: 1080,
+	RENDER_WIDTH: 1080,
 
 	//Max dimension canvas will be display at on page
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
 	//ratio to these properties.
 	//Canvas display will be scaled to maintain aspect ratio
-	MAX_DISPLAY_HEIGHT:640,
-	MAX_DISPLAY_WIDTH:640,
+	MAX_DISPLAY_HEIGHT: 640,
+	MAX_DISPLAY_WIDTH: 640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#000000",
+	BACKGROUND_COLOR: "#000000",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#222222",
+	CANVAS_BACKGROUND_COLOR: "#222222",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:true,
-	FPS:60,
+	ANIMATE: true,
+	FPS: 60,
 
 	//Where video of canvas is recorded
-	RECORD_VIDEO:true,
+	RECORD_VIDEO: true,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:true,
+	CLEAR_CANVAS: true,
 
 	/*********** APP Specific Settings ************/
-	STROKE_COLOR:"#FFFFFF",
-	START_LENGTH:300,
-	STROKE_WIDTH:2
+	STROKE_COLOR: "#FFFFFF",
+	START_LENGTH: 300,
+	STROKE_WIDTH: 2
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -75,10 +75,9 @@ const init = function(canvas) {
 
 	circle = new Circle(new Vector(-50, -50), 6);
 	circle.fillColor = Color.WHITE;
-}
+};
 
 const draw = function(canvas, frameCount) {
-
 	circle.center.x = mousePosition.x;
 	circle.center.y = bounds.height;
 	circle.draw(ctx);
@@ -89,11 +88,10 @@ const draw = function(canvas, frameCount) {
 	ctx.translate(bounds.center.x, bounds.height);
 	branch(config.START_LENGTH);
 	ctx.restore();
-}
+};
 
 const branch = function(len) {
-
-	if(len < 4) {
+	if (len < 4) {
 		return;
 	}
 
@@ -103,29 +101,28 @@ const branch = function(len) {
 	ctx.save();
 	ctx.rotate(angle);
 	branch(len * 0.67);
-	ctx.restore()
+	ctx.restore();
 
 	ctx.save();
 	ctx.rotate(-angle);
 	branch(len * 0.67);
 	ctx.restore();
-}
+};
 
 const drawLine = function(start, end) {
-
 	ctx.beginPath();
 	ctx.strokeStyle = config.STROKE_COLOR;
 	ctx.lineWidth = config.STROKE_WIDTH;
 	ctx.moveTo(start.x, start.y);
 	ctx.lineTo(end.x, end.y);
 	ctx.stroke();
-}
+};
 
 const mousemove = function(event, vector) {
 	mousePosition = vector;
-}
+};
 
-window.onload = function(){
+window.onload = function() {
 	mesh.init(config, init, draw);
 	mesh.listen(mousemove);
-}
+};

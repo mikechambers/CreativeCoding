@@ -7,72 +7,72 @@
 	Copyright Mike Chambers 2018
 **/
 
-import mesh from "../lib/mesh.js"
-import PCircle from "./pcircle.js"
-import {downloadSVG} from "../lib/datautils.js"
-import * as utils from "../lib/utils.js"
-import Vector from "../lib/vector.js"
-import Color from "../lib/color.js"
-import {randomColorPallete, getColorPallete} from "../lib/colorpallete.js"
-import {randomInt} from "../lib/math.js"
-import Gradient, {gradientFromName} from "../lib/gradient.js"
+import mesh from "../../lib/mesh.js";
+import PCircle from "./pcircle.js";
+import { downloadSVG } from "../../lib/datautils.js";
+import * as utils from "../../lib/utils.js";
+import Vector from "../../lib/vector.js";
+import Color from "../../lib/color.js";
+import { randomColorPallete, getColorPallete } from "../../lib/colorpallete.js";
+import { randomInt } from "../../lib/math.js";
+import Gradient, { gradientFromName } from "../../lib/gradient.js";
 
 /************ CONFIG **************/
 
 let colorSource = {
-	PALLETE:"PALLETE",
-	GRADIENT:"GRADIENT",
-	FILL:"FILL"
+	PALLETE: "PALLETE",
+	GRADIENT: "GRADIENT",
+	FILL: "FILL"
 };
 
 let config = {
 	/**** required for mesh lib ******/
 
 	//name of container that generated canvas will be created in
-	PARENT_ID:"canvas_container",
+	PARENT_ID: "canvas_container",
 
 	//app name, used for saving files
 	APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
 	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT:1080,//1600,
-	RENDER_WIDTH:1080,//2560,
+	RENDER_HEIGHT: 1080, //1600,
+	RENDER_WIDTH: 1080, //2560,
 
 	//Max dimension canvas will be display at on page
 	//note, exact dimension will depend on RENDER_HEIGHT / width and
 	//ratio to these properties.
 	//Canvas display will be scaled to maintain aspect ratio
-	MAX_DISPLAY_HEIGHT:640,
-	MAX_DISPLAY_WIDTH:640,
+	MAX_DISPLAY_HEIGHT: 640,
+	MAX_DISPLAY_WIDTH: 640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#EEEEEE",
+	BACKGROUND_COLOR: "#EEEEEE",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
+	CANVAS_BACKGROUND_COLOR: "#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE:true,
-	FPS:60,
+	ANIMATE: true,
+	FPS: 60,
 
 	//Where video of canvas is recorded
-	RECORD_VIDEO:true,
+	RECORD_VIDEO: true,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:true,
+	CLEAR_CANVAS: true,
 
 	/*********** APP Specific Settings ************/
 
-	RADIUS:4,
-	BOUNDS_PADDING:0,
-	CIRCLE_BOUNDS_PADDING:0,
-	STROKE_COLOR:"#FFFFFF",
-	FILL_COLOR:"#FFFFFF",
-	COLOR_SOURCE:colorSource.PALLETE,// PALLETE, GRADIENT, FILL
-	STROKE_SIZE:4,
-	DRAW_BY_DEFAULT:true, //hit d key to toggle whether frames are rendered
-	INIT_AFTER_COMPLETE:false,
-	DOWNLOAD_PNG_ON_COMPLETE:true
+	RADIUS: 4,
+	BOUNDS_PADDING: 0,
+	CIRCLE_BOUNDS_PADDING: 0,
+	STROKE_COLOR: "#FFFFFF",
+	FILL_COLOR: "#FFFFFF",
+	COLOR_SOURCE: colorSource.PALLETE, // PALLETE, GRADIENT, FILL
+	STROKE_SIZE: 4,
+	DRAW_BY_DEFAULT: true, //hit d key to toggle whether frames are rendered
+	INIT_AFTER_COMPLETE: false,
+	DOWNLOAD_PNG_ON_COMPLETE: true
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -95,7 +95,6 @@ let pointBounds;
 /*************** CODE ******************/
 
 const init = function(canvas) {
-
 	ctx = canvas.context;
 	bounds = canvas.bounds.withPadding(config.BOUNDS_PADDING);
 	pointBounds = bounds.withPadding(config.RADIUS + config.STROKE_SIZE);
@@ -107,10 +106,14 @@ const init = function(canvas) {
 
 	mesh.setPaused(false);
 
-	if(config.COLOR_SOURCE == colorSource.PALLETE) {
+	if (config.COLOR_SOURCE == colorSource.PALLETE) {
 		pallete = randomColorPallete();
-	} else if(config.COLOR_SOURCE == colorSource.GRADIENT){
-		gradient = gradientFromName("Bluelagoo", bounds, Gradient.TOP_RIGHT_TO_BOTTOM_LEFT);
+	} else if (config.COLOR_SOURCE == colorSource.GRADIENT) {
+		gradient = gradientFromName(
+			"Bluelagoo",
+			bounds,
+			Gradient.TOP_RIGHT_TO_BOTTOM_LEFT
+		);
 		gradient.create();
 	}
 
@@ -120,8 +123,12 @@ const init = function(canvas) {
 	//createDonotMask();
 	//createDiamondMask();
 
-	for(let y = pointBounds.y; y < pointBounds.y + pointBounds.height; y++) {
-		for(let x = pointBounds.x; x < pointBounds.x +  pointBounds.width; x++) {
+	for (let y = pointBounds.y; y < pointBounds.y + pointBounds.height; y++) {
+		for (
+			let x = pointBounds.x;
+			x < pointBounds.x + pointBounds.width;
+			x++
+		) {
 			pixels.push(new Vector(x, y));
 		}
 	}
@@ -129,30 +136,29 @@ const init = function(canvas) {
 	utils.shuffleArray(pixels);
 
 	pAmount = 1;
-}
+};
 
 const draw = function(canvas, frameCount) {
-
-	if(!(frameCount % 60)) {
+	if (!(frameCount % 60)) {
 		let total = bounds.height * bounds.width;
 		let current = pixels.length;
-		let per = 100 - Math.round((current/total) * 100);
+		let per = 100 - Math.round(current / total * 100);
 		console.log(`${per}%`, pixels.length, circles.length);
 	}
 
 	let count = 0;
-	if(circles.length < 20) {
-		if(!(frameCount % 30)) {
+	if (circles.length < 20) {
+		if (!(frameCount % 30)) {
 			count = 1;
 		}
 	} else if (circles.length > 3000) {
 		count = 500;
 	} else {
-		if(frameCount % 2) {
+		if (frameCount % 2) {
 			pAmount++;
 		}
 
-		if(pAmount > 50) {
+		if (pAmount > 50) {
 			pAmount = 50;
 		}
 
@@ -160,25 +166,29 @@ const draw = function(canvas, frameCount) {
 	}
 
 	let points = [];
-	if(count) {
+	if (count) {
 		points = getRandomPoints(count);
 	}
 
 	let buffer = config.RADIUS / 2;
-	for(let p of points) {
-
+	for (let p of points) {
 		let found = false;
-		for(let i = 0; i < circles.length; i++) {
+		for (let i = 0; i < circles.length; i++) {
 			let c = circles[i];
 
-			if(utils.circleContainsPoint(c.center, (c.radius + config.RADIUS / 2 +
-					config.STROKE_SIZE), p)) {
+			if (
+				utils.circleContainsPoint(
+					c.center,
+					c.radius + config.RADIUS / 2 + config.STROKE_SIZE,
+					p
+				)
+			) {
 				found = true;
 				continue;
 			}
 		}
 
-		if(!found) {
+		if (!found) {
 			let c = new PCircle(p, config.RADIUS);
 			c.boundsPadding = config.CIRCLE_BOUNDS_PADDING;
 			c.strokeColor = Color.fromHex(config.STROKE_COLOR);
@@ -189,50 +199,53 @@ const draw = function(canvas, frameCount) {
 		}
 	}
 
-	for(let c of circles) {
+	for (let c of circles) {
 		c.checkCollisions(bounds, circles);
 		c.grow();
 
-		if(_doDraw) {
+		if (_doDraw) {
 			c.draw(ctx);
 		}
 	}
 
-	if(_completed & !_completedCaptured) {
-		if(config.DOWNLOAD_PNG_ON_COMPLETE) {
+	if (_completed & !_completedCaptured) {
+		if (config.DOWNLOAD_PNG_ON_COMPLETE) {
 			mesh.downloadPng();
 		}
 
 		_completedCaptured = true;
 
-		if(config.INIT_AFTER_COMPLETE) {
+		if (config.INIT_AFTER_COMPLETE) {
 			init(canvas);
 		}
 	}
-}
+};
 
 const getColor = function(point) {
-
 	let c;
-	switch(config.COLOR_SOURCE) {
+	switch (config.COLOR_SOURCE) {
 		case colorSource.PALLETE:
 			c = pallete.nextColor();
 			break;
 		case colorSource.GRADIENT:
 			c = gradient.getColor(point);
-		 	break;
+			break;
 		case colorSource.FILL:
 			c = Color.fromHex(config.FILL_COLOR);
 			break;
 		default:
-			console.log(`Warning: config.COLOR_SOURCE not recgonized : ${config.COLOR_SOURCE}`);
+			console.log(
+				`Warning: config.COLOR_SOURCE not recgonized : ${
+					config.COLOR_SOURCE
+				}`
+			);
 	}
 
 	return c;
-}
+};
 
 const getRandomPoints = function(count) {
-	if(pixels.length == 0) {
+	if (pixels.length == 0) {
 		console.log("render complete");
 		mesh.setPaused(true);
 		_doDraw = true;
@@ -240,17 +253,15 @@ const getRandomPoints = function(count) {
 		return [];
 	}
 
-	if(pixels.length < count) {
-
+	if (pixels.length < count) {
 		count = pixels.length;
 	}
 
 	//remove from the end of the array
 	return pixels.splice(-count, count);
-}
+};
 
 const createDiamondMask = function() {
-
 	let r = bounds.width / 2;
 
 	let tmp = [];
@@ -259,17 +270,16 @@ const createDiamondMask = function() {
 	tmp.push(new PCircle(bounds.bottomRight, r));
 	tmp.push(new PCircle(bounds.bottomLeft, r));
 
-	for(let c of tmp) {
+	for (let c of tmp) {
 		c.fillColor = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
 		c.strokeColor = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
 		c.shouldGrow = false;
 	}
 
 	circles.push(...tmp);
-}
+};
 
 const createDonotMask = function() {
-
 	let color = Color.fromHex(config.CANVAS_BACKGROUND_COLOR);
 	let c = new PCircle(bounds.center, 100);
 	c.fillColor = color;
@@ -278,10 +288,8 @@ const createDonotMask = function() {
 
 	circles.push(c);
 
-
-	let stepSize = (Math.PI * 2) / 40;
-	for(let i = 0; i < Math.PI * 2; i += stepSize) {
-
+	let stepSize = Math.PI * 2 / 40;
+	for (let i = 0; i < Math.PI * 2; i += stepSize) {
 		//get point on circle
 
 		let center = pointOnCircle(bounds.center, 700, i);
@@ -293,37 +301,39 @@ const createDonotMask = function() {
 
 		circles.push(c2);
 	}
-}
+};
 
 const createSVG = function() {
 	let svg = `<?xml version="1.0" standalone="no"?>\n
 		<svg width="${config.RENDER_WIDTH}" height="${config.RENDER_HEIGHT}"
-		version="1.1" xmlns="http://www.w3.org/2000/svg">\n`
+		version="1.1" xmlns="http://www.w3.org/2000/svg">\n`;
 
-	svg = svg + `<rect x="0" y="0" width="${config.RENDER_WIDTH}"
+	svg =
+		svg +
+		`<rect x="0" y="0" width="${config.RENDER_WIDTH}"
 				height="${config.RENDER_HEIGHT}"
 				fill="${config.BACKGROUND_COLOR}"/>`;
 
-		for(let c of circles) {
-			svg = svg + c.toSVG();
-		}
+	for (let c of circles) {
+		svg = svg + c.toSVG();
+	}
 
 	svg = svg + "</svg>";
 
 	return svg;
-}
+};
 
 const onKeyUp = function(event) {
-	if(event.key === "s") {
+	if (event.key === "s") {
 		let svg = createSVG();
 		downloadSVG(svg, config.APP_NAME);
 	} else if (event.key === "d") {
 		_doDraw = !_doDraw;
 	}
-}
+};
 
-window.onload = function(){
+window.onload = function() {
 	mesh.init(config, init, draw);
 
 	window.addEventListener("keyup", onKeyUp);
-}
+};

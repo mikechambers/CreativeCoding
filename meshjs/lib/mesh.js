@@ -1,7 +1,7 @@
-import Canvas from "./canvas.js"
-import {createFileName, downloadJSON} from "./datautils.js"
-import Rectangle from "./rectangle.js"
-import Vector from "./vector.js"
+import Canvas from "./canvas.js";
+import { createFileName, downloadJSON } from "./datautils.js";
+import Rectangle from "./rectangle.js";
+import Vector from "./vector.js";
 
 class MeshJS {
 	constructor() {
@@ -31,8 +31,7 @@ class MeshJS {
 		this._eventHandlers = new Map();
 	}
 
-	init(config, initCallback, drawCallback, promise){
-
+	init(config, initCallback, drawCallback, promise) {
 		this._config = config;
 		this._init = initCallback;
 		this._draw = drawCallback;
@@ -48,16 +47,17 @@ class MeshJS {
 		this._startTime = this._lastFrameTime;
 		window.requestAnimationFrame(this.onAnimationFrame.bind(this));
 
-
 		this._canvas = new Canvas(
 			this._config.PARENT_ID,
 			this._config.RENDER_WIDTH,
 			this._config.RENDER_HEIGHT,
-			this._config.CANVAS_BACKGROUND_COLOR);
+			this._config.CANVAS_BACKGROUND_COLOR
+		);
 
-		if(this._config.MAX_DISPLAY_WIDTH != this._config.RENDER_WIDTH ||
-			this._config.MAX_DISPLAY_HEIGHT != this._config.RENDER_HEIGHT) {
-
+		if (
+			this._config.MAX_DISPLAY_WIDTH != this._config.RENDER_WIDTH ||
+			this._config.MAX_DISPLAY_HEIGHT != this._config.RENDER_HEIGHT
+		) {
 			let maxW = this._config.MAX_DISPLAY_WIDTH;
 			let maxH = this._config.MAX_DISPLAY_HEIGHT;
 
@@ -85,22 +85,24 @@ class MeshJS {
 			this._canvasScaleY = config.RENDER_HEIGHT / canvasH;
 		}
 
-		if(this._config.RECORD_VIDEO) {
+		if (this._config.RECORD_VIDEO) {
 			this._canvas.startRecord();
 		}
 
-		let f  = function() {
+		let f = function() {
 			this._init(this._canvas);
 
-			if(!this._config.ANIMATE) {
+			if (!this._config.ANIMATE) {
 				this.draw();
 			}
 		}.bind(this);
 
 		//if a promise is passed in, we wont call init and draw until the
 		//promise resolves
-		if(promise) {
-			promise.then(f, (err) => {console.log("mesh.init promise failed", err)});
+		if (promise) {
+			promise.then(f, err => {
+				console.log("mesh.init promise failed", err);
+			});
 		} else {
 			f();
 		}
@@ -109,7 +111,7 @@ class MeshJS {
 	/******************* Run Loop **********************/
 	setPaused(paused) {
 		this._paused = paused;
-		console.log(this._paused?"paused":"running");
+		console.log(this._paused ? "paused" : "running");
 	}
 
 	draw() {
@@ -121,15 +123,14 @@ class MeshJS {
 		let now = Date.now();
 		let elapsed = now - this._lastFrameTime;
 
-		if(elapsed > this._fpsInterval) {
-			this._lastFrameTime = now - (elapsed % this._fpsInterval);
+		if (elapsed > this._fpsInterval) {
+			this._lastFrameTime = now - elapsed % this._fpsInterval;
 
-			if(this._draw && !this._paused) {
-
+			if (this._draw && !this._paused) {
 				//todo: note events are not currently dispatched if paused
 				this._dispatchEvents();
-				if(this._config.ANIMATE) {
-					if(this._config.CLEAR_CANVAS) {
+				if (this._config.ANIMATE) {
+					if (this._config.CLEAR_CANVAS) {
 						this._canvas.clear();
 					}
 
@@ -150,12 +151,12 @@ class MeshJS {
 	/************************* Events ************************/
 
 	/**
-	* Listen events you want to listen for. Can optionally pass in a boolean
-	* as the last argument (default is true). If boolean is false, the events
-	* passed in will no longer be listened for.
-	*/
+	 * Listen events you want to listen for. Can optionally pass in a boolean
+	 * as the last argument (default is true). If boolean is false, the events
+	 * passed in will no longer be listened for.
+	 */
 	listen(...options) {
-		if(options.length < 1) {
+		if (options.length < 1) {
 			console.log("Warning: mesh.listen : no listeners specified.");
 			return;
 		}
@@ -163,15 +164,15 @@ class MeshJS {
 		let lastArg = options[options.length - 1];
 		let shouldListen = true;
 
-		if(lastArg === false || lastArg === true) {
-			shouldListen = options.splice(-1,1)[0];
+		if (lastArg === false || lastArg === true) {
+			shouldListen = options.splice(-1, 1)[0];
 		}
 
-		if(options.length < 1) {
+		if (options.length < 1) {
 			console.log("Warning: mesh.listen : no listeners specified.");
 		}
 
-		if(shouldListen) {
+		if (shouldListen) {
 			this._addListeners(options);
 		} else {
 			this._removeListeners(options);
@@ -179,54 +180,63 @@ class MeshJS {
 	}
 
 	_addListeners(options) {
-		for(let f of options) {
-
-			if(this._eventHandlers.has(f.name)) {
+		for (let f of options) {
+			if (this._eventHandlers.has(f.name)) {
 				//dont add if we are already listening
 				continue;
 			}
 
 			let h;
-			switch(f.name) {
+			switch (f.name) {
 				case MOUSE_CLICK:
-					h = new EventHandler(f)
-					h.listen("click",
+					h = new EventHandler(f);
+					h.listen(
+						"click",
 						this._generateMouseHandler(h),
-							this._canvas.canvas);
+						this._canvas.canvas
+					);
 
 					this._eventHandlers.set(MOUSE_CLICK, h);
 
 					break;
 				case "FOO":
-					h = new EventHandler(f)
-					h.listen("click",
+					h = new EventHandler(f);
+					h.listen(
+						"click",
 						this._generateMouseHandler(h),
-						this._canvas.canvas);
+						this._canvas.canvas
+					);
 
 					this._eventHandlers.set(MOUSE_CLICK, h);
 
 					break;
 				case MOUSE_UP:
-					h = new EventHandler(f)
-					h.listen("mouseup",
+					h = new EventHandler(f);
+					h.listen(
+						"mouseup",
 						this._generateMouseHandler(h),
-						this._canvas.canvas);
+						this._canvas.canvas
+					);
 
 					this._eventHandlers.set(MOUSE_UP, h);
 					break;
 				case MOUSE_MOVE:
-					h = new EventHandler(f)
-					h.listen("mousemove",
+					h = new EventHandler(f);
+					h.listen(
+						"mousemove",
 						this._generateMouseHandler(h),
-						this._canvas.canvas);
+						this._canvas.canvas
+					);
 
 					this._eventHandlers.set(MOUSE_MOVE, h);
 					break;
 				case MOUSE_DOWN:
-					h = new EventHandler(f)
-					h.listen("mousedown",
+					h = new EventHandler(f);
+					h.listen(
+						"mousedown",
 						this._generateMouseHandler(h),
-						this._canvas.canvas);
+						this._canvas.canvas
+					);
 
 					this._eventHandlers.set(MOUSE_DOWN, h);
 					break;
@@ -235,10 +245,10 @@ class MeshJS {
 	}
 
 	_removeListeners(options) {
-		for(let f of options) {
+		for (let f of options) {
 			let name = f.name;
 
-			if(this._eventHandlers.has(name)) {
+			if (this._eventHandlers.has(name)) {
 				let h = this._eventHandlers.get(name);
 
 				h.remove();
@@ -249,7 +259,6 @@ class MeshJS {
 	}
 
 	_generateMouseHandler(handler) {
-
 		let f = function(event) {
 			handler.args = [event, this._mouseEventRelativeToCanvas(event)];
 		}.bind(this);
@@ -259,7 +268,6 @@ class MeshJS {
 
 	//todo: need to make sure these are dispatched in correct order
 	_dispatchEvents() {
-
 		//todo: this doesnt let us specify order that events are disptached
 		//so we will probably have to check each one
 		//info here: https://stackoverflow.com/a/37694450/10232
@@ -269,26 +277,26 @@ class MeshJS {
 	}
 
 	_mouseEventRelativeToCanvas(event) {
-		let x = (
-			event.clientX - this._canvasBoundingRect.left) * this._canvasScaleX;
-		let y = (
-			event.clientY - this._canvasBoundingRect.top) * this._canvasScaleY;
+		let x =
+			(event.clientX - this._canvasBoundingRect.left) *
+			this._canvasScaleX;
+		let y =
+			(event.clientY - this._canvasBoundingRect.top) * this._canvasScaleY;
 
-			//todo: should we floor values? They seem to be floored in the events
-			return new Vector(x, y);
+		//todo: should we floor values? They seem to be floored in the events
+		return new Vector(x, y);
 	}
 
-	onKeyUp(event){
-
+	onKeyUp(event) {
 		const key = event.key;
 
-		if(key === this._downloadPngKey) {
+		if (key === this._downloadPngKey) {
 			this.downloadPng();
-		} else if(key === this._downloadVideoKey) {
+		} else if (key === this._downloadVideoKey) {
 			this.downloadVideo();
-		} else if(key === this._pauseKey) {
+		} else if (key === this._pauseKey) {
 			this.setPaused(!this._paused);
-		} else if(key === this._downloadConfigJson) {
+		} else if (key === this._downloadConfigJson) {
 			this.downloadJson();
 		} else if (key === this._initKey) {
 			this._init(this._canvas);
@@ -315,7 +323,7 @@ class MeshJS {
 //todo: may want to make this static, so if we call from other modules we get
 //same instance
 let mesh;
-export default mesh = new MeshJS();
+export default (mesh = new MeshJS());
 
 const MOUSE_MOVE = "mousemove";
 const MOUSE_DOWN = "mousedown";
@@ -345,7 +353,7 @@ class EventHandler {
 	dispatch() {
 		//todo: right now, all events require args to be passed to handlers
 		//this could change in the future
-		if(!this.args) {
+		if (!this.args) {
 			return;
 		}
 

@@ -1,4 +1,4 @@
-import Vector from "../lib/vector.js"
+import Vector from "../../lib/vector.js";
 
 export default class Particle {
 	constructor(bounds, opacity = 1.0) {
@@ -15,7 +15,6 @@ export default class Particle {
 	}
 
 	update() {
-
 		this._updateLastPosition();
 		this._velocity.add(this._acceleration);
 
@@ -36,7 +35,6 @@ export default class Particle {
 	}
 
 	show(ctx, pixelData) {
-
 		let c = pixelData.getColor(this._position);
 		c.alpha = this._opacity;
 
@@ -49,19 +47,19 @@ export default class Particle {
 	}
 
 	checkEdges() {
-		if(this._position.x >= this._bounds.width) {
+		if (this._position.x >= this._bounds.width) {
 			this._position.x = this._bounds.x;
 			this._updateLastPosition();
 		} else if (this._position.x <= this._bounds.x) {
-			this._position.x = this._bounds.width - .1;
+			this._position.x = this._bounds.width - 0.1;
 			this._updateLastPosition();
 		}
 
-		if(this._position.y >= this._bounds.height) {
+		if (this._position.y >= this._bounds.height) {
 			this._position.y = this._bounds.y;
 			this._updateLastPosition();
 		} else if (this._position.y <= this._bounds.y) {
-			this._position.y = this._bounds.height - .1;
+			this._position.y = this._bounds.height - 0.1;
 			this._updateLastPosition();
 		}
 	}
@@ -93,5 +91,4 @@ export default class Particle {
 	set acceleration(vector) {
 		this._acceleration = vector;
 	}
-
 }

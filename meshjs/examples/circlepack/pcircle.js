@@ -1,11 +1,11 @@
-import Circle from "../lib/circle.js"
+import Circle from "../../lib/circle.js";
 
 export default class PCircle extends Circle {
 	constructor(x, y_r, r) {
 		super(x, y_r, r);
 
 		this._hasCollided = false;
-		this._boundsPadding  = 0;
+		this._boundsPadding = 0;
 	}
 
 	set shouldGrow(b) {
@@ -17,7 +17,7 @@ export default class PCircle extends Circle {
 	}
 
 	grow() {
-		if(this._hasCollided) {
+		if (this._hasCollided) {
 			return;
 		}
 
@@ -25,29 +25,45 @@ export default class PCircle extends Circle {
 	}
 
 	checkCollisions(bounds, circles) {
-
-		if(this._hasCollided) {
+		if (this._hasCollided) {
 			return;
 		}
 
 		//todo: need to account for stroke size
-		if(this._center.x + this._radius - (this._boundsPadding - this._strokeSize) / 2 >= bounds.width ||
-			this._center.x - this._radius + (this._boundsPadding - this._strokeSize) / 2 <= bounds.x ||
-			this._center.y + this._radius - (this._boundsPadding - this._strokeSize) / 2 >= bounds.height ||
-			this._center.y - this._radius + (this._boundsPadding - this._strokeSize) / 2 <= bounds.y) {
-
+		if (
+			this._center.x +
+				this._radius -
+				(this._boundsPadding - this._strokeSize) / 2 >=
+				bounds.width ||
+			this._center.x -
+				this._radius +
+				(this._boundsPadding - this._strokeSize) / 2 <=
+				bounds.x ||
+			this._center.y +
+				this._radius -
+				(this._boundsPadding - this._strokeSize) / 2 >=
+				bounds.height ||
+			this._center.y -
+				this._radius +
+				(this._boundsPadding - this._strokeSize) / 2 <=
+				bounds.y
+		) {
 			this.cache();
 			this._hasCollided = true;
 			return;
 		}
 
-		for(let c of circles) {
-			if(c === this) {
+		for (let c of circles) {
+			if (c === this) {
 				continue;
 			}
 
-			if(c.radius + this._radius >= c.center.distance(this._center) +
-				this._boundsPadding - this._strokeSize) {
+			if (
+				c.radius + this._radius >=
+				c.center.distance(this._center) +
+					this._boundsPadding -
+					this._strokeSize
+			) {
 				this.cache();
 				this._hasCollided = true;
 				return;

@@ -1,0 +1,22 @@
+{
+  "name": "meshjs",
+  "version": "1.0.0",
+  "description": "My personal JavaScript / canvas creative coding framework.",
+  "main": "prettier.config.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "dependencies": {
+    "prettier": "^1.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
