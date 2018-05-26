@@ -23,13 +23,12 @@ class MeshJS {
 
 		this._canvas;
 		this._frameCount = 0;
-		this._trackMouse = false;
-
-		this._mousePosition = undefined;
 
 		this._canvasScaleX = 1;
 		this._canvasScaleY = 1;
 		this._canvasBoundingRect = undefined;
+
+		this._eventHandlers = new Map();
 	}
 
 	init(config, initCallback, drawCallback, promise){
@@ -44,12 +43,11 @@ class MeshJS {
 		//window.addEventListener("keyup", (event) => { this.onKeyUp(event); });
 		window.addEventListener("keyup", this.onKeyUp.bind(this));
 
-		if(this._config.ANIMATE) {
-			this._fpsInterval = 1000 / this._config.FPS;
-			this._lastFrameTime = Date.now();
-			this._startTime = this._lastFrameTime;
-			window.requestAnimationFrame(this.onAnimationFrame.bind(this));
-		}
+		this._fpsInterval = 1000 / this._config.FPS;
+		this._lastFrameTime = Date.now();
+		this._startTime = this._lastFrameTime;
+		window.requestAnimationFrame(this.onAnimationFrame.bind(this));
+
 
 		this._canvas = new Canvas(
 			this._config.PARENT_ID,
@@ -108,60 +106,15 @@ class MeshJS {
 		}
 	}
 
-	get canvas() {
-		return this._canvas;
-	}
-	draw() {
-		this._frameCount++;
-		this._draw(this._canvas, this._frameCount);
-	}
-
-	onMouseMove(event) {
-		this._mousePosition.x = (
-			event.clientX - this._canvasBoundingRect.left) * this._canvasScaleX;
-		this._mousePosition.y = (
-			event.clientY - this._canvasBoundingRect.top) * this._canvasScaleY;
-	}
-
-	_updateTrackMouse() {
-		if(this._trackMouse) {
-			if(!this._mousePosition) {
-				this._mousePosition = new Vector();
-			}
-			this._canvas.canvas.addEventListener("mousemove", this.onMouseMove.bind(this));
-		} else {
-			this._mousePosition = undefined;
-			this._canvas.canvas.removeEventListener("mousemove", this.onMouseMove);
-		}
-		//register / deregister for mouse event
-		//store in global variable
-		//pass to draw function? or make it a property on mesh?
-		//mousePosition
-		//window.addEventListener("keyup", this.onKeyUp.bind(this));
-	}
-
-	get mousePosition() {
-		//todo: should we return a copy?
-		return this._mousePosition;
-	}
-
-	set trackMouse(value) {
-		if(this._trackMouse === value) {
-			return;
-		}
-
-		this._trackMouse = value;
-
-		this._updateTrackMouse();
-	}
-
-	get trackMouse() {
-		return this._trackMouse;
-	}
-
+	/******************* Run Loop **********************/
 	setPaused(paused) {
 		this._paused = paused;
 		console.log(this._paused?"paused":"running");
+	}
+
+	draw() {
+		this._frameCount++;
+		this._draw(this._canvas, this._frameCount);
 	}
 
 	onAnimationFrame() {
@@ -172,29 +125,157 @@ class MeshJS {
 			this._lastFrameTime = now - (elapsed % this._fpsInterval);
 
 			if(this._draw && !this._paused) {
-				if(this._config.CLEAR_CANVAS) {
-					this._canvas.clear();
-				}
 
-				this.draw();
+				//todo: note events are not currently dispatched if paused
+				this._dispatchEvents();
+				if(this._config.ANIMATE) {
+					if(this._config.CLEAR_CANVAS) {
+						this._canvas.clear();
+					}
+
+					this.draw();
+				}
 			}
 		}
 
 		window.requestAnimationFrame(this.onAnimationFrame.bind(this));
 	}
 
-	downloadPng() {
-		let n = createFileName(this._config.APP_NAME, "png");
-		this._canvas.downloadPNG(n);
+	/************************ Properties *********************/
+
+	get canvas() {
+		return this._canvas;
 	}
 
-	downloadVideo() {
-		let n = createFileName(this._config.APP_NAME, "webm");
-		this._canvas.downloadVideo(n);
+	/************************* Events ************************/
+
+	/**
+	* Listen events you want to listen for. Can optionally pass in a boolean
+	* as the last argument (default is true). If boolean is false, the events
+	* passed in will no longer be listened for.
+	*/
+	listen(...options) {
+		if(options.length < 1) {
+			console.log("Warning: mesh.listen : no listeners specified.");
+			return;
+		}
+
+		let lastArg = options[options.length - 1];
+		let shouldListen = true;
+
+		if(lastArg === false || lastArg === true) {
+			shouldListen = options.splice(-1,1)[0];
+		}
+
+		if(options.length < 1) {
+			console.log("Warning: mesh.listen : no listeners specified.");
+		}
+
+		if(shouldListen) {
+			this._addListeners(options);
+		} else {
+			this._removeListeners(options);
+		}
 	}
 
-	downloadJson() {
-		downloadJSON(this._config, `${this._config.APP_NAME}_config`);
+	_addListeners(options) {
+		for(let f of options) {
+
+			if(this._eventHandlers.has(f.name)) {
+				//dont add if we are already listening
+				continue;
+			}
+
+			let h;
+			switch(f.name) {
+				case MOUSE_CLICK:
+					h = new EventHandler(f)
+					h.listen("click",
+						this._generateMouseHandler(h),
+							this._canvas.canvas);
+
+					this._eventHandlers.set(MOUSE_CLICK, h);
+
+					break;
+				case "FOO":
+					h = new EventHandler(f)
+					h.listen("click",
+						this._generateMouseHandler(h),
+						this._canvas.canvas);
+
+					this._eventHandlers.set(MOUSE_CLICK, h);
+
+					break;
+				case MOUSE_UP:
+					h = new EventHandler(f)
+					h.listen("mouseup",
+						this._generateMouseHandler(h),
+						this._canvas.canvas);
+
+					this._eventHandlers.set(MOUSE_UP, h);
+					break;
+				case MOUSE_MOVE:
+					h = new EventHandler(f)
+					h.listen("mousemove",
+						this._generateMouseHandler(h),
+						this._canvas.canvas);
+
+					this._eventHandlers.set(MOUSE_MOVE, h);
+					break;
+				case MOUSE_DOWN:
+					h = new EventHandler(f)
+					h.listen("mousedown",
+						this._generateMouseHandler(h),
+						this._canvas.canvas);
+
+					this._eventHandlers.set(MOUSE_DOWN, h);
+					break;
+			}
+		}
+	}
+
+	_removeListeners(options) {
+		for(let f of options) {
+			let name = f.name;
+
+			if(this._eventHandlers.has(name)) {
+				let h = this._eventHandlers.get(name);
+
+				h.remove();
+
+				this._eventHandlers.delete(name);
+			}
+		}
+	}
+
+	_generateMouseHandler(handler) {
+
+		let f = function(event) {
+			handler.args = [event, this._mouseEventRelativeToCanvas(event)];
+		}.bind(this);
+
+		return f;
+	}
+
+	//todo: need to make sure these are dispatched in correct order
+	_dispatchEvents() {
+
+		//todo: this doesnt let us specify order that events are disptached
+		//so we will probably have to check each one
+		//info here: https://stackoverflow.com/a/37694450/10232
+		for (let handler of this._eventHandlers.values()) {
+			handler.dispatch();
+		}
+	}
+
+	_mouseEventRelativeToCanvas(event) {
+		let x = (
+			event.clientX - this._canvasBoundingRect.left) * this._canvasScaleX;
+		let y = (
+			event.clientY - this._canvasBoundingRect.top) * this._canvasScaleY;
+
+			//todo: should we floor values? They seem to be floored in the events
+			return new Vector(x, y);
 	}
 
 	onKeyUp(event){
@@ -213,9 +294,63 @@ class MeshJS {
 			this._init(this._canvas);
 		}
 	}
+
+	/********************** Download Media *********************/
+
+	downloadPng() {
+		let n = createFileName(this._config.APP_NAME, "png");
+		this._canvas.downloadPNG(n);
+	}
+
+	downloadVideo() {
+		let n = createFileName(this._config.APP_NAME, "webm");
+		this._canvas.downloadVideo(n);
+	}
+
+	downloadJson() {
+		downloadJSON(this._config, `${this._config.APP_NAME}_config`);
+	}
 }
 
 //todo: may want to make this static, so if we call from other modules we get
 //same instance
 let mesh;
 export default mesh = new MeshJS();
+
+const MOUSE_MOVE = "mousemove";
+const MOUSE_DOWN = "mousedown";
+const MOUSE_UP = "mouseup";
+const MOUSE_CLICK = "click";
+
+class EventHandler {
+	constructor(callback) {
+		this.args = undefined;
+		this.listener = undefined;
+		this.parent = undefined;
+		this.name = undefined;
+		this.callback = callback;
+	}
+
+	listen(name, listener, parent) {
+		this.listener = listener;
+		this.parent = parent;
+		this.name = name;
+		parent.addEventListener(name, listener);
+	}
+
+	remove() {
+		this.parent.removeEventListener(this.name, this.listener);
+	}
+
+	dispatch() {
+		//todo: right now, all events require args to be passed to handlers
+		//this could change in the future
+		if(!this.args) {
+			return;
+		}
+
+		this.callback(...this.args);
+
+		this.args = null;
+	}
+}

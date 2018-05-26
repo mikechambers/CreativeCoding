@@ -8,10 +8,8 @@
 **/
 
 import mesh from "../lib/mesh.js"
-import Vector from "../lib/vector.js"
 import Circle from "../lib/circle.js"
 import Color from "../lib/color.js"
-import {map} from "../lib/math.js"
 
 /************ CONFIG **************/
 
@@ -36,25 +34,23 @@ const config = {
 	MAX_DISPLAY_WIDTH:640,
 
 	//background color of html page
-	BACKGROUND_COLOR:"#000000",
+	BACKGROUND_COLOR:"#EEEEEE",
 
 	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR:"#222222",
+	CANVAS_BACKGROUND_COLOR:"#FFFFFF",
 
 	//whether a single frame is rendered, or draw is called based on FPS setting
 	ANIMATE:true,
 	FPS:60,
 
 	//Where video of canvas is recorded
-	RECORD_VIDEO:true,
+	RECORD_VIDEO:false,
 
 	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS:true,
+	CLEAR_CANVAS:false,
 
 	/*********** APP Specific Settings ************/
-	STROKE_COLOR:"#FFFFFF",
-	START_LENGTH:300,
-	STROKE_WIDTH:2
+	RADIUS:20
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -62,70 +58,59 @@ const config = {
 let ctx;
 let bounds;
 
-let circle;
-let angle = 0;
-
-let mousePosition = new Vector();
-
 /*************** CODE ******************/
 
 const init = function(canvas) {
 	ctx = canvas.context;
 	bounds = canvas.bounds;
-
-	circle = new Circle(new Vector(-50, -50), 6);
-	circle.fillColor = Color.WHITE;
 }
 
 const draw = function(canvas, frameCount) {
-
-	circle.center.x = mousePosition.x;
-	circle.center.y = bounds.height;
-	circle.draw(ctx);
-
-	angle = map(circle.center.x, 0, bounds.width, 0, Math.PI * 2);
-
-	ctx.save();
-	ctx.translate(bounds.center.x, bounds.height);
-	branch(config.START_LENGTH);
-	ctx.restore();
 }
 
-const branch = function(len) {
+let listenMouseMove = true;
+const click = function(event, position) {
+	//mesh.listen(mouseClick, mouseUp, mouseDown, false);
+	console.log("mouseClick", event, position);
 
-	if(len < 4) {
-		return;
-	}
+	let c = new Circle(position, config.RADIUS);
+	c.fillColor = new Color(255, 0, 0, 0.5);
+	c.draw(ctx);
 
-	drawLine(new Vector(0, 0), new Vector(0, -len));
-	ctx.translate(0, -len);
-
-	ctx.save();
-	ctx.rotate(angle);
-	branch(len * 0.67);
-	ctx.restore()
-
-	ctx.save();
-	ctx.rotate(-angle);
-	branch(len * 0.67);
-	ctx.restore();
+	mesh.listen(mousemove, (listenMouseMove = !listenMouseMove));
 }
 
-const drawLine = function(start, end) {
+const mouseup = function(event, position) {
+	console.log("mouseUp", event, position);
 
-	ctx.beginPath();
-	ctx.strokeStyle = config.STROKE_COLOR;
-	ctx.lineWidth = config.STROKE_WIDTH;
-	ctx.moveTo(start.x, start.y);
-	ctx.lineTo(end.x, end.y);
-	ctx.stroke();
+	let c = new Circle(position, config.RADIUS * 2);
+	c.fillColor = new Color(0, 0, 255, 0.5);
+	c.draw(ctx);
 }
 
-const mousemove = function(event, vector) {
-	mousePosition = vector;
+const mousedown = function(event, position) {
+	console.log("mouseDown", event, position);
+
+	let c = new Circle(position, config.RADIUS * 2);
+	c.fillColor = new Color(128, 255, 0, 0.5);
+	c.draw(ctx);
+}
+
+const mousemove = function(event, position) {
+	console.log("mouseMove", event, position);
+
+	let c = new Circle(position, config.RADIUS);
+	c.fillColor = new Color(255, 0, 0);
+	c.draw(ctx);
 }
 
 window.onload = function(){
 	mesh.init(config, init, draw);
-	mesh.listen(mousemove);
+	mesh.listen(click);
+
+	//three options
+	//attach all function  to mesh (wordy, might cause issues in future)
+	//pass in array to init. clunky, cant add afterwars
+	//pass in via mesh.listen , clean and explicit, requires specif naming
+	//todo: make draw, init funcions an array
 }
