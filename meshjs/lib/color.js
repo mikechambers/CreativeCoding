@@ -1,5 +1,18 @@
 
+/**
+ * Represents RGBA colors.
+ * @example
+ * let color = new new Color(255, 255, 0, 1.0);
+ */
 export default class Color {
+
+	/**
+	 * Constructor.
+	 * @param {number} r Red value of color, between 0 - 255.
+	 * @param {number} g Green value of color, between 0 - 255.
+	 * @param {number} b Red value of color, between 0 - 255.
+	 * @param {float} a Alpha value of color between 0.0 and 1.0.
+	 */
 	constructor(r = 0, g = 0, b = 0, a = 1.0) {
 
 		if(arguments.length === 1) {
@@ -13,38 +26,52 @@ export default class Color {
 		this._a = a;
 	}
 
+	/** @type {number} Red value of RGB color as a value between 0 and 255. */
 	get red() {
 		return this._r;
 	}
 
+	/** @type {number} Red value of RGB color as a value between 0 and 255. */
 	set red(r) {
 		this._r = r;
 	}
 
+	/** @type {number} Green value of RGB color as a value between 0 and 255. */
 	get green() {
 		return this._g;
 	}
 
+	/** @type {number} Green value of RGB color as a value between 0 and 255. */
 	set green(g) {
 		this._g = r;
 	}
 
+	/** @type {number} Blue value of RGB color as a value between 0 and 255. */
 	get blue() {
 		return this._b;
 	}
 
+	/** @type {number} Blue value of RGB color as a value between 0 and 255. */
 	set blue(b) {
 		this._b = b;
 	}
 
+	/** @type {float} Alpha value of RGB color as a value between 0.0 and 1.0. */
 	get alpha() {
 		return this._a;
 	}
 
+	/** @type {float} Alpha value of RGB color as a value between 0.0 and 1.0. */
 	set alpha(a) {
 		this._a = a;
 	}
 
+	/**
+	* Whether the two colors represent the same RGB color.
+	* @param {Color} color - Color instance to compare for equality against this instance.
+	* @param {Boolean} ignoreAlpha - If true, alpha value will be ignored when comparing
+	* color equality. Otherwise alpha must also be equal.
+	*/
 	isEqual(color, ignoreAlpha = true) {
 		let isEqual = (this._r === color.red &&
 				this._g === color.green &&
