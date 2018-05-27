@@ -1,71 +1,69 @@
-import Rectangle from "./rectangle.js"
-import {downloadDataUrlAsFile, downloadBlob} from "./datautils.js"
+import Rectangle from "./rectangle.js";
+import { downloadDataUrlAsFile, downloadBlob } from "./datautils.js";
 
 let count = 0;
-export default class Canvas{
+export default class Canvas {
+  constructor(parentId, width, height, backgroundColor = "#FFFFFF") {
+    this._canvas = document.createElement("canvas");
 
-	constructor(parentId, width, height, backgroundColor = "#FFFFFF") {
-		this._canvas = document.createElement('canvas');
+    this._canvas.id = Canvas._createName();
+    this._canvas.height = height;
+    this._canvas.width = width;
 
-		this._canvas.id = Canvas._createName();;
-		this._canvas.height = height;
-		this._canvas.width = width;
+    this._ctx = this._canvas.getContext("2d");
 
-		this._ctx = this._canvas.getContext("2d");
+    let container = document.getElementById(parentId);
+    container.appendChild(this._canvas);
 
-		let container = document.getElementById(parentId);
-		container.appendChild(this._canvas);
+    this._backgroundColor = backgroundColor;
+    this._bounds = new Rectangle(0, 0, width, height);
 
-		this._backgroundColor = backgroundColor;
-		this._bounds = new Rectangle(0, 0, width, height);
+    this.setBackgroundColor(this._backgroundColor);
+  }
 
-		this.setBackgroundColor(this._backgroundColor);
-	}
+  get bounds() {
+    return this._bounds;
+  }
 
-	get bounds() {
-		return this._bounds;
-	}
+  get canvas() {
+    return this._canvas;
+  }
 
-	get canvas(){
-		return this._canvas;
-	}
+  get context() {
+    return this._ctx;
+  }
 
-	get context() {
-		return this._ctx;
-	}
+  setBackgroundColor(color) {
+    //todo: we probably only need to call this once
+    this._ctx.fillStyle = color;
+    this._ctx.fillRect(0, 0, this._bounds.width, this._bounds.height);
 
-	setBackgroundColor(color) {
-		//todo: we probably only need to call this once
-		this._ctx.fillStyle = color;
-		this._ctx.fillRect(0, 0, this._bounds.width, this._bounds.height);
+    //this._canvas.style.background = color;
+  }
 
-		//this._canvas.style.background = color;
-	}
+  clear() {
+    //todo: we might not actually need to call clearRect, since we redraw the background
+    //rect
+    this._ctx.clearRect(0, 0, this._bounds.width, this._bounds.height);
+    this.setBackgroundColor(this._backgroundColor);
+  }
 
-	clear() {
+  static _createName() {
+    return `mesh_canvas_${count++}`;
+  }
 
-		//todo: we might not actually need to call clearRect, since we redraw the background
-		//rect
-		this._ctx.clearRect(0, 0, this._bounds.width, this._bounds.height);
-		this.setBackgroundColor(this._backgroundColor);
-	}
+  /************* video capture ******************/
 
-	static _createName() {
-		return `mesh_canvas_${count++}`;
-	}
+  //todo: can you export, restart?
+  stopRecord() {
+    if (!this._recorder) {
+      return;
+    }
 
-	/************* video capture ******************/
+    this._recorder.stop();
+  }
 
-	//todo: can you export, restart?
-	stopRecord() {
-		if(!this._recorder) {
-			return;
-		}
-
-		this._recorder.stop();
-	}
-
-	/*
+  /*
 
 	Info on video capture
 	https://developers.google.com/web/updates/2016/10/capture-stream
@@ -99,44 +97,46 @@ export default class Canvas{
 	video/x-matroska;codecs=avc1
 
 	*/
-	startRecord(mimeString="video/webm;codecs=h264", frameRate=60.0) {
+  startRecord(mimeString = "video/webm;codecs=h264", frameRate = 60.0) {
+    this._chunks = [];
+    let o = this;
 
-		this._chunks = [];
-		let o = this;
+    let stream = this._canvas.captureStream(frameRate);
+    //let stream = this._canvas.captureStream();
 
-		let stream = this._canvas.captureStream(frameRate);
-		//let stream = this._canvas.captureStream();
+    //default to 5Mbps
+    this._recorder = new MediaRecorder(stream, {
+      mimeType: mimeString,
+      videoBitsPerSecond: 5000000
+    });
 
-		//default to 5Mbps
-		this._recorder = new MediaRecorder(stream, {mimeType:mimeString, videoBitsPerSecond:5000000});
+    this._recorder.ondataavailable = function(event) {
+      if (event.data.size) {
+        o._chunks.push(event.data);
+      }
+    };
 
-		this._recorder.ondataavailable = function(event) {
-			if(event.data.size) {
-				o._chunks.push(event.data);
-			}
-		}
+    this._recorder.start(10);
+  }
 
-		this._recorder.start(10);
-	}
+  get recorder() {
+    return this._recorder;
+  }
 
-	get recorder() {
-		return this._recorder;
-	}
+  downloadVideo(fileName) {
+    if (this._chunks && this._chunks.length) {
+      var blob = new Blob(this._chunks);
+      downloadBlob(blob, fileName);
+    }
+  }
 
-	downloadVideo(fileName) {
-		if (this._chunks && this._chunks.length) {
-			var blob = new Blob(this._chunks)
-			downloadBlob(blob, fileName);
-		}
-	}
+  /***************** image capture ******************/
 
-	/***************** image capture ******************/
+  downloadPNG(fileName) {
+    const format = "image/png";
 
-	downloadPNG(fileName) {
-		const format  = "image/png";
-
-		//var canvas = document.getElementById("myCanvas");
-		const url = this._canvas.toDataURL(format);
-		downloadDataUrlAsFile(url, fileName);
-	};
+    //var canvas = document.getElementById("myCanvas");
+    const url = this._canvas.toDataURL(format);
+    downloadDataUrlAsFile(url, fileName);
+  }
 }

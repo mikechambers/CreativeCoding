@@ -1,123 +1,121 @@
-import Vector from "./vector.js"
+import Vector from "./vector.js";
 
 export default class Rectangle {
+  constructor(x, y, width, height) {
+    this._x = x;
+    this._y = y;
+    this._height = height;
+    this._width = width;
+    this._updateCenter();
+  }
 
-	constructor(x, y, width, height) {
-		this._x = x;
-		this._y = y;
-		this._height = height;
-		this._width = width;
-		this._updateCenter();
-	}
+  _updateCenter() {
+    if (!this._center) {
+      this._center = new Vector();
+    }
 
-	_updateCenter(){
+    this._center.x = this._width / 2;
+    this._center.y = this._height / 2;
+  }
 
-		if(!this._center) {
-			this._center = new Vector();
-		}
+  get center() {
+    return this._center;
+  }
 
-		this._center.x = this._width / 2;
-		this._center.y = this._height / 2;
-	}
+  get height() {
+    return this._height;
+  }
 
-	get center() {
-		return this._center;
-	}
+  set height(height) {
+    this._height = height;
+    this._updateCenter();
+  }
 
-	get height() {
-		return this._height;
-	}
+  get width() {
+    return this._width;
+  }
 
-	set height(height) {
-		this._height = height;
-		this._updateCenter();
-	}
+  set width(width) {
+    this._width = width;
+    this._updateCenter();
+  }
 
-	get width(){
-		return this._width;
-	}
+  get x() {
+    return this._x;
+  }
 
-	set width(width){
-		this._width = width;
-		this._updateCenter();
-	}
+  set x(x) {
+    this._x = x;
+    this._updateCenter();
+  }
 
-	get x(){
-		return this._x;
-	}
+  get y() {
+    return this._y;
+  }
 
-	set x(x) {
-		this._x = x;
-		this._updateCenter();
-	}
+  set y(y) {
+    this._y = y;
+    this._updateCenter();
+  }
 
-	get y() {
-		return this._y;
-	}
+  //todo: do we need to return new instances here?
+  get topLeft() {
+    return new Vector(this._x, this._y);
+  }
 
-	set y(y) {
-		this._y = y;
-		this._updateCenter();
-	}
+  get topRight() {
+    return new Vector(this._width, this._y);
+  }
 
-	get topLeft() {
-		return new Vector(this._x, this._y);
-	}
+  get bottomRight() {
+    return new Vector(this._width, this._height);
+  }
 
-	get topRight() {
-		return new Vector(this._width, this._y);
-	}
+  get bottomLeft() {
+    return new Vector(this._x, this._height);
+  }
 
-	get bottomRight() {
-		return new Vector(this._width, this._height);
-	}
+  //scales the rectangle by included amout. note, if you want to make a copy
+  //first call clone : r.clone().scale(2);
+  //todo: should this return a copy, similar to Vector. in which case call interval
+  //withScale?
+  scale(scale) {
+    this._height *= scale;
+    this._width += scale;
+  }
 
-	get bottomLeft() {
-		return new Vector(this._x, this._height);
-	}
+  //returns a new instance of Rectangle, with dimensions based on existing
+  //instance with padding applied to all 4 sides
+  withPadding(padding) {
+    let r = this.clone();
 
-	//scales the rectangle by included amout. note, if you want to make a copy
-	//first call clone : r.clone().scale(2);
-	scale(scale) {
-		this._height *= scale;
-		this._width += scale;
-	}
+    r.x += padding;
+    r.width -= padding * 2;
 
-	//returns a new instance of Rectangle, with dimensions based on existing
-	//instance with padding applied to all 4 sides
-	withPadding(padding) {
-		let r = this.clone();
+    r.y += padding;
+    r.height -= padding * 2;
 
-		r.x += padding;
-		r.width -= (padding * 2);
+    return r;
+  }
 
-		r.y += padding;
-		r.height -= (padding * 2);
+  randomPoint() {
+    return new Vector(
+      random(this._x, this._x + this._width),
+      random(this._y, this._y + this._height)
+    );
+  }
 
-		return r;
-	}
+  randomPoints(count) {
+    let out = new Array(count);
 
-	randomPoint() {
-		return new Vector(random(this._x, this._x + this._width),
-			random(this._y, this._y + this._height));
-	}
+    for (let i = 0; i < count; i++) {
+      out[i] = this.randomPoint();
+    }
 
-	randomPoints(count) {
-		let out = new Array(count);
+    return out;
+  }
 
-		for(let i = 0; i < count; i++) {
-			out[i] = this.randomPoint();
-		}
-
-		return out;
-	}
-
-	clone() {
-		return new Rectangle(
-			this._x,
-			this._y,
-			this._width,
-			this._height
-		);
-	}
+  clone() {
+    return new Rectangle(this._x, this._y, this._width, this._height);
+  }
 }

@@ -14,41 +14,41 @@ import Color from "../../lib/color.js";
 /************ CONFIG **************/
 
 const config = {
-	/**** required for mesh lib ******/
+  /**** required for mesh lib ******/
 
-	//name of container that generated canvas will be created in
-	PARENT_ID: "canvas_container",
+  //name of container that generated canvas will be created in
+  PARENT_ID: "canvas_container",
 
-	//app name, used for saving files
-	APP_NAME: window.location.pathname.replace(/\//gi, ""),
+  //app name, used for saving files
+  APP_NAME: window.location.pathname.replace(/\//gi, ""),
 
-	//Dimensions that canvas will be rendered at
-	RENDER_HEIGHT: 1080,
-	RENDER_WIDTH: 1080,
+  //Dimensions that canvas will be rendered at
+  RENDER_HEIGHT: 1080,
+  RENDER_WIDTH: 1080,
 
-	//Dimension canvas will be display at on page
-	MAX_DISPLAY_HEIGHT: 640,
-	MAX_DISPLAY_WIDTH: 640,
+  //Dimension canvas will be display at on page
+  MAX_DISPLAY_HEIGHT: 640,
+  MAX_DISPLAY_WIDTH: 640,
 
-	//background color of html page
-	BACKGROUND_COLOR: "#000000",
+  //background color of html page
+  BACKGROUND_COLOR: "#000000",
 
-	//background color for display and offscreen canvas
-	CANVAS_BACKGROUND_COLOR: "#FFFFFF",
+  //background color for display and offscreen canvas
+  CANVAS_BACKGROUND_COLOR: "#FFFFFF",
 
-	//whether a single frame is rendered, or draw is called based on FPS setting
-	ANIMATE: true,
-	FPS: 30,
+  //whether a single frame is rendered, or draw is called based on FPS setting
+  ANIMATE: true,
+  FPS: 30,
 
-	//Where video of canvas is recorded
-	RECORD_VIDEO: false,
+  //Where video of canvas is recorded
+  RECORD_VIDEO: false,
 
-	//whether canvas should be cleared prior to each call to draw
-	CLEAR_CANVAS: false,
+  //whether canvas should be cleared prior to each call to draw
+  CLEAR_CANVAS: false,
 
-	/*********** APP Specific Settings ************/
+  /*********** APP Specific Settings ************/
 
-	SCALE: 8
+  SCALE: 8
 };
 
 /************** GLOBAL VARIABLES ************/
@@ -65,40 +65,40 @@ let zoff;
 /*************** CODE ******************/
 
 const init = function(canvas) {
-	ctx = canvas.context;
-	bounds = canvas.bounds;
+  ctx = canvas.context;
+  bounds = canvas.bounds;
 
-	rows = Math.floor(bounds.height / config.SCALE);
-	cols = Math.floor(bounds.width / config.SCALE);
+  rows = Math.floor(bounds.height / config.SCALE);
+  cols = Math.floor(bounds.width / config.SCALE);
 
-	zoff = Math.random(10000);
+  zoff = Math.random(10000);
 };
 
 const draw = function() {
-	let yoff = 0;
-	for (let y = 0; y < rows; y++) {
-		let xoff = 0;
-		for (let x = 0; x < cols; x++) {
-			let r = noise(yoff, xoff, zoff) * 255;
+  let yoff = 0;
+  for (let y = 0; y < rows; y++) {
+    let xoff = 0;
+    for (let x = 0; x < cols; x++) {
+      let r = noise(yoff, xoff, zoff) * 255;
 
-			let c = new Color(r);
+      let c = new Color(r);
 
-			ctx.fillStyle = c.toRGBA();
-			ctx.fillRect(
-				x * config.SCALE,
-				y * config.SCALE,
-				config.SCALE,
-				config.SCALE
-			);
+      ctx.fillStyle = c.toRGBA();
+      ctx.fillRect(
+        x * config.SCALE,
+        y * config.SCALE,
+        config.SCALE,
+        config.SCALE
+      );
 
-			xoff += inc;
-		}
-		yoff += inc;
-	}
+      xoff += inc;
+    }
+    yoff += inc;
+  }
 
-	zoff += zinc;
+  zoff += zinc;
 };
 
 window.onload = function() {
-	mesh.init(config, init, draw);
+  mesh.init(config, init, draw);
 };

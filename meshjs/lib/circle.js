@@ -1,140 +1,138 @@
-import Vector from "../lib/vector.js"
-import Rectangle from "../lib/rectangle.js"
-import Color from "../lib/color.js"
-
+import Vector from "../lib/vector.js";
+import Rectangle from "../lib/rectangle.js";
+import Color from "../lib/color.js";
 
 export default class Circle {
+  constructor(x, y_r, r) {
+    if (x instanceof Vector) {
+      this._center = x;
+      r = y_r;
+    } else {
+      this._center = new Vector(x, y_r);
+    }
 
-	constructor(x, y_r, r) {
+    this._radius = r;
 
-		if(x instanceof Vector) {
-			this._center = x;
-			r = y_r;
-		} else {
-			this._center = new Vector(x, y_r);
-		}
+    //todo: could change defaults to undefined, then if not set, dont make
+    //the drawing calls
+    //rename to line width?
+    this._strokeSize = 1.0;
 
-		this._radius = r;
+    //rename to fillStyle? which would all to specify a gradient
+    //todo: should default these to be specified as a color and convert when
+    //drawing
+    this._fillColor = Color.WHITE;
 
-		//todo: could change defaults to undefined, then if not set, dont make
-		//the drawing calls
-		//rename to line width?
-		this._strokeSize = 1.0;
+    //rename to strokeStyle?
+    this._strokeColor = Color.BLACK;
 
-		//rename to fillStyle? which would all to specify a gradient
-		//todo: should default these to be specified as a color and convert when
-		//drawing
-		this._fillColor = Color.WHITE;
+    this._cachedCanvas = undefined;
+    this._shouldCache = false;
+  }
 
-		//rename to strokeStyle?
-		this._strokeColor = Color.BLACK;
+  get center() {
+    return this._center;
+  }
 
-		this._cachedCanvas = undefined;
-		this._shouldCache = false;
-	}
+  set center(vector) {
+    this._center = vector;
+  }
 
-	get center(){
-		return this._center;
-	}
+  //todo: this should be a property shouldCache
+  enableCaching(shouldCache) {
+    this._shouldCache = shouldCache;
+  }
 
-	set center(vector) {
-		this._center = vector;
-	}
+  set strokeSize(width) {
+    this._strokeSize = width;
+  }
 
-	enableCaching(shouldCache) {
-		this._shouldCache = shouldCache;
-	}
+  set fillColor(c) {
+    this._fillColor = c;
+  }
 
-	set strokeSize(width) {
-		this._strokeSize = width;
-	}
+  set strokeColor(c) {
+    this._strokeColor = c;
+  }
 
-	set fillColor(c) {
-		this._fillColor = c;
-	}
+  draw(ctx) {
+    if (!ctx) {
+      console.log("Error: Circle.draw : canvas context is undefined.");
+    }
 
-	set strokeColor(c) {
-		this._strokeColor = c;
-	}
+    if (this._cachedCanvas) {
+      ctx.drawImage(
+        this._cachedCanvas,
+        this._center.x - this._radius,
+        this._center.y - this._radius,
+        this._cachedCanvas.width,
+        this._cachedCanvas.height
+      );
+      return;
+    }
 
-	draw(ctx) {
+    if (this._strokeSize) {
+      ctx.lineStyle = this._strokeColor.toRGBA();
+      ctx.lineWidth = this._strokeSize;
+    }
 
-		if(!ctx) {
-			console.log("Error: Circle.draw : canvas context is undefined.");
-		}
+    ctx.fillStyle = this._fillColor.toRGBA();
 
-		if(this._cachedCanvas) {
-			ctx.drawImage(this._cachedCanvas,
-				this._center.x - this._radius,
-				this._center.y - this._radius,
-				this._cachedCanvas.width, this._cachedCanvas.height);
-			return;
-		}
+    ctx.beginPath();
+    ctx.arc(this._center.x, this._center.y, this._radius, 0, Math.PI * 2);
 
-		if(this._strokeSize) {
-			ctx.lineStyle = this._strokeColor.toRGBA();
-			ctx.lineWidth = this._strokeSize;
-		}
+    if (this._strokeSize) {
+      ctx.stroke();
+    }
 
-		ctx.fillStyle = this._fillColor.toRGBA();
+    ctx.fill();
+  }
 
-		ctx.beginPath();
-		ctx.arc(this._center.x, this._center.y, this._radius, 0, Math.PI * 2);
-
-		if(this._strokeSize) {
-			ctx.stroke();
-		}
-
-		ctx.fill();
-	}
-
-	toSVG() {
-
-		//note, we dont use rgba for colors, but use hex amd exlpicit opacity
-		//in order to maintain support with illustrator
-		return `<circle cx="${this._center.x}" cy="${this._center.y}"
+  toSVG() {
+    //note, we dont use rgba for colors, but use hex amd exlpicit opacity
+    //in order to maintain support with illustrator
+    return `<circle cx="${this._center.x}" cy="${this._center.y}"
 				r="${this._radius}" stroke="${this._strokeColor.toHex()}"
 				fill-opacity="${this._fillColor.a}"
 				stroke-opacity="${this._strokeColor.a}"
 				fill="${this._fillColor.toHex()}" stroke-width="${this._strokeSize}"/>`;
-	}
+  }
 
-	get bounds() {
-		let out = new Rectangle();
-		out.x = this._center.x - this._radius;
-		out.y = this._center.y - this._radius;
-		out.width = this._radius * 2  + this._strokeSize;
-		out.height = this._radius * 2 + this._strokeSize;
+  get bounds() {
+    let out = new Rectangle();
+    out.x = this._center.x - this._radius;
+    out.y = this._center.y - this._radius;
+    out.width = this._radius * 2 + this._strokeSize;
+    out.height = this._radius * 2 + this._strokeSize;
 
-		return out;
-	}
+    return out;
+  }
 
-	cache() {
+  cache() {
+    if (!this._shouldCache) {
+      return;
+    }
 
-		if(!this._shouldCache) {
-			return;
-		}
+    let canvas = document.createElement("canvas");
+    canvas.height = bounds.height;
+    canvas.width = bounds.width;
 
-		let canvas = document.createElement('canvas');
-		canvas.height = bounds.height;
-		canvas.width = bounds.width;
+    let ctx = canvas.getContext("2d");
 
-		let ctx = canvas.getContext("2d");
+    this.draw(ctx);
 
-		this.draw(ctx);
+    this._cachedCanvas = canvas;
+  }
 
-		this._cachedCanvas = canvas;
-	}
+  containsPoint(vector) {
+    return this._center.distance(vector) < this._radius;
+  }
 
-	containsPoint(vector) {
-		return (this._center.distance(vector) < this._radius);
-	}
+  set radius(radius) {
+    this._radius = radius;
+  }
 
-	set radius(radius){
-		this._radius = radius;
-	}
-
-	get radius() {
-		return this._radius;
-	}
+  get radius() {
+    return this._radius;
+  }
 }
