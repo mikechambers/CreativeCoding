@@ -41,7 +41,7 @@ export default class ColorPallete {
 	        index = randomInt(0, this._colors.length);
 	    }
 
-	    return this.getColorAtIndex(index);
+	    return this.colorAtIndex(index);
 	}
 
 	nextColor(){
