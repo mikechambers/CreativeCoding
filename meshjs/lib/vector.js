@@ -1,7 +1,7 @@
-import {random} from "./math.js"
+import { random } from "./math.js";
 
 export default class Vector {
-	constructor(x = 0, y = 0){
+	constructor(x = 0, y = 0) {
 		this._x = x;
 		this._y = y;
 	}
@@ -39,42 +39,62 @@ export default class Vector {
 	distance(vector) {
 		let x = vector.x - this._x;
 		let y = vector.y - this._y;
-		return Math.sqrt(x*x + y*y );
+		return Math.sqrt(x * x + y * y);
 	}
 
-	normalize(){
+	normalize() {
 		let m = this.magnitude;
 
-		if(m > 0) {
+		if (m > 0) {
 			this.divide(m);
 		}
 	}
 
 	limit(max) {
-		if(this.magnitude > max) {
+		if (this.magnitude > max) {
 			this.normalize();
 			this.multiply(max);
 		}
 	}
 
-	add(vector){
-		this._x += vector.x;
-		this._y += vector.y;
+	//todo: should these affect instance, or return a new instance?
+	add(vector) {
+		let out = new Vector();
+		out.x = this._x + vector.x;
+		out.y = this._y + vector.y;
+
+		return out;
 	}
 
 	subtract(vector) {
-		this._x -= vector.x;
-		this._y -= vector.y;
+		let out = new Vector();
+		out.x = this._x - vector.x;
+		out.y = this._y - vector.y;
+
+		return out;
 	}
 
 	multiply(value) {
-		this._x *= value;
-		this._y *= value;
+		let out = new Vector();
+		out.x = this._x * value;
+		out.y = this._y * value;
+
+		return out;
 	}
 
 	divide(value) {
-		this._x /= value;
-		this._y /= value;
+		let out = new Vector();
+		out.x = this._x / value;
+		out.y = this._y / value;
+
+		return out;
+	}
+
+	rotate(angle) {
+		let h = this.heading + angle;
+		var m = this.magnitude;
+		this._x = Math.cos(h) * m;
+		this._y = Math.sin(h) * m;
 	}
 
 	clone() {
@@ -97,9 +117,6 @@ export default class Vector {
 	}
 
 	clone() {
-		return new Vector(
-			this._x,
-			this._y
-		);
+		return new Vector(this._x, this._y);
 	}
 }
