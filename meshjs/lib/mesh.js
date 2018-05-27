@@ -100,7 +100,7 @@ class MeshJS {
 		//if a promise is passed in, we wont call init and draw until the
 		//promise resolves
 		if (promise) {
-			promise.then(f, err => {
+			promise.then(f, (err) => {
 				console.log("mesh.init promise failed", err);
 			});
 		} else {
@@ -146,6 +146,10 @@ class MeshJS {
 
 	get canvas() {
 		return this._canvas;
+	}
+
+	getConfigValue(key) {
+		return this._config[key];
 	}
 
 	/************************* Events ************************/
