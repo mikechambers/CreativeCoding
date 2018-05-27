@@ -1,122 +1,124 @@
 import { random } from "./math.js";
 
 export default class Vector {
-	constructor(x = 0, y = 0) {
-		this._x = x;
-		this._y = y;
-	}
+  constructor(x = 0, y = 0) {
+    this._x = x;
+    this._y = y;
+  }
 
-	get x() {
-		return this._x;
-	}
+  get x() {
+    return this._x;
+  }
 
-	set x(x) {
-		this._x = x;
-	}
+  set x(x) {
+    this._x = x;
+  }
 
-	get y() {
-		return this._y;
-	}
+  get y() {
+    return this._y;
+  }
 
-	set y(y) {
-		this._y = y;
-	}
+  set y(y) {
+    this._y = y;
+  }
 
-	get magnitude() {
-		return Math.sqrt(this._x * this._x + this._y * this._y);
-	}
+  get magnitude() {
+    return Math.sqrt(this._x * this._x + this._y * this._y);
+  }
 
-	set magnitude(magnitude) {
-		this.normalize();
-		this.multiply(magnitude);
-	}
+  set magnitude(magnitude) {
+    this.normalize();
+    this.multiply(magnitude);
+  }
 
-	//todo: should this be a get function or property?
-	get heading() {
-		return Math.atan2(this._y, this._x);
-	}
+  get heading() {
+    return Math.atan2(this._y, this._x);
+  }
 
-	distance(vector) {
-		let x = vector.x - this._x;
-		let y = vector.y - this._y;
-		return Math.sqrt(x * x + y * y);
-	}
+  distance(vector) {
+    let x = vector.x - this._x;
+    let y = vector.y - this._y;
+    return Math.sqrt(x * x + y * y);
+  }
 
-	normalize() {
-		let m = this.magnitude;
+  normalize() {
+    let m = this.magnitude;
 
-		if (m > 0) {
-			this.divide(m);
-		}
-	}
+    if (m > 0) {
+      this.divide(m);
+    }
+  }
 
-	limit(max) {
-		if (this.magnitude > max) {
-			this.normalize();
-			this.multiply(max);
-		}
-	}
+  limit(max) {
+    if (this.magnitude > max) {
+      this.normalize();
+      this.multiply(max);
+    }
+  }
 
-	//todo: should these affect instance, or return a new instance?
-	add(vector) {
-		let out = new Vector();
-		out.x = this._x + vector.x;
-		out.y = this._y + vector.y;
+  add(vector) {
+    this._x += vector.x;
+    this._y += vector.y;
+  }
 
-		return out;
-	}
+  subtract(vector) {
+    this._x -= vector.x;
+    this._y -= vector.y;
+  }
 
-	subtract(vector) {
-		let out = new Vector();
-		out.x = this._x - vector.x;
-		out.y = this._y - vector.y;
+  multiply(value) {
+    this._x *= value;
+    this._y *= value;
+  }
 
-		return out;
-	}
+  divide(value) {
+    this._x /= value;
+    this._y /= value;
+  }
 
-	multiply(value) {
-		let out = new Vector();
-		out.x = this._x * value;
-		out.y = this._y * value;
+  rotate(angle) {
+    let h = this.heading + angle;
+    var m = this.magnitude;
+    this._x = Math.cos(h) * m;
+    this._y = Math.sin(h) * m;
+  }
 
-		return out;
-	}
+  clone() {
+    return new Vector(this._x, this._y);
+  }
 
-	divide(value) {
-		let out = new Vector();
-		out.x = this._x / value;
-		out.y = this._y / value;
+  static fromAngle(angleInRads = 0) {
+    let v = new Vector();
+    v.x = Math.cos(angleInRads);
+    v.y = Math.sin(angleInRads);
 
-		return out;
-	}
+    return v;
+  }
 
-	rotate(angle) {
-		let h = this.heading + angle;
-		var m = this.magnitude;
-		this._x = Math.cos(h) * m;
-		this._y = Math.sin(h) * m;
-	}
+  static add(v1, v2) {
+    return new Vector(v1.x + v2.x, v1.y + v2.y);
+  }
 
-	clone() {
-		return new Vector(this._x, this._y);
-	}
+  static subtract(v1, v2) {
+    return new Vector(v1.x - v2.x, v1.y - v2.y);
+  }
 
-	static fromAngle(angleInRads = 0) {
-		let v = new Vector();
-		v.x = Math.cos(angleInRads);
-		v.y = Math.sin(angleInRads);
+  static divide(v1, value) {
+    return new Vector(v1.x / value, v1.y / value);
+  }
 
-		return v;
-	}
+  static multiply(v1, value) {
+    return new Vector(v1.x * value, v1.y * value);
+  }
 
-	//todo: maybe add option for min / max range
-	//todo: should this just be a standalone function and not a static
-	//method?
-	static random(max = 1) {
-		return new Vector(random(-max, max), random(-max, max));
-	}
+  //todo: maybe add option for min / max range
+  //todo: should this just be a standalone function and not a static
+  //method?
+  static getRandom(max = 1) {
+    return new Vector(random(-max, max), random(-max, max));
+  }
 
-	clone() {
-		return new Vector(this._x, this._y);
-	}
+  clone() {
+    return new Vector(this._x, this._y);
+  }
 }
